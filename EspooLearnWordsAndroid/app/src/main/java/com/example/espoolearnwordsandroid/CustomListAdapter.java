@@ -43,6 +43,7 @@ public class CustomListAdapter extends BaseAdapter
     public View getView(int position, View v, ViewGroup vg)
     {
         ViewHolder holder;
+
         if(v == null)
         {
             v = layoutInflater.inflate(R.layout.list_row, null);
@@ -53,7 +54,8 @@ public class CustomListAdapter extends BaseAdapter
         {
             holder = (ViewHolder)v.getTag();
         }
-        holder.polish_word.setText(listData.get(position).getPolishWord());
+
+        holder.polish_word.setText("(" + String.valueOf(position) + ") " + listData.get(position).getPolishWord());
         holder.english_word.setText(listData.get(position).getEnglishWord());
         holder.pronunciation.setText(listData.get(position).getPronunciation());
 
@@ -68,9 +70,9 @@ public class CustomListAdapter extends BaseAdapter
 
         public ViewHolder(View v)
         {
-            polish_word = (TextView) v.findViewById(R.id.polish_word);
-            english_word = (TextView) v.findViewById(R.id.english_word);
-            pronunciation = (TextView) v.findViewById(R.id.pronunciation);
+            polish_word = (TextView) v.findViewById(R.id.txtPol);
+            english_word = (TextView) v.findViewById(R.id.txtEng);
+            pronunciation = (TextView) v.findViewById(R.id.txtPron);
         }
     }
 
