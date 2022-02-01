@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">EspooLearnWordsAndroid</string>
+    <string name="app_name">Bazy danych SQLite</string>
+    <string name="add_button">Dodaj</string>
+    <string name="update_button">Zmień</string>
+    <string name="delete_button">Usuń</string>
+    <string name="fab">Dodaj przyjaciela</string>
+    <string name="title_activity_transition_edit">Edycja słówka</string>
+    <string name="title_activity_transition_add">Dodawanie słówka</string>
 </resources>

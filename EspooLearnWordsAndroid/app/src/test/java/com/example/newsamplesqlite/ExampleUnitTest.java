@@ -1,4 +1,4 @@
-package com.example.espoolearnwordsandroid;
+package com.example.newsamplesqlite;
 
 import org.junit.Test;
 
