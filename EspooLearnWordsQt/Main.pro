@@ -47,6 +47,10 @@ RESOURCES += \
     icons/espoo/20x20@4/back.png \
     icons/espoo/20x20@4/drawer.png \
     icons/espoo/20x20@4/menu.png \
+    images/qt-logo@2x.png \
+    images/qt-logo@3x.png \
+    images/qt-logo@4x.png \
+    images/qt-logo.png \
     qml.qrc
 
 

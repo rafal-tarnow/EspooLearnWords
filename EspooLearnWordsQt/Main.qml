@@ -164,6 +164,29 @@ ApplicationWindow {
             currentIndex: -1
             anchors.fill: parent
 
+            headerPositioning: ListView.OverlayHeader
+            header: Pane {
+                id: header
+                z: 2
+                width: parent.width
+
+                contentHeight: logo.height
+
+                Image {
+                    id: logo
+                    width: parent.width
+                    source: "images/qt-logo.png"
+                    fillMode: implicitWidth > width ? Image.PreserveAspectFit : Image.Pad
+                }
+
+                MenuSeparator {
+                    parent: header
+                    width: parent.width
+                    anchors.verticalCenter: parent.bottom
+                    visible: !listView.atYBeginning
+                }
+            }
+
             delegate: ItemDelegate {
                 width: listView.width
                 text: model.title
