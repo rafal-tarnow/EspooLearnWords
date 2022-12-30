@@ -1,39 +1,36 @@
-#include <QtDebug>
-#include <QString>
-#include <QHash>
-#include <QGuiApplication>
-#include <QtQml>
-#include <QQuickView>
-#include <QtSql>
-#include <QSqlQueryModel>
-#include <QQuickStyle>
-#include <qautostart.h>
 #include "contactmodel.h"
-#include "test_model_2.hpp"
 #include "test_model.hpp"
-
-
+#include "test_model_2.hpp"
+#include <QGuiApplication>
+#include <QHash>
+#include <QQuickStyle>
+#include <QQuickView>
+#include <QSqlQueryModel>
+#include <QString>
+#include <QtDebug>
+#include <QtQml>
+#include <QtSql>
+#include <qautostart.h>
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
-    app.setOrganizationName("Espoo");
-    app.setOrganizationDomain("espoo.com");
-    app.setApplicationName("Espoo words");
+  QGuiApplication app(argc, argv);
+  app.setOrganizationName("Espoo");
+  app.setOrganizationDomain("espoo.com");
+  app.setApplicationName("Espoo words");
 
-    Autostart as;
-    as.setAutostart(true);
+  QIcon::setThemeName("espoo");
 
-    QQuickStyle::setStyle("Material");
+  Autostart as;
+  as.setAutostart(true);
 
-    qmlRegisterType<ContactModel>("Backend", 1, 0, "ContactModel");
+  QQuickStyle::setStyle("Material");
 
+  qmlRegisterType<ContactModel>("Backend", 1, 0, "ContactModel");
 
+  QQmlApplicationEngine engine;
+  // engine.rootContext()->setContextProperty("sqlModel", &sqlModel);
+  engine.load(QUrl(QStringLiteral("qrc:/Main.qml")));
 
-    QQmlApplicationEngine engine;
-   // engine.rootContext()->setContextProperty("sqlModel", &sqlModel);
-    engine.load(QUrl(QStringLiteral("qrc:/Main.qml")));
-
-    return app.exec();
+  return app.exec();
 }
-

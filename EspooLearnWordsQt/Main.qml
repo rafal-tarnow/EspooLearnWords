@@ -79,6 +79,20 @@ ApplicationWindow {
     }
 
     Action {
+        id: navigateBackAction
+        icon.name: "drawer"
+        //icon.name: stackView.depth > 1 ? "back" : "drawer"
+        onTriggered: {
+//            if (stackView.depth > 1) {
+//                stackView.pop()
+//                listView.currentIndex = -1
+//            } else {
+                drawer.open()
+//            }
+        }
+    }
+
+    Action {
         id: optionsMenuAction
         icon.name: "menu"
         onTriggered: optionsMenu.open()
@@ -137,6 +151,63 @@ ApplicationWindow {
 
     }
 
+    Drawer {
+        id: drawer
+        width: Math.min(window.width, window.height) / 3 * 2
+        height: window.height
+        //interactive: stackView.depth === 1
+
+        ListView {
+            id: listView
+
+            focus: true
+            currentIndex: -1
+            anchors.fill: parent
+
+            delegate: ItemDelegate {
+                width: listView.width
+                text: model.title
+                highlighted: ListView.isCurrentItem
+                onClicked: {
+                    listView.currentIndex = index
+                    stackView.push(model.source)
+                    drawer.close()
+                }
+            }
+
+            model: ListModel {
+                ListElement { title: "BusyIndicator"; source: "qrc:/pages/BusyIndicatorPage.qml" }
+                ListElement { title: "Button"; source: "qrc:/pages/ButtonPage.qml" }
+                ListElement { title: "CheckBox"; source: "qrc:/pages/CheckBoxPage.qml" }
+                ListElement { title: "ComboBox"; source: "qrc:/pages/ComboBoxPage.qml" }
+                ListElement { title: "DelayButton"; source: "qrc:/pages/DelayButtonPage.qml" }
+                ListElement { title: "Dial"; source: "qrc:/pages/DialPage.qml" }
+                ListElement { title: "Dialog"; source: "qrc:/pages/DialogPage.qml" }
+                ListElement { title: "Delegates"; source: "qrc:/pages/DelegatePage.qml" }
+                ListElement { title: "Frame"; source: "qrc:/pages/FramePage.qml" }
+                ListElement { title: "GroupBox"; source: "qrc:/pages/GroupBoxPage.qml" }
+                ListElement { title: "PageIndicator"; source: "qrc:/pages/PageIndicatorPage.qml" }
+                ListElement { title: "ProgressBar"; source: "qrc:/pages/ProgressBarPage.qml" }
+                ListElement { title: "RadioButton"; source: "qrc:/pages/RadioButtonPage.qml" }
+                ListElement { title: "RangeSlider"; source: "qrc:/pages/RangeSliderPage.qml" }
+                ListElement { title: "ScrollBar"; source: "qrc:/pages/ScrollBarPage.qml" }
+                ListElement { title: "ScrollIndicator"; source: "qrc:/pages/ScrollIndicatorPage.qml" }
+                ListElement { title: "Slider"; source: "qrc:/pages/SliderPage.qml" }
+                ListElement { title: "SpinBox"; source: "qrc:/pages/SpinBoxPage.qml" }
+                ListElement { title: "StackView"; source: "qrc:/pages/StackViewPage.qml" }
+                ListElement { title: "SwipeView"; source: "qrc:/pages/SwipeViewPage.qml" }
+                ListElement { title: "Switch"; source: "qrc:/pages/SwitchPage.qml" }
+                ListElement { title: "TabBar"; source: "qrc:/pages/TabBarPage.qml" }
+                ListElement { title: "TextArea"; source: "qrc:/pages/TextAreaPage.qml" }
+                ListElement { title: "TextField"; source: "qrc:/pages/TextFieldPage.qml" }
+                ListElement { title: "ToolTip"; source: "qrc:/pages/ToolTipPage.qml" }
+                ListElement { title: "Tumbler"; source: "qrc:/pages/TumblerPage.qml" }
+            }
+
+            ScrollIndicator.vertical: ScrollIndicator { }
+        }
+    }
+
     AddEditDialog {
         id: contactDialog
         onFinished: {
@@ -165,7 +236,7 @@ ApplicationWindow {
                                             currentContact).fullName : ""
         }
         MenuItem {
-            text: qsTr("Edit...")
+            text: qsTr("Edit")
             onTriggered: contactDialog.editContact(contactView.model.get(
                                                        currentContact))
         }
