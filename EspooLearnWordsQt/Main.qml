@@ -142,6 +142,9 @@ ApplicationWindow {
                     Action{
                         text: "Settings"
                     }
+                    Action{
+                        text: "Quit"
+                    }
                 }
 
             }
@@ -228,6 +231,18 @@ ApplicationWindow {
             }
 
             ScrollIndicator.vertical: ScrollIndicator { }
+
+            footer: ItemDelegate {
+                id: footer
+                text: qsTr("Footer")
+                width: parent.width
+
+                MenuSeparator {
+                    parent: footer
+                    width: parent.width
+                    anchors.verticalCenter: parent.top
+                }
+            }
         }
     }
 
