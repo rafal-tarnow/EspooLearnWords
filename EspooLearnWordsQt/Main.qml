@@ -1,5 +1,3 @@
-
-
 /****************************************************************************
 **
 ** Copyright (C) 2017 The Qt Company Ltd.
@@ -53,8 +51,8 @@ import QtQuick 2.12
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 2.15
 import Backend 1.0
-import SortFilterProxyModel 0.2
 import Qt.labs.settings
+import SortFilterProxyModel 0.2
 
 import "." as App
 
@@ -80,15 +78,14 @@ ApplicationWindow {
 
     Action {
         id: navigateBackAction
-        icon.name: "drawer"
-        //icon.name: stackView.depth > 1 ? "back" : "drawer"
+        icon.name: stackView.depth > 1 ? "back" : "drawer"
         onTriggered: {
-//            if (stackView.depth > 1) {
-//                stackView.pop()
-//                listView.currentIndex = -1
-//            } else {
+            if (stackView.depth > 1) {
+                stackView.pop()
+                listView.currentIndex = -1
+            } else {
                 drawer.open()
-//            }
+            }
         }
     }
 
@@ -144,6 +141,7 @@ ApplicationWindow {
                     }
                     Action{
                         text: "Quit"
+                        onTriggered: window.close()
                     }
                 }
 
@@ -158,7 +156,7 @@ ApplicationWindow {
         id: drawer
         width: Math.min(window.width, window.height) / 3 * 2
         height: window.height
-        //interactive: stackView.depth === 1
+        interactive: stackView.depth === 1
 
         ListView {
             id: listView
@@ -173,10 +171,10 @@ ApplicationWindow {
                 z: 2
                 width: parent.width
 
-                contentHeight: logo.height
+                contentHeight: logoDrawrer.height
 
                 Image {
-                    id: logo
+                    id: logoDrawrer
                     width: parent.width
                     source: "images/qt-logo.png"
                     fillMode: implicitWidth > width ? Image.PreserveAspectFit : Image.Pad
@@ -202,6 +200,7 @@ ApplicationWindow {
             }
 
             model: ListModel {
+                ListElement { title: "Dictionary"; source: "qrc:/pages/DictionaryPage.qml" }
                 ListElement { title: "BusyIndicator"; source: "qrc:/pages/BusyIndicatorPage.qml" }
                 ListElement { title: "Button"; source: "qrc:/pages/ButtonPage.qml" }
                 ListElement { title: "CheckBox"; source: "qrc:/pages/CheckBoxPage.qml" }
@@ -245,6 +244,50 @@ ApplicationWindow {
             }
         }
     }
+
+    StackView {
+        id: stackView
+        //anchors.fill: parent
+
+        anchors.top: header.bottom
+        height: (window.height - header.height)/2
+        width: window.width
+        z: 3
+
+        initialItem: Pane {
+            id: pane
+
+            Image {
+                id: logo
+                width: pane.availableWidth / 2
+                height: pane.availableHeight / 2
+                anchors.centerIn: parent
+                anchors.verticalCenterOffset: -50
+                fillMode: Image.PreserveAspectFit
+                source: "images/qt-logo.png"
+            }
+
+            Label {
+                text: "Qt Quick Controls provides a set of controls that can be used to build complete interfaces in Qt Quick."
+                anchors.margins: 20
+                anchors.top: logo.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: arrow.top
+                horizontalAlignment: Label.AlignHCenter
+                verticalAlignment: Label.AlignVCenter
+                wrapMode: Label.Wrap
+            }
+
+            Image {
+                id: arrow
+                source: "images/arrow.png"
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+            }
+        }
+    }
+
 
     AddEditDialog {
         id: contactDialog
@@ -300,7 +343,10 @@ ApplicationWindow {
     }
 
     ColumnLayout {
-        anchors.fill: parent
+        //anchors.fill: parent
+        anchors.top: stackView.bottom
+        height: (window.height - header.height)/2
+        width: window.width
         spacing: 0
 
         SearchBar{
@@ -348,4 +394,5 @@ ApplicationWindow {
             contactDialog.createContact()
         }
     }
+
 }
