@@ -2,13 +2,15 @@ include(./autostart/qautostart.pri)
 
 TEMPLATE = app
 TARGET = contactlist
-QT += quick quickcontrols2 sql
+QT += quick quickcontrols2 sql network
 
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 
 HEADERS += \
     contactmodel.h \
     database.hpp \
     model/qqmlsortfilterproxymodel.hpp \
+    modules/M0001.h \
     test_model.hpp \
     test_model_2.hpp
 
@@ -17,6 +19,7 @@ SOURCES += \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
+    modules/M0001.cpp \
     test_model.cpp \
     test_model_2.cpp
 
@@ -101,7 +104,8 @@ INSTALLS += target
 
 DISTFILES += \
     ContactDelegateMy.qml \
-    ToolBar.qml
+    ToolBar.qml \
+    android-sources/AndroidManifest.xml
 
 
 

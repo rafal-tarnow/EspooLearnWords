@@ -1,4 +1,5 @@
 #include "contactmodel.h"
+#include "modules/M0001.h"
 #include "test_model.hpp"
 #include "test_model_2.hpp"
 #include <QGuiApplication>
@@ -23,6 +24,8 @@ int main(int argc, char *argv[])
 
   Autostart as;
   as.setAutostart(true);
+
+  M0001 module;
 
   QQuickStyle::setStyle("Material");
 
