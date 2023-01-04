@@ -24,7 +24,9 @@ void M0001::sendTimerEvent()
   data.append(0x04);
   data.append(0x05);
 
-  qDebug() << "Timer event = " << udpSocket->writeDatagram(data, QHostAddress("192.168.146.209"), 7755);
+  //qDebug() << "Timer event = " << udpSocket->writeDatagram(data, QHostAddress("192.168.122.209"), 7755);
+  qDebug() << "Timer event = " << udpSocket->writeDatagram(data, QHostAddress::Broadcast, 45454);
+
 }
 
 void M0001::executeApiCommand(ApiCommand) {}
@@ -32,9 +34,9 @@ void M0001::executeApiCommand(ApiCommand) {}
 void M0001::initSocket()
 {
   udpSocket = new QUdpSocket(this);
-  udpSocket->bind(QHostAddress::LocalHost, 7755);
-
-  connect(udpSocket, &QUdpSocket::readyRead, this, &M0001::readPendingDatagrams);
+  // udpSocket->bind(QHostAddress::LocalHost, 8855);
+  // udpSocket->bind(QHostAddress("192.168.122.8"), 8855);
+  //  connect(udpSocket, &QUdpSocket::readyRead, this, &M0001::readPendingDatagrams);
 }
 
 void M0001::readPendingDatagrams()
