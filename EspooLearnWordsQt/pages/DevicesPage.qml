@@ -61,6 +61,18 @@ Page {
                             columnSpacing: 10
 
                             Label {
+                                text: qsTr("Module type:")
+                                Layout.leftMargin: 60
+                            }
+
+                            Label {
+                                text: moduleType
+                                font.bold: true
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                            }
+
+                            Label {
                                 text: qsTr("IP address:")
                                 Layout.leftMargin: 60
                             }

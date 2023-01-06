@@ -3,61 +3,6 @@
 
 DevicesManager::DevicesManager(QObject *parent) : QAbstractListModel(parent)
 {
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
-  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
-  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
-  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
-  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
-
   initSocket();
   sendTimer = new QTimer(this);
   connect(sendTimer, &QTimer::timeout, this, &DevicesManager::sendTimerEvent);
@@ -115,7 +60,7 @@ void DevicesManager::readPendingDatagrams()
     qDebug() << "destinationAdress=" << datagram.destinationAddress() << "destinationPort=" << datagram.destinationPort() << "senderAdress=" << datagram.senderAddress() << " senderPort=" << datagram.senderPort();
 
     if (!deviceArleadyAdded(deviceName)) {
-      append(deviceName, datagram.senderAddress().toString(), QString::number(datagram.senderPort()), "57230457");
+      append(deviceName, "M0001", datagram.senderAddress().toString(), QString::number(datagram.senderPort()), "57230457");
     }
   }
 }
@@ -138,6 +83,8 @@ QVariant DevicesManager::data(const QModelIndex &index, int role) const
     switch (role) {
     case DeviceNameRole:
       return m_devices.at(index.row()).deviceName;
+    case ModuleType:
+      return m_devices.at(index.row()).moduleType;
     case IpAddressRole:
       return m_devices.at(index.row()).ipAddress;
     case PortRole:
@@ -152,33 +99,33 @@ QVariant DevicesManager::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> DevicesManager::roleNames() const
 {
-  static const QHash<int, QByteArray> roles{{DeviceNameRole, "deviceName"}, {IpAddressRole, "ipAddress"}, {PortRole, "port"}, {SerialNumberRole, "serialNumber"}};
+  static const QHash<int, QByteArray> roles{{DeviceNameRole, "deviceName"}, {ModuleType, "moduleType"}, {IpAddressRole, "ipAddress"}, {PortRole, "port"}, {SerialNumberRole, "serialNumber"}};
   return roles;
 }
 
 QVariantMap DevicesManager::get(int row) const
 {
   const Device device = m_devices.value(row);
-  return {{"deviceName", device.deviceName}, {"ipAddress", device.ipAddress}, {"port", device.port}, {"serialNumber", device.serialNumber}};
+  return {{"deviceName", device.deviceName}, {"moduleType", device.moduleType}, {"ipAddress", device.ipAddress}, {"port", device.port}, {"serialNumber", device.serialNumber}};
 }
 
-void DevicesManager::append(const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber)
+void DevicesManager::append(const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber)
 {
   int row = 0;
   while (row < m_devices.count() && deviceName > m_devices.at(row).deviceName)
     ++row;
   beginInsertRows(QModelIndex(), row, row);
-  m_devices.insert(row, {deviceName, ipAddress, port, serialNumber});
+  m_devices.insert(row, {deviceName, moduleType, ipAddress, port, serialNumber});
   endInsertRows();
 }
 
-void DevicesManager::set(int row, const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber)
+void DevicesManager::set(int row, const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber)
 {
   if (row < 0 || row >= m_devices.count())
     return;
 
-  m_devices.replace(row, {deviceName, ipAddress, port, serialNumber});
-  dataChanged(index(row, 0), index(row, 0), {DeviceNameRole, IpAddressRole, PortRole, SerialNumberRole});
+  m_devices.replace(row, {deviceName, moduleType, ipAddress, port, serialNumber});
+  dataChanged(index(row, 0), index(row, 0), {DeviceNameRole, ModuleType, IpAddressRole, PortRole, SerialNumberRole});
 }
 
 void DevicesManager::remove(int row)
