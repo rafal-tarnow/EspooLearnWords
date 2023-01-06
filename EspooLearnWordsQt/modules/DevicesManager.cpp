@@ -1,285 +1,133 @@
 #include "DevicesManager.h"
+#include <QNetworkDatagram>
 
 DevicesManager::DevicesManager(QObject *parent) : QAbstractListModel(parent)
 {
   test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
-  test_devices.append({"Angel Hogan", "Chapel St. 368 ", "Clearwater", "0311 1823993"});
-  test_devices.append({"Felicia Patton", "Annadale Lane 2", "Knoxville", "0368 1244494"});
-  test_devices.append({"Grant Crawford", "Windsor Drive 34", "Riverdale", "0351 7826892"});
-  test_devices.append({"Gretchen Little", "Sunset Drive 348", "Virginia Beach", "0343 1234991"});
-  test_devices.append({"Geoffrey Richards", "University Lane 54", "Trussville", "0423 2144944"});
-  test_devices.append({"Henrietta Chavez", "Via Volto San Luca 3", "Piobesi Torinese", "0399 2826994"});
-  test_devices.append({"Harvey Chandler", "North Squaw Creek 11", "Madisonville", "0343 1244492"});
-  test_devices.append({"Miguel Gomez", "Wild Rose Street 13", "Trussville", "0343 9826996"});
-  test_devices.append({"Norma Rodriguez", " Glen Eagles Street  53", "Buffalo", "0241 5826596"});
-  test_devices.append({"Shelia Ramirez", "East Miller Ave 68", "Pickerington", "0346 4844556"});
-  test_devices.append({"Stephanie Moss", "Piazza Trieste e Trento 77", "Roata Chiusani", "0363 0510490"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
+  test_devices.append({"Ledy na biurku", "192.168.4.25", "55667", "3498507235"});
+  test_devices.append({"Podświetlenie schodów", "192.168.4.26", "55667", "3498507235"});
+  test_devices.append({"Ledy w kuchni", "192.168.4.27", "55667", "3498507235"});
+  test_devices.append({"Ledy choinka salon", "192.168.4.28", "55667", "3498507235"});
+  test_devices.append({"Ledy balkon", "192.168.4.29", "55667", "3498507235"});
+  test_devices.append({"Ledy na dachu", "192.168.4.30", "55667", "3498507235"});
 
-  timer = new QTimer(this);
-  connect(timer, &QTimer::timeout, this, &DevicesManager::onTimer);
-  timer->start(250);
+  initSocket();
+  sendTimer = new QTimer(this);
+  connect(sendTimer, &QTimer::timeout, this, &DevicesManager::sendTimerEvent);
+  sendTimer->start(250);
 }
 
-void DevicesManager::onTimer()
+DevicesManager::~DevicesManager()
+{
+  delete sendTimer;
+  delete udpSocket;
+}
+
+void DevicesManager::initSocket()
+{
+  udpSocket = new QUdpSocket(this);
+  udpSocket->bind(45454, QUdpSocket::ShareAddress);
+  connect(udpSocket, &QUdpSocket::readyRead, this, &DevicesManager::readPendingDatagrams);
+}
+
+void DevicesManager::sendTimerEvent()
+{
+
+  static uint32_t value = 0;
+
+  union {
+    char dataa[4];
+    uint32_t val;
+  } Frame;
+  Frame.val = value;
+  value++;
+  QByteArray data;
+  data.append(Frame.dataa, 4);
+
+  qDebug() << "Timer event = " << udpSocket->writeDatagram(data, QHostAddress::Broadcast, 45455);
+
+  //------------------------------------------------
+
+  //  static int i = 0;
+  //  qDebug() << "timer " << i;
+  //  if (i < test_devices.size()) {
+  //    Device device = test_devices.at(i++);
+  //    this->append(device.deviceName, device.ipAddress, device.port, device.serialNumber);
+  //  }
+}
+
+void DevicesManager::readPendingDatagrams()
 {
   static int i = 0;
-  qDebug() << "timer " << i++;
-  if (i < test_devices.size()) {
-    Device device = test_devices.at(i);
-    this->append(device.deviceName, device.ipAddress, device.port, device.serialNumber);
+  while (udpSocket->hasPendingDatagrams()) {
+    QNetworkDatagram datagram = udpSocket->receiveDatagram();
+    qDebug() << "---------------------------------------------------";
+    qDebug() << "data form socket " << i++;
+    QString deviceName(datagram.data());
+    qDebug() << deviceName;
+    qDebug() << "destinationAdress=" << datagram.destinationAddress() << "destinationPort=" << datagram.destinationPort() << "senderAdress=" << datagram.senderAddress() << " senderPort=" << datagram.senderPort();
+
+    if (!deviceArleadyAdded(deviceName)) {
+      append(deviceName, datagram.senderAddress().toString(), QString::number(datagram.senderPort()), "57230457");
+    }
   }
+}
+
+bool DevicesManager::deviceArleadyAdded(const QString &deviceName)
+{
+  for (auto &device : m_devices) {
+    if (device.deviceName == deviceName) {
+      return true;
+    }
+  }
+  return false;
 }
 
 int DevicesManager::rowCount(const QModelIndex &) const { return m_devices.count(); }

@@ -2,6 +2,7 @@
 
 #include <QAbstractListModel>
 #include <QTimer>
+#include <QUdpSocket>
 
 class DevicesManager : public QAbstractListModel {
   Q_OBJECT
@@ -11,6 +12,7 @@ public:
   Q_ENUM(DeviceRole)
 
   DevicesManager(QObject *parent = nullptr);
+  ~DevicesManager();
 
   int rowCount(const QModelIndex & = QModelIndex()) const;
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -22,7 +24,8 @@ public:
   Q_INVOKABLE void remove(int row);
 
 private slots:
-  void onTimer();
+  void sendTimerEvent();
+  void readPendingDatagrams();
 
 private:
   struct Device {
@@ -31,7 +34,10 @@ private:
     QString port;
     QString serialNumber;
   };
-  QTimer *timer = nullptr;
+  QUdpSocket *udpSocket = nullptr;
+  QTimer *sendTimer = nullptr;
   QList<Device> m_devices;
   QList<Device> test_devices;
+  void initSocket();
+  bool deviceArleadyAdded(const QString &deviceName);
 };

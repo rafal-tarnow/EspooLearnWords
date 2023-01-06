@@ -3,8 +3,10 @@
 #include "diode.h"
 
 // Set WiFi credentials
-#define WIFI_SSID "AndroidAP"
-#define WIFI_PASS "wicl3264"
+// #define WIFI_SSID "AndroidAP"
+// #define WIFI_PASS "wicl3264"
+#define WIFI_SSID "Espoo_M0001"
+#define WIFI_PASS "12345678"
 
 
 #ifndef APSSID
@@ -22,7 +24,7 @@ const char *password = APPSK;
 WiFiUDP UDP;
 #define UDP_PORT 45455
 char packet[6400];
-char reply[] = "Hello, I'm M0001 module! :)";
+char reply[] = "Ledy kuchnia";
 
 void setup() {
   initLED();
@@ -34,28 +36,28 @@ void setup() {
 
 
   // // Begin WiFi
-  // WiFi.begin(WIFI_SSID, WIFI_PASS);
-  // // Connecting to WiFi...
-  // Serial.print("Connecting to ");
-  // Serial.print(WIFI_SSID);
-  // // Loop continuously while WiFi is not connected
-  // while (WiFi.status() != WL_CONNECTED) {
-  //   delay(100);
-  //   Serial.print(".");
-  // }
-  // // Connected to WiFi
-  // Serial.println();
-  // Serial.print("Connected! IP address: ");
-  // Serial.println(WiFi.localIP());
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  // Connecting to WiFi...
+  Serial.print("Connecting to ");
+  Serial.print(WIFI_SSID);
+  // Loop continuously while WiFi is not connected
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    Serial.print(".");
+  }
+  // Connected to WiFi
+  Serial.println();
+  Serial.print("Connected! IP address: ");
+  Serial.println(WiFi.localIP());
   //
 
 
   // Begin WiFi AP
   /* You can remove the password parameter if you want the AP to be open. */
-  WiFi.softAP(ssid, password);
-  IPAddress myIP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(myIP);
+  // WiFi.softAP(ssid, password);
+  // IPAddress myIP = WiFi.softAPIP();
+  // Serial.print("AP IP address: ");
+  // Serial.println(myIP);
 
   // Begin listening to UDP port
   UDP.begin(UDP_PORT);
@@ -64,11 +66,11 @@ void setup() {
 }
 
 void loop() {
-  // if (WiFi.status() != WL_CONNECTED) {
-  //   LED(false);
-  // } else {
+  if (WiFi.status() != WL_CONNECTED) {
+    LED(false);
+  } else {
   LED(true);
-  // }
+  }
 
   // Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
   // delay(3000);
@@ -92,8 +94,8 @@ void loop() {
 
     // Send return packet
     UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
-    UDP.write(packet,4);
-    //UDP.write(reply);
+    //UDP.write(packet,4);
+    UDP.write(reply);
     UDP.endPacket();
   }
 }
