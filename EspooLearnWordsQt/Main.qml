@@ -47,9 +47,9 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.12
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 2.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import Qt.labs.settings
 import SortFilterProxyModel 0.2
 
@@ -64,7 +64,7 @@ ApplicationWindow {
     width: 320
     height: 480
     visible: true
-    title: qsTr("Contact List")
+    title: qsTr("Espoo")
 
     Settings {
         property alias x: window.x
@@ -95,6 +95,7 @@ ApplicationWindow {
     }
 
     header: App.ToolBar{
+        id: mainHeader
         z: 1
         RowLayout{
             spacing: 20
@@ -107,7 +108,7 @@ ApplicationWindow {
 
             Label{
                 id: titleLabel
-                text: /*listView.currentItem ? listView.currentItem.text :*/ "Espoo"
+                text: listView.currentItem ? listView.currentItem.text : "Espoo"
                 font.pixelSize: 20
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -200,6 +201,7 @@ ApplicationWindow {
             }
 
             model: ListModel {
+                ListElement { title: "Devices"; source: "qrc:/pages/DevicesPage.qml" }
                 ListElement { title: "Dictionary"; source: "qrc:/pages/DictionaryPage.qml" }
                 ListElement { title: "BusyIndicator"; source: "qrc:/pages/BusyIndicatorPage.qml" }
                 ListElement { title: "Button"; source: "qrc:/pages/ButtonPage.qml" }

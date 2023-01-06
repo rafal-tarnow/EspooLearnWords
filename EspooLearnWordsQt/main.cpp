@@ -1,4 +1,5 @@
 #include "contactmodel.h"
+#include "modules/DevicesManager.h"
 #include "modules/M0001.h"
 #include "test_model.hpp"
 #include "test_model_2.hpp"
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
   QQuickStyle::setStyle("Material");
 
   qmlRegisterType<ContactModel>("Backend", 1, 0, "ContactModel");
+  qmlRegisterType<DevicesManager>("Backend", 1, 0, "DevicesManager");
 
   QQmlApplicationEngine engine;
   // engine.rootContext()->setContextProperty("sqlModel", &sqlModel);

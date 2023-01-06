@@ -9,7 +9,7 @@
 
 #ifndef APSSID
 #define APSSID "Espoo_M0001"
-#define APPSK  "12345678"
+#define APPSK "12345678"
 #endif
 
 /* Set these to your desired credentials. */
@@ -20,9 +20,9 @@ const char *password = APPSK;
 
 //UDP
 WiFiUDP UDP;
-#define UDP_PORT 45454
+#define UDP_PORT 45455
 char packet[6400];
-char reply[] = "Packet received!";
+char reply[] = "Hello, I'm M0001 module! :)";
 
 void setup() {
   initLED();
@@ -47,7 +47,7 @@ void setup() {
   // Serial.println();
   // Serial.print("Connected! IP address: ");
   // Serial.println(WiFi.localIP());
-  // 
+  //
 
 
   // Begin WiFi AP
@@ -67,7 +67,7 @@ void loop() {
   // if (WiFi.status() != WL_CONNECTED) {
   //   LED(false);
   // } else {
-  //   LED(true);
+  LED(true);
   // }
 
   // Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
@@ -89,5 +89,11 @@ void loop() {
     }
     // Serial.print("Packet received: ");
     // Serial.println(packet);
+
+    // Send return packet
+    UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
+    UDP.write(packet,4);
+    //UDP.write(reply);
+    UDP.endPacket();
   }
 }

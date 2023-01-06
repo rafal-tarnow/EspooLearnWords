@@ -10,7 +10,9 @@ HEADERS += \
     contactmodel.h \
     database.hpp \
     model/qqmlsortfilterproxymodel.hpp \
+    modules/DevicesManager.h \
     modules/M0001.h \
+    modules/dataobject.h \
     test_model.hpp \
     test_model_2.hpp
 
@@ -19,7 +21,9 @@ SOURCES += \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
+    modules/DevicesManager.cpp \
     modules/M0001.cpp \
+    modules/dataobject.cpp \
     test_model.cpp \
     test_model_2.cpp
 
@@ -30,6 +34,7 @@ RESOURCES += \
     pages/ComboBoxPage.qml \
     pages/DelayButtonPage.qml \
     pages/DelegatePage.qml \
+    pages/DevicesPage.qml \
     pages/DialogPage.qml \
     pages/DialPage.qml \
     pages/DictionaryPage.qml \
@@ -54,6 +59,7 @@ RESOURCES += \
     pages/TumblerPage.qml \
     AddEditDialog.qml \
     ContactDelegate.qml \
+    ContactDelegateMy.qml \
     ContactForm.ui.qml \
     ContactView.qml \
     Main.qml \
@@ -65,6 +71,7 @@ RESOURCES += \
     SectionScrollBar.qml \
     SectionScrollIndicator.qml \
     +Material/ToolBar.qml \
+    ToolBar.qml \
     icons/espoo/index.theme \
     icons/espoo/20x20/back.png \
     icons/espoo/20x20/drawer.png \
@@ -103,9 +110,8 @@ target.path = $$[QT_INSTALL_EXAMPLES]/quickcontrols2/contactlist
 INSTALLS += target
 
 DISTFILES += \
-    ContactDelegateMy.qml \
-    ToolBar.qml \
-    android-sources/AndroidManifest.xml
+    android-sources/AndroidManifest.xml \
+
 
 
 
