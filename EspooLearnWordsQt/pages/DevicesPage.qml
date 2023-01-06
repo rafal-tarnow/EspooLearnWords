@@ -27,11 +27,12 @@ Page {
 
         ColumnLayout {
             spacing: 20
+            width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
 
             ListView {
                 id: listview
-                width: 200;
+                width: parent.width
                 height: 320
                 model: devicesModel
                 ScrollBar.vertical: ScrollBar { }
@@ -44,7 +45,7 @@ Page {
                     //                    required property string name
 
                     Text {
-                        text: serialNumber
+                        text: deviceName
                         font.bold: true
                         elide: Text.ElideRight
                         Layout.fillWidth: true

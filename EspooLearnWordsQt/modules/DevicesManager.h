@@ -1,13 +1,14 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QTimer>
 
 class DevicesManager : public QAbstractListModel {
   Q_OBJECT
 
 public:
-  enum ContactRole { DeviceNameRole = Qt::DisplayRole, IpAddressRole = Qt::UserRole, PortRole, SerialNumberRole };
-  Q_ENUM(ContactRole)
+  enum DeviceRole { DeviceNameRole = Qt::DisplayRole, IpAddressRole = Qt::UserRole, PortRole, SerialNumberRole };
+  Q_ENUM(DeviceRole)
 
   DevicesManager(QObject *parent = nullptr);
 
@@ -20,6 +21,9 @@ public:
   Q_INVOKABLE void set(int row, const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber);
   Q_INVOKABLE void remove(int row);
 
+private slots:
+  void onTimer();
+
 private:
   struct Device {
     QString deviceName;
@@ -27,6 +31,7 @@ private:
     QString port;
     QString serialNumber;
   };
-
+  QTimer *timer = nullptr;
   QList<Device> m_devices;
+  QList<Device> test_devices;
 };
