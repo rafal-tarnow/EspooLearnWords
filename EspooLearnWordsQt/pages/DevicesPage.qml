@@ -44,7 +44,7 @@ Page {
                     //                    required property string name
 
                     Text {
-                        text: deviceName
+                        text: serialNumber
                         font.bold: true
                         elide: Text.ElideRight
                         Layout.fillWidth: true

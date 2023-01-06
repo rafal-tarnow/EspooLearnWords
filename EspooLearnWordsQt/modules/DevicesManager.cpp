@@ -78,12 +78,12 @@ QVariant DevicesManager::data(const QModelIndex &index, int role) const
     switch (role) {
     case DeviceNameRole:
       return m_devices.at(index.row()).deviceName;
-    case AddressRole:
-      return m_devices.at(index.row()).address;
-    case CityRole:
-      return m_devices.at(index.row()).city;
-    case NumberRole:
-      return m_devices.at(index.row()).number;
+    case IpAddressRole:
+      return m_devices.at(index.row()).ipAddress;
+    case PortRole:
+      return m_devices.at(index.row()).port;
+    case SerialNumberRole:
+      return m_devices.at(index.row()).serialNumber;
     default:
       return QVariant();
     }
@@ -92,33 +92,33 @@ QVariant DevicesManager::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> DevicesManager::roleNames() const
 {
-  static const QHash<int, QByteArray> roles{{DeviceNameRole, "deviceName"}, {AddressRole, "address"}, {CityRole, "city"}, {NumberRole, "number"}};
+  static const QHash<int, QByteArray> roles{{DeviceNameRole, "deviceName"}, {IpAddressRole, "ipAddress"}, {PortRole, "port"}, {SerialNumberRole, "serialNumber"}};
   return roles;
 }
 
 QVariantMap DevicesManager::get(int row) const
 {
-  const Device contact = m_devices.value(row);
-  return {{"deviceName", contact.deviceName}, {"address", contact.address}, {"city", contact.city}, {"number", contact.number}};
+  const Device device = m_devices.value(row);
+  return {{"deviceName", device.deviceName}, {"ipAddress", device.ipAddress}, {"port", device.port}, {"serialNumber", device.serialNumber}};
 }
 
-void DevicesManager::append(const QString &fullName, const QString &address, const QString &city, const QString &number)
+void DevicesManager::append(const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber)
 {
   int row = 0;
-  while (row < m_devices.count() && fullName > m_devices.at(row).deviceName)
+  while (row < m_devices.count() && deviceName > m_devices.at(row).deviceName)
     ++row;
   beginInsertRows(QModelIndex(), row, row);
-  m_devices.insert(row, {fullName, address, city, number});
+  m_devices.insert(row, {deviceName, ipAddress, port, serialNumber});
   endInsertRows();
 }
 
-void DevicesManager::set(int row, const QString &fullName, const QString &address, const QString &city, const QString &number)
+void DevicesManager::set(int row, const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber)
 {
   if (row < 0 || row >= m_devices.count())
     return;
 
-  m_devices.replace(row, {fullName, address, city, number});
-  dataChanged(index(row, 0), index(row, 0), {DeviceNameRole, AddressRole, CityRole, NumberRole});
+  m_devices.replace(row, {deviceName, ipAddress, port, serialNumber});
+  dataChanged(index(row, 0), index(row, 0), {DeviceNameRole, IpAddressRole, PortRole, SerialNumberRole});
 }
 
 void DevicesManager::remove(int row)

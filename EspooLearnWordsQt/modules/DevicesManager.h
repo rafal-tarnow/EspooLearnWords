@@ -6,7 +6,7 @@ class DevicesManager : public QAbstractListModel {
   Q_OBJECT
 
 public:
-  enum ContactRole { DeviceNameRole = Qt::DisplayRole, AddressRole = Qt::UserRole, CityRole, NumberRole };
+  enum ContactRole { DeviceNameRole = Qt::DisplayRole, IpAddressRole = Qt::UserRole, PortRole, SerialNumberRole };
   Q_ENUM(ContactRole)
 
   DevicesManager(QObject *parent = nullptr);
@@ -16,16 +16,16 @@ public:
   QHash<int, QByteArray> roleNames() const;
 
   Q_INVOKABLE QVariantMap get(int row) const;
-  Q_INVOKABLE void append(const QString &fullName, const QString &address, const QString &city, const QString &number);
-  Q_INVOKABLE void set(int row, const QString &fullName, const QString &address, const QString &city, const QString &number);
+  Q_INVOKABLE void append(const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber);
+  Q_INVOKABLE void set(int row, const QString &deviceName, const QString &ipAddress, const QString &port, const QString &serialNumber);
   Q_INVOKABLE void remove(int row);
 
 private:
   struct Device {
     QString deviceName;
-    QString address;
-    QString city;
-    QString number;
+    QString ipAddress;
+    QString port;
+    QString serialNumber;
   };
 
   QList<Device> m_devices;
