@@ -30,6 +30,8 @@ Page {
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
 
+
+
             ListView {
                 id: listview
                 width: parent.width
@@ -39,17 +41,38 @@ Page {
 
                 delegate: ItemDelegate {
                     id: delegate
-
+                    width: parent.width
                     checkable: true
 
                     contentItem: ColumnLayout {
                         spacing: 10
 
-                        Label {
-                            text: deviceName
-                            font.bold: true
-                            elide: Text.ElideRight
-                            Layout.fillWidth: true
+//                        Label {
+//                            text: deviceName
+//                            font.bold: true
+//                            elide: Text.ElideRight
+//                            Layout.fillWidth: true
+//                        }
+
+                        RowLayout{
+                            spacing: 20
+                            anchors.fill: parent
+
+
+
+                            Label {
+                                text: deviceName
+                                font.bold: true
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                            }
+
+
+
+                            ToolButton {
+                                action: deviceDetails
+                            }
+
                         }
 
                         GridLayout {
@@ -110,35 +133,52 @@ Page {
                         }
                     }
 
+                    Action {
+                        id: deviceDetails
+                        //icon.name: stackView.depth > 1 ? "back" : "drawer"
+                        icon.name: "show_details"
+                        checkable: true
+                        onTriggered: {
+        //                    if (stackView.depth > 1) {
+        //                        stackView.pop()
+        //                        listView.currentIndex = -1
+        //                    } else {
+        //                        drawer.open()
+        //                    }
+                        }
+                    }
+
                     states: [
                         State {
                             name: "expanded"
-                            when: delegate.checked
+                           // when: delegate.checked
+                            when: deviceDetails.checked
 
                             PropertyChanges {
                                 // TODO: When Qt Design Studio supports generalized grouped properties, change to:
-                                //       grid.visible: true
-                                target: grid
-                                visible: true
+                                grid.visible: true
+                                //target: grid
+                                //visible: true
+                                deviceDetails.icon.name: "hide_details"
                             }
                         }
                     ]
                 }
 
-//                delegate: Rectangle {
-//                    width: listview.width;
-//                    height: 25
+                //                delegate: Rectangle {
+                //                    width: listview.width;
+                //                    height: 25
 
-//                    //                    required color
-//                    //                    required property string name
+                //                    //                    required color
+                //                    //                    required property string name
 
-//                    Text {
-//                        text: deviceName
-//                        font.bold: true
-//                        elide: Text.ElideRight
-//                        Layout.fillWidth: true
-//                    }
-//                }
+                //                    Text {
+                //                        text: deviceName
+                //                        font.bold: true
+                //                        elide: Text.ElideRight
+                //                        Layout.fillWidth: true
+                //                    }
+                //                }
             }
         }
     }

@@ -74,15 +74,23 @@ RESOURCES += \
     ToolBar.qml \
     icons/espoo/index.theme \
     icons/espoo/20x20/back.png \
+    icons/espoo/20x20/show_details.png \
+    icons/espoo/20x20/hide_details.png \
     icons/espoo/20x20/drawer.png \
     icons/espoo/20x20/menu.png \
     icons/espoo/20x20@2/back.png \
+    icons/espoo/20x20@2/show_details.png \
+    icons/espoo/20x20@2/hide_details.png \
     icons/espoo/20x20@2/drawer.png \
     icons/espoo/20x20@2/menu.png \
     icons/espoo/20x20@3/back.png \
+    icons/espoo/20x20@3/show_details.png \
+    icons/espoo/20x20@3/hide_details.png \
     icons/espoo/20x20@3/drawer.png \
     icons/espoo/20x20@3/menu.png \
     icons/espoo/20x20@4/back.png \
+    icons/espoo/20x20@4/show_details.png \
+    icons/espoo/20x20@4/hide_details.png \
     icons/espoo/20x20@4/drawer.png \
     icons/espoo/20x20@4/menu.png \
     images/arrow.png \
