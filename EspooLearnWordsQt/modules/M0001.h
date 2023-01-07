@@ -10,7 +10,12 @@ class M0001 : public QObject {
   } ApiCommand;
 
 public:
-  M0001();
+  M0001(QString moduleName);
   ~M0001();
   void executeApiCommand(ApiCommand);
+
+private slots:
+  void readPendingDatagrams();
+private:
+  QUdpSocket *socket = nullptr;
 };

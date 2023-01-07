@@ -26,12 +26,9 @@ int main(int argc, char *argv[])
   Autostart as;
   as.setAutostart(true);
 
-  M0001 module;
-
   QQuickStyle::setStyle("Material");
 
   qmlRegisterType<ContactModel>("Backend", 1, 0, "ContactModel");
-  qmlRegisterType<DevicesManager>("Backend", 1, 0, "DevicesManager");
 
   QQmlApplicationEngine engine;
   // engine.rootContext()->setContextProperty("sqlModel", &sqlModel);

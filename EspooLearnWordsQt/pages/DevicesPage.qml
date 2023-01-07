@@ -50,7 +50,7 @@ Page {
                     onCheckedChanged:  {
                         devicesModel.searchDevices = false;
                         stackView.deviceName = devNameLabel.text;
-                        page.parent.push("qrc:/pages/DeviceControlPage.qml");
+                        page.parent.push("qrc:/pages/M0001ControlPage.qml");
                     }
 
                     contentItem: ColumnLayout {

@@ -12,6 +12,7 @@ HEADERS += \
     model/qqmlsortfilterproxymodel.hpp \
     modules/DevicesManager.h \
     modules/M0001.h \
+    modules/M0001Controller.h \
     modules/dataobject.h \
     test_model.hpp \
     test_model_2.hpp
@@ -23,6 +24,7 @@ SOURCES += \
     model/qqmlsortfilterproxymodel.cpp \
     modules/DevicesManager.cpp \
     modules/M0001.cpp \
+    modules/M0001Controller.cpp \
     modules/dataobject.cpp \
     test_model.cpp \
     test_model_2.cpp
@@ -35,12 +37,12 @@ RESOURCES += \
     pages/DelayButtonPage.qml \
     pages/DelegatePage.qml \
     pages/DevicesPage.qml \
-    pages/DeviceControlPage.qml \
     pages/DialogPage.qml \
     pages/DialPage.qml \
     pages/DictionaryPage.qml \
     pages/FramePage.qml \
     pages/GroupBoxPage.qml \
+    pages/M0001ControlPage.qml \
     pages/PageIndicatorPage.qml \
     pages/ProgressBarPage.qml \
     pages/RadioButtonPage.qml \

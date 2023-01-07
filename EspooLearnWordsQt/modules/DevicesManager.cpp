@@ -1,5 +1,6 @@
 #include "DevicesManager.h"
 #include <QNetworkDatagram>
+#include <QtQml>
 
 DevicesManager::DevicesManager(QObject *parent) : QAbstractListModel(parent)
 {
@@ -151,3 +152,7 @@ void DevicesManager::remove(int row)
   m_devices.removeAt(row);
   endRemoveRows();
 }
+
+void registerQmlDevicesManagerTypes() { qmlRegisterType<DevicesManager>("Backend", 1, 0, "DevicesManager"); }
+
+Q_COREAPP_STARTUP_FUNCTION(registerQmlDevicesManagerTypes)

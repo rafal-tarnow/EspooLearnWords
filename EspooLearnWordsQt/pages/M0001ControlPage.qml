@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Backend 1.0
 
 ScrollablePage {
     id: page
@@ -18,11 +19,17 @@ ScrollablePage {
                 + "Switches are typically used to select between two states."
         }
 
+        M0001Controller{
+            id: device
+            turnOnLed : firstSwitch.checked
+        }
+
         Column {
             spacing: 20
             anchors.horizontalCenter: parent.horizontalCenter
 
             Switch {
+                id: firstSwitch
                 text: "First"
             }
             Switch {
