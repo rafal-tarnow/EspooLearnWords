@@ -6,7 +6,6 @@ DevicesManager::DevicesManager(QObject *parent) : QAbstractListModel(parent)
   initSocket();
   sendTimer = new QTimer(this);
   connect(sendTimer, &QTimer::timeout, this, &DevicesManager::sendTimerEvent);
-  sendTimer->start(250);
 }
 
 DevicesManager::~DevicesManager()
@@ -14,6 +13,20 @@ DevicesManager::~DevicesManager()
   delete sendTimer;
   delete udpSocket;
 }
+
+void DevicesManager::setSearchStatus(const bool &search)
+{
+  searchStatus = search;
+  if (searchStatus) {
+    sendTimer->start(250);
+  }
+  else {
+    sendTimer->stop();
+  }
+  Q_EMIT seachChanged();
+}
+
+bool DevicesManager::searchDevices() const { return searchStatus; }
 
 void DevicesManager::initSocket()
 {
@@ -24,7 +37,7 @@ void DevicesManager::initSocket()
 
 void DevicesManager::sendTimerEvent()
 {
-
+  qDebug() << "DevicesManager::sendTimerEvent()";
   static uint32_t value = 0;
 
   union {
@@ -50,6 +63,7 @@ void DevicesManager::sendTimerEvent()
 
 void DevicesManager::readPendingDatagrams()
 {
+  qDebug() << "DevicesManager::readPendingDatagrams()";
   static int i = 0;
   while (udpSocket->hasPendingDatagrams()) {
     QNetworkDatagram datagram = udpSocket->receiveDatagram();

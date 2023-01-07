@@ -35,6 +35,7 @@ RESOURCES += \
     pages/DelayButtonPage.qml \
     pages/DelegatePage.qml \
     pages/DevicesPage.qml \
+    pages/DeviceControlPage.qml \
     pages/DialogPage.qml \
     pages/DialPage.qml \
     pages/DictionaryPage.qml \
@@ -118,7 +119,8 @@ target.path = $$[QT_INSTALL_EXAMPLES]/quickcontrols2/contactlist
 INSTALLS += target
 
 DISTFILES += \
-    android-sources/AndroidManifest.xml \
+    android-sources/AndroidManifest.xml
+
 
 
 

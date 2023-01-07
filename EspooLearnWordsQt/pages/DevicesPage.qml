@@ -5,6 +5,8 @@ import Backend 1.0
 
 Page {
     id: page
+    property string pageName: qsTr("Devices")
+
 
     Column {
         spacing: 40
@@ -23,6 +25,7 @@ Page {
 
         DevicesManager{
             id: devicesModel
+            searchDevices: true
         }
 
         ColumnLayout {
@@ -44,6 +47,12 @@ Page {
                     width: parent.width
                     checkable: true
 
+                    onCheckedChanged:  {
+                        devicesModel.searchDevices = false;
+                        stackView.deviceName = devNameLabel.text;
+                        page.parent.push("qrc:/pages/DeviceControlPage.qml");
+                    }
+
                     contentItem: ColumnLayout {
                         spacing: 10
 
@@ -61,6 +70,7 @@ Page {
 
 
                             Label {
+                                id: devNameLabel
                                 text: deviceName
                                 font.bold: true
                                 elide: Text.ElideRight

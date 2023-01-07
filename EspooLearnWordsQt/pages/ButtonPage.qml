@@ -7,6 +7,7 @@ import QtQuick.Controls
 
 ScrollablePage {
     id: page
+    property string pageName: "dutdtdtrux"
 
     Column {
         spacing: 40

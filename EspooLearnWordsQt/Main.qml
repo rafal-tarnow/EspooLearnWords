@@ -108,7 +108,8 @@ ApplicationWindow {
 
             Label{
                 id: titleLabel
-                text: listView.currentItem ? listView.currentItem.text : "Espoo"
+                //text: listView.currentItem ? listView.currentItem.text : "Espoo"
+                text: stackView.currentItem.pageName
                 font.pixelSize: 20
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -250,6 +251,7 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
+        property string deviceName: ""
 
         //        anchors.top: header.bottom
         //        height: (window.height - header.height)/2
@@ -265,6 +267,7 @@ ApplicationWindow {
 
         initialItem: Pane {
             id: pane
+            property string pageName: "Espoo"
 
             Image {
                 id: logo

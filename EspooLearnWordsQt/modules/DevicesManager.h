@@ -6,7 +6,7 @@
 
 class DevicesManager : public QAbstractListModel {
   Q_OBJECT
-
+  Q_PROPERTY(bool searchDevices READ searchDevices WRITE setSearchStatus NOTIFY seachChanged)
 public:
   enum DeviceRole { DeviceNameRole = Qt::DisplayRole, ModuleType = Qt::UserRole, IpAddressRole, PortRole, SerialNumberRole };
   Q_ENUM(DeviceRole)
@@ -23,6 +23,12 @@ public:
   Q_INVOKABLE void set(int row, const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber);
   Q_INVOKABLE void remove(int row);
 
+  void setSearchStatus(const bool &search);
+  bool searchDevices() const;
+
+Q_SIGNALS:
+  void seachChanged();
+
 private slots:
   void sendTimerEvent();
   void readPendingDatagrams();
@@ -38,6 +44,7 @@ private:
   QUdpSocket *udpSocket = nullptr;
   QTimer *sendTimer = nullptr;
   QList<Device> m_devices;
+  bool searchStatus = false;
   void initSocket();
   bool deviceArleadyAdded(const QString &deviceName);
 };
