@@ -10,6 +10,8 @@ public:
   M0001Controller(QObject *parent = nullptr);
   ~M0001Controller();
 
+  Q_INVOKABLE void initialize(QString deviceName);
+
   void setTurnOn(const bool &search);
   bool getTurnOn() const;
 

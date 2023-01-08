@@ -4,18 +4,23 @@
 
 class M0001 : public QObject {
   Q_OBJECT
+public:
   typedef enum {
-    TURN_ON_LED,
     TURN_OFF_LED,
+    TURN_ON_LED,
   } ApiCommand;
 
-public:
   M0001(QString moduleName);
   ~M0001();
   void executeApiCommand(ApiCommand);
 
 private slots:
   void readPendingDatagrams();
+
 private:
+  QString moduleName;
   QUdpSocket *socket = nullptr;
+  QTimer *getIpAddresTimer = nullptr;
+  void getDeviceIpAddress();
+  void getIpAddressTimerEvent();
 };

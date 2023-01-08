@@ -10,6 +10,13 @@ M0001Controller::~M0001Controller()
   }
 }
 
+void M0001Controller::initialize(QString name)
+{
+  deviceName = name;
+  module = new M0001(deviceName);
+  qDebug() << "M0001Controller::initialize with name = " << deviceName;
+}
+
 void M0001Controller::setDeviceName(const QString &name)
 {
   deviceName = name;
@@ -23,6 +30,13 @@ void M0001Controller::setTurnOn(const bool &state)
 {
   turnOnState = state;
   qDebug() << "M0001Controller:: turnOnState = " << turnOnState;
+  if (turnOnState) {
+    module->executeApiCommand(M0001::TURN_ON_LED);
+  }
+  else {
+    module->executeApiCommand(M0001::TURN_OFF_LED);
+  }
+
   Q_EMIT turnOnChanged();
 }
 
