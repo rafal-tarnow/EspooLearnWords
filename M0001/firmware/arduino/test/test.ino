@@ -3,10 +3,10 @@
 #include "diode.h"
 
 // Set WiFi credentials
-// #define WIFI_SSID "AndroidAP"
-// #define WIFI_PASS "wicl3264"
-#define WIFI_SSID "Espoo_M0001"
-#define WIFI_PASS "12345678"
+#define WIFI_SSID "AndroidAP"
+#define WIFI_PASS "wicl3264"
+// #define WIFI_SSID "Espoo_M0001"
+// #define WIFI_PASS "12345678"
 
 
 #ifndef APSSID

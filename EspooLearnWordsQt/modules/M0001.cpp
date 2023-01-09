@@ -6,7 +6,7 @@ M0001::M0001(QString name)
   moduleName = name;
   socket = new QUdpSocket();
 #warning Diffeerent port than Device , fix it
-  socket->bind(4555, QUdpSocket::ShareAddress);
+  socket->bind(44555, QUdpSocket::ShareAddress);
   connect(socket, &QUdpSocket::readyRead, this, &M0001::readPendingDatagrams);
 
   getDeviceIpAddress();

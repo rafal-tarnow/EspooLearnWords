@@ -21,7 +21,7 @@ ScrollablePage {
 
         M0001Controller{
             Component.onCompleted: {
-                initialize(stackView.deviceName)
+                //initialize(stackView.deviceName)
             }
             id: device
             turnOnLed : firstSwitch.checked

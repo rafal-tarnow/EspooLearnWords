@@ -7,6 +7,22 @@ Page {
     id: page
     property string pageName: qsTr("Devices")
 
+    onFocusChanged: {
+        if(page.focus === true){
+            console.log("DevicesPage loaded");
+            devicesModel.searchDevices = true;
+            busyIndicator.running = true;
+        }else{
+            console.log("DevicesPage unloaded");
+            devicesModel.searchDevices = false;
+            busyIndicator.running = false;
+        }
+    }
+
+    DevicesManager{
+        id: devicesModel
+        searchDevices: true
+    }
 
     Column {
         spacing: 40
@@ -20,13 +36,11 @@ Page {
         }
 
         BusyIndicator {
+            id: busyIndicator
             anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        DevicesManager{
-            id: devicesModel
-            searchDevices: true
-        }
+
 
         ColumnLayout {
             spacing: 20
@@ -48,7 +62,6 @@ Page {
                     checkable: true
 
                     onCheckedChanged:  {
-                        devicesModel.searchDevices = false;
                         stackView.deviceName = devNameLabel.text;
                         page.parent.push("qrc:/pages/M0001ControlPage.qml");
                     }
@@ -56,12 +69,12 @@ Page {
                     contentItem: ColumnLayout {
                         spacing: 10
 
-//                        Label {
-//                            text: deviceName
-//                            font.bold: true
-//                            elide: Text.ElideRight
-//                            Layout.fillWidth: true
-//                        }
+                        //                        Label {
+                        //                            text: deviceName
+                        //                            font.bold: true
+                        //                            elide: Text.ElideRight
+                        //                            Layout.fillWidth: true
+                        //                        }
 
                         RowLayout{
                             spacing: 20
@@ -149,19 +162,19 @@ Page {
                         icon.name: "show_details"
                         checkable: true
                         onTriggered: {
-        //                    if (stackView.depth > 1) {
-        //                        stackView.pop()
-        //                        listView.currentIndex = -1
-        //                    } else {
-        //                        drawer.open()
-        //                    }
+                            //                    if (stackView.depth > 1) {
+                            //                        stackView.pop()
+                            //                        listView.currentIndex = -1
+                            //                    } else {
+                            //                        drawer.open()
+                            //                    }
                         }
                     }
 
                     states: [
                         State {
                             name: "expanded"
-                           // when: delegate.checked
+                            // when: delegate.checked
                             when: deviceDetails.checked
 
                             PropertyChanges {
