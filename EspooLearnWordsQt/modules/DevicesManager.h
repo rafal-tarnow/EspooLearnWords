@@ -22,6 +22,7 @@ public:
   Q_INVOKABLE void append(const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber);
   Q_INVOKABLE void set(int row, const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber);
   Q_INVOKABLE void remove(int row);
+  Q_INVOKABLE void clear();
 
   void setSearchStatus(const bool &search);
   bool searchDevices() const;
@@ -47,4 +48,5 @@ private:
   bool searchStatus = false;
   void initSocket();
   bool deviceArleadyAdded(const QString &deviceName);
+  void uninitSocket();
 };

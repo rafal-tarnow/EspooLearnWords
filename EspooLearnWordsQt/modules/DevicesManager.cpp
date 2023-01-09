@@ -4,7 +4,7 @@
 
 DevicesManager::DevicesManager(QObject *parent) : QAbstractListModel(parent)
 {
-  initSocket();
+  udpSocket = new QUdpSocket(this);
   sendTimer = new QTimer(this);
   connect(sendTimer, &QTimer::timeout, this, &DevicesManager::sendTimerEvent);
 }
@@ -19,9 +19,12 @@ void DevicesManager::setSearchStatus(const bool &search)
 {
   searchStatus = search;
   if (searchStatus) {
+    initSocket();
+    sendTimerEvent(); // call imidietli function to get imidietli IP
     sendTimer->start(250);
   }
   else {
+    uninitSocket();
     sendTimer->stop();
   }
   Q_EMIT seachChanged();
@@ -31,9 +34,14 @@ bool DevicesManager::searchDevices() const { return searchStatus; }
 
 void DevicesManager::initSocket()
 {
-  udpSocket = new QUdpSocket(this);
   udpSocket->bind(45454, QUdpSocket::ShareAddress);
   connect(udpSocket, &QUdpSocket::readyRead, this, &DevicesManager::readPendingDatagrams);
+}
+
+void DevicesManager::uninitSocket()
+{
+  disconnect(udpSocket, &QUdpSocket::readyRead, this, &DevicesManager::readPendingDatagrams);
+  udpSocket->close();
 }
 
 void DevicesManager::sendTimerEvent()
@@ -65,25 +73,21 @@ void DevicesManager::sendTimerEvent()
 void DevicesManager::readPendingDatagrams()
 {
   qDebug() << "DevicesManager::readPendingDatagrams()";
-  static int i = 0;
+
   while (udpSocket->hasPendingDatagrams()) {
     QNetworkDatagram datagram = udpSocket->receiveDatagram();
-    qDebug() << "---------------------------------------------------";
-    qDebug() << "data form socket " << i++;
     QString deviceName(datagram.data());
-    qDebug() << deviceName;
-    qDebug() << "destinationAdress=" << datagram.destinationAddress() << "destinationPort=" << datagram.destinationPort() << "senderAdress=" << datagram.senderAddress() << " senderPort=" << datagram.senderPort();
 
-    if (!deviceArleadyAdded(deviceName)) {
+    if (!deviceArleadyAdded(datagram.senderAddress().toString())) {
       append(deviceName, "M0001", datagram.senderAddress().toString(), QString::number(datagram.senderPort()), "57230457");
     }
   }
 }
 
-bool DevicesManager::deviceArleadyAdded(const QString &deviceName)
+bool DevicesManager::deviceArleadyAdded(const QString &ipAddress)
 {
   for (auto &device : m_devices) {
-    if (device.deviceName == deviceName) {
+    if (device.ipAddress == ipAddress) {
       return true;
     }
   }
@@ -150,6 +154,13 @@ void DevicesManager::remove(int row)
 
   beginRemoveRows(QModelIndex(), row, row);
   m_devices.removeAt(row);
+  endRemoveRows();
+}
+
+void DevicesManager::clear()
+{
+  beginRemoveRows(QModelIndex(), 0, m_devices.count() - 1);
+  m_devices.clear();
   endRemoveRows();
 }
 

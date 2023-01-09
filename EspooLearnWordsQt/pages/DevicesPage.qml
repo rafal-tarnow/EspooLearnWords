@@ -10,6 +10,7 @@ Page {
     onFocusChanged: {
         if(page.focus === true){
             console.log("DevicesPage loaded");
+            //devicesModel.clear();
             devicesModel.searchDevices = true;
             busyIndicator.running = true;
         }else{

@@ -28,16 +28,16 @@ QString M0001Controller::getDeviceName() const { return deviceName; }
 
 void M0001Controller::setTurnOn(const bool &state)
 {
-  turnOnState = state;
-  qDebug() << "M0001Controller:: turnOnState = " << turnOnState;
-  if (turnOnState) {
-    module->executeApiCommand(M0001::TURN_ON_LED);
-  }
-  else {
-    module->executeApiCommand(M0001::TURN_OFF_LED);
-  }
+  //  turnOnState = state;
+  //  qDebug() << "M0001Controller:: turnOnState = " << turnOnState;
+  //  if (turnOnState) {
+  //    module->executeApiCommand(M0001::TURN_ON_LED);
+  //  }
+  //  else {
+  //    module->executeApiCommand(M0001::TURN_OFF_LED);
+  //  }
 
-  Q_EMIT turnOnChanged();
+  //  Q_EMIT turnOnChanged();
 }
 
 bool M0001Controller::getTurnOn() const { return turnOnState; }

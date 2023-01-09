@@ -17,10 +17,18 @@ public:
 private slots:
   void readPendingDatagrams();
 
+  void readIpDatagramCallback();
+
 private:
   QString moduleName;
-  QUdpSocket *socket = nullptr;
+  QHostAddress ipAddress;
+  QUdpSocket *getIpSocket = nullptr;
   QTimer *getIpAddresTimer = nullptr;
   void getDeviceIpAddress();
-  void getIpAddressTimerEvent();
+  void getIpAddressTimerCallback();
+  void initGetIpSocket();
+  void uninitGetIpSocket();
+  void initGetIpTimer();
+  void uninitGetIpTimer();
+  void stopGettingIpAddress();
 };
