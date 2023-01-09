@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QMap>
+#include <QNetworkAddressEntry>
 #include <QTimer>
 #include <QUdpSocket>
 
@@ -42,6 +44,7 @@ private:
     QString port;
     QString serialNumber;
   };
+  QMap<int, QNetworkAddressEntry> broadcasts; // all broadcast adresses from all network interfaces, int value is interface index index, and QHostAddress is broadcast addres for that interface
   QUdpSocket *udpSocket = nullptr;
   QTimer *sendTimer = nullptr;
   QList<Device> m_devices;
@@ -49,4 +52,5 @@ private:
   void initSocket();
   bool deviceArleadyAdded(const QString &deviceName);
   void uninitSocket();
+  void findAllBroadcastAdresses();
 };

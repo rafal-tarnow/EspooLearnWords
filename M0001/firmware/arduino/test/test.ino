@@ -24,7 +24,7 @@ const char *password = APPSK;
 WiFiUDP UDP;
 #define UDP_PORT 45455
 char packet[6400];
-char reply[] = "Ledy kuchnia";
+char deviceNameReply[] = "Ledy biurko";
 
 void setup() {
   initLED();
@@ -65,11 +65,18 @@ void setup() {
   Serial.println(UDP_PORT);
 }
 
+void parseStatusCommand(char *packet);
+
 void loop() {
-  if (WiFi.status() != WL_CONNECTED) {
-    LED(false);
-  } else {
-  LED(true);
+  static bool setLedWifiStatus = false;
+  if(setLedWifiStatus == false)
+  {
+    setLedWifiStatus = true;
+    if (WiFi.status() != WL_CONNECTED) {
+      LED(false);
+    } else {
+      LED(true);
+    }
   }
 
   // Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
@@ -86,16 +93,31 @@ void loop() {
     Serial.println(packetSize);
     int len = UDP.read(packet, 255);
     if (len > 0) {
-
-      packet[len] = '\0';
+      if (packet[0] == 1) {
+        Serial.println("Echo command");
+        UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
+        //UDP.write(packet,4);
+        UDP.write(deviceNameReply);
+        UDP.endPacket();
+      }
+      if (packet[0] == 2) {
+        Serial.println("Status command");
+        parseStatusCommand(packet);
+      }
     }
-    // Serial.print("Packet received: ");
-    // Serial.println(packet);
+  }
+  // Serial.print("Packet received: ");
+  // Serial.println(packet);
 
-    // Send return packet
-    UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
-    //UDP.write(packet,4);
-    UDP.write(reply);
-    UDP.endPacket();
+  // Send return packet
+}
+
+void parseStatusCommand(char *packet) {
+  Serial.print("    packet[1] = ");
+  Serial.println(int(packet[1]));
+  if (packet[1] & 0b00000001) {
+    LED(true);
+  } else {
+    LED(false);
   }
 }

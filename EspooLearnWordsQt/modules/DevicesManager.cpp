@@ -20,6 +20,7 @@ void DevicesManager::setSearchStatus(const bool &search)
   searchStatus = search;
   if (searchStatus) {
     initSocket();
+    findAllBroadcastAdresses();
     sendTimerEvent(); // call imidietli function to get imidietli IP
     sendTimer->start(250);
   }
@@ -28,6 +29,19 @@ void DevicesManager::setSearchStatus(const bool &search)
     sendTimer->stop();
   }
   Q_EMIT seachChanged();
+}
+
+void DevicesManager::findAllBroadcastAdresses()
+{
+  QList<QNetworkInterface> listOfInterfaces = QNetworkInterface::allInterfaces();
+  for (auto &interface : listOfInterfaces) {
+    QList<QNetworkAddressEntry> listOfAddresEntries = interface.addressEntries();
+    for (auto &addresEntry : listOfAddresEntries) {
+      if (!addresEntry.broadcast().isNull()) {
+        broadcasts.insert(interface.index(), addresEntry);
+      }
+    }
+  }
 }
 
 bool DevicesManager::searchDevices() const { return searchStatus; }
@@ -47,27 +61,27 @@ void DevicesManager::uninitSocket()
 void DevicesManager::sendTimerEvent()
 {
   qDebug() << "DevicesManager::sendTimerEvent()";
-  static uint32_t value = 0;
 
-  union {
-    char dataa[4];
-    uint32_t val;
-  } Frame;
-  Frame.val = value;
-  value++;
   QByteArray data;
-  data.append(Frame.dataa, 4);
+  data.append(char(1));
 
   qDebug() << "Timer event = " << udpSocket->writeDatagram(data, QHostAddress::Broadcast, 45455);
+  QMapIterator<int, QNetworkAddressEntry> iter(broadcasts);
 
-  //------------------------------------------------
+  while (iter.hasNext()) {
+    iter.next();
 
-  //  static int i = 0;
-  //  qDebug() << "timer " << i;
-  //  if (i < test_devices.size()) {
-  //    Device device = test_devices.at(i++);
-  //    this->append(device.deviceName, device.ipAddress, device.port, device.serialNumber);
-  //  }
+    int interfaceIndex = iter.key();
+    QNetworkAddressEntry adresses = iter.value();
+
+    QNetworkDatagram datagram;
+    datagram.setInterfaceIndex(interfaceIndex);
+    datagram.setDestination(adresses.broadcast(), 45454);
+    datagram.setSender(adresses.ip(), 45454);
+    datagram.setData(data);
+
+    qDebug() << "send = " << udpSocket->writeDatagram(datagram);
+  }
 }
 
 void DevicesManager::readPendingDatagrams()

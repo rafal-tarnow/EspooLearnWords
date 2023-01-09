@@ -6,12 +6,14 @@ M0001::M0001(QString name)
   moduleName = name;
   getIpSocket = new QUdpSocket();
   getIpAddresTimer = new QTimer(this);
+  commandSocket = new QUdpSocket();
 
   getDeviceIpAddress();
 }
 
 M0001::~M0001()
 {
+  delete commandSocket;
   delete getIpAddresTimer;
   delete getIpSocket;
 }
@@ -57,11 +59,14 @@ void M0001::readIpDatagramCallback()
 {
   qDebug() << "M0001::readIpDatagramCallback() ";
 
+  qDebug() << "M0001: ipAdress.isNull = " << ipAddress.isNull();
+
   while (getIpSocket->hasPendingDatagrams()) {
     QNetworkDatagram datagram = getIpSocket->receiveDatagram();
     QString recivedDeviceName(datagram.data());
     if (recivedDeviceName == moduleName) {
       ipAddress = datagram.senderAddress();
+      ipAddressOk = true;
       qDebug() << "deviceName = " << recivedDeviceName << " IP = " << ipAddress;
     }
   }
@@ -72,20 +77,31 @@ void M0001::getIpAddressTimerCallback()
 {
   qDebug() << "M0001::getIpAddressTimerCallback() ";
 
-  static uint32_t value = 0;
-
-  union {
-    char dataa[4];
-    uint32_t val;
-  } Frame;
-  Frame.val = value;
-  value++;
   QByteArray data;
-  data.append(Frame.dataa, 4);
+  data.append(char(1));
 
   qDebug() << "M0001::Timer event = " << getIpSocket->writeDatagram(data, QHostAddress::Broadcast, 45455);
 }
 
-void M0001::executeApiCommand(ApiCommand cmd) { qDebug() << "M0001::executeApiCommand = " << cmd; }
+void M0001::executeApiCommand(ApiCommand cmd)
+{
+  qDebug() << "M0001::executeApiCommand = " << cmd;
+  if (ipAddressOk) {
+    if (cmd == TURN_OFF_LED) {
+      QByteArray data;
+      data.append(char(2));
+      data.append(char(0));
+      qDebug() << "M0001::befor writeDatagram ";
+      commandSocket->writeDatagram(data, ipAddress, 45455);
+      qDebug() << "M0001::after writeDatagram ";
+    }
+    else if (cmd == TURN_ON_LED) {
+      QByteArray data;
+      data.append(char(2));
+      data.append(char(1));
+      commandSocket->writeDatagram(data, ipAddress, 45455);
+    }
+  }
+}
 
 void M0001::readPendingDatagrams() {}

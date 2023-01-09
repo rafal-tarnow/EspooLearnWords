@@ -24,7 +24,6 @@ ScrollablePage {
                 initialize(stackView.deviceName)
             }
             id: device
-            //turnOnLed : firstSwitch.checked
         }
 
         Column {
@@ -34,6 +33,9 @@ ScrollablePage {
             Switch {
                 id: firstSwitch
                 text: "First"
+                onToggled: {
+                    device.turnOnLed = checked;
+                }
             }
             Switch {
                 text: "Second"
