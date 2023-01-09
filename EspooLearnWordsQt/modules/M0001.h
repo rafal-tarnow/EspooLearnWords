@@ -1,4 +1,5 @@
 #pragma once
+#include <QNetworkAddressEntry>
 #include <QTimer>
 #include <QUdpSocket>
 
@@ -27,6 +28,7 @@ private:
   QUdpSocket *getIpSocket = nullptr;
   QUdpSocket *commandSocket = nullptr;
   QTimer *getIpAddresTimer = nullptr;
+  QMap<int, QNetworkAddressEntry> broadcasts; // all broadcast adresses from all network interfaces, int value is interface index index, and QHostAddress is broadcast addres for that interface
   void getDeviceIpAddress();
   void getIpAddressTimerCallback();
   void initGetIpSocket();
@@ -34,4 +36,5 @@ private:
   void initGetIpTimer();
   void uninitGetIpTimer();
   void stopGettingIpAddress();
+  void findAllBroadcastAdresses();
 };

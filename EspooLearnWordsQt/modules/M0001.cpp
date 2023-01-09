@@ -42,8 +42,23 @@ void M0001::uninitGetIpTimer()
   disconnect(getIpAddresTimer, &QTimer::timeout, this, &M0001::getIpAddressTimerCallback);
 }
 
+void M0001::findAllBroadcastAdresses()
+{
+  QList<QNetworkInterface> listOfInterfaces = QNetworkInterface::allInterfaces();
+  for (auto &interface : listOfInterfaces) {
+    QList<QNetworkAddressEntry> listOfAddresEntries = interface.addressEntries();
+    for (auto &addresEntry : listOfAddresEntries) {
+      if (!addresEntry.broadcast().isNull()) {
+        qDebug() << "DevicesManager::findAllBroadcastAdresses() " << addresEntry;
+        broadcasts.insert(interface.index(), addresEntry);
+      }
+    }
+  }
+}
+
 void M0001::getDeviceIpAddress()
 {
+  findAllBroadcastAdresses();
   initGetIpSocket();
   initGetIpTimer();
   getIpAddressTimerCallback(); // call immediatli callback to get fastest Ip
@@ -80,7 +95,22 @@ void M0001::getIpAddressTimerCallback()
   QByteArray data;
   data.append(char(1));
 
-  qDebug() << "M0001::Timer event = " << getIpSocket->writeDatagram(data, QHostAddress::Broadcast, 45455);
+  QMapIterator<int, QNetworkAddressEntry> iter(broadcasts);
+
+  while (iter.hasNext()) {
+    iter.next();
+
+    int interfaceIndex = iter.key();
+    QNetworkAddressEntry adresses = iter.value();
+
+    QNetworkDatagram datagram;
+    datagram.setInterfaceIndex(interfaceIndex);
+    datagram.setDestination(adresses.broadcast(), 45455);
+    datagram.setSender(adresses.ip(), 45454);
+    datagram.setData(data);
+    qDebug() << "send broadcast = " << adresses.broadcast();
+    qDebug() << "send = " << getIpSocket->writeDatagram(datagram);
+  }
 }
 
 void M0001::executeApiCommand(ApiCommand cmd)

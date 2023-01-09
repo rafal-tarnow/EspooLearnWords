@@ -38,6 +38,7 @@ void DevicesManager::findAllBroadcastAdresses()
     QList<QNetworkAddressEntry> listOfAddresEntries = interface.addressEntries();
     for (auto &addresEntry : listOfAddresEntries) {
       if (!addresEntry.broadcast().isNull()) {
+        qDebug() << "DevicesManager::findAllBroadcastAdresses() " << addresEntry;
         broadcasts.insert(interface.index(), addresEntry);
       }
     }
@@ -65,7 +66,6 @@ void DevicesManager::sendTimerEvent()
   QByteArray data;
   data.append(char(1));
 
-  qDebug() << "Timer event = " << udpSocket->writeDatagram(data, QHostAddress::Broadcast, 45455);
   QMapIterator<int, QNetworkAddressEntry> iter(broadcasts);
 
   while (iter.hasNext()) {
@@ -76,10 +76,10 @@ void DevicesManager::sendTimerEvent()
 
     QNetworkDatagram datagram;
     datagram.setInterfaceIndex(interfaceIndex);
-    datagram.setDestination(adresses.broadcast(), 45454);
+    datagram.setDestination(adresses.broadcast(), 45455);
     datagram.setSender(adresses.ip(), 45454);
     datagram.setData(data);
-
+    qDebug() << "send broadcast = " << adresses.broadcast();
     qDebug() << "send = " << udpSocket->writeDatagram(datagram);
   }
 }
@@ -92,7 +92,7 @@ void DevicesManager::readPendingDatagrams()
     QNetworkDatagram datagram = udpSocket->receiveDatagram();
     QString deviceName(datagram.data());
 
-    if (!deviceArleadyAdded(datagram.senderAddress().toString())) {
+    if (!deviceName.isNull() && !deviceArleadyAdded(datagram.senderAddress().toString())) {
       append(deviceName, "M0001", datagram.senderAddress().toString(), QString::number(datagram.senderPort()), "57230457");
     }
   }
