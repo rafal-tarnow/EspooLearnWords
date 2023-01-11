@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
 #include "diode.h"
+#include "device.h"
 
 // Set WiFi credentials
 #define WIFI_SSID "AndroidAP"
@@ -8,6 +8,10 @@
 // #define WIFI_SSID "Espoo_M0001"
 // #define WIFI_PASS "12345678"
 
+
+//WS2812B
+//button D3
+//pixel D4
 
 #ifndef APSSID
 #define APSSID "Espoo_M0001"
@@ -20,11 +24,7 @@ const char *password = APPSK;
 
 
 
-//UDP
-WiFiUDP UDP;
-#define UDP_PORT 45455
-char packet[6400];
-char deviceNameReply[] = "Ledy biurko";
+Device device;
 
 void setup() {
   initLED();
@@ -59,18 +59,14 @@ void setup() {
   // Serial.print("AP IP address: ");
   // Serial.println(myIP);
 
-  // Begin listening to UDP port
-  UDP.begin(UDP_PORT);
-  Serial.print("Listening on UDP port ");
-  Serial.println(UDP_PORT);
+
+  device.setup();
 }
 
-void parseStatusCommand(char *packet);
 
 void loop() {
   static bool setLedWifiStatus = false;
-  if(setLedWifiStatus == false)
-  {
+  if (setLedWifiStatus == false) {
     setLedWifiStatus = true;
     if (WiFi.status() != WL_CONNECTED) {
       LED(false);
@@ -82,42 +78,6 @@ void loop() {
   // Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
   // delay(3000);
 
-  static int packageIndex = 0;
-
-  // If packet received...
-  int packetSize = UDP.parsePacket();
-  if (packetSize) {
-    Serial.print("Received packet ");
-    Serial.print(packageIndex++);
-    Serial.print("! Size: ");
-    Serial.println(packetSize);
-    int len = UDP.read(packet, 255);
-    if (len > 0) {
-      if (packet[0] == 1) {
-        Serial.println("Echo command");
-        UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
-        //UDP.write(packet,4);
-        UDP.write(deviceNameReply);
-        UDP.endPacket();
-      }
-      if (packet[0] == 2) {
-        Serial.println("Status command");
-        parseStatusCommand(packet);
-      }
-    }
-  }
-  // Serial.print("Packet received: ");
-  // Serial.println(packet);
-
-  // Send return packet
+  device.loop();
 }
 
-void parseStatusCommand(char *packet) {
-  Serial.print("    packet[1] = ");
-  Serial.println(int(packet[1]));
-  if (packet[1] & 0b00000001) {
-    LED(true);
-  } else {
-    LED(false);
-  }
-}
