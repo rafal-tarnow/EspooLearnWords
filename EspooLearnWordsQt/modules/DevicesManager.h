@@ -52,5 +52,5 @@ private:
   void initSocket();
   bool deviceArleadyAdded(const QString &deviceName);
   void uninitSocket();
-  void findAllBroadcastAdresses();
+  void updateAllBroadcastAdresses();
 };

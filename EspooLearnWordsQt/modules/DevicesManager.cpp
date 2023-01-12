@@ -20,7 +20,7 @@ void DevicesManager::setSearchStatus(const bool &search)
   searchStatus = search;
   if (searchStatus) {
     initSocket();
-    findAllBroadcastAdresses();
+    updateAllBroadcastAdresses();
     sendTimerEvent(); // call imidietli function to get imidietli IP
     sendTimer->start(250);
   }
@@ -31,7 +31,7 @@ void DevicesManager::setSearchStatus(const bool &search)
   Q_EMIT seachChanged();
 }
 
-void DevicesManager::findAllBroadcastAdresses()
+void DevicesManager::updateAllBroadcastAdresses()
 {
   QList<QNetworkInterface> listOfInterfaces = QNetworkInterface::allInterfaces();
   for (auto &interface : listOfInterfaces) {
@@ -62,6 +62,8 @@ void DevicesManager::uninitSocket()
 void DevicesManager::sendTimerEvent()
 {
   qDebug() << "DevicesManager::sendTimerEvent()";
+#warning moze jest mozliwe sluchanie czy nie zmienilo sie polaczenie z siecia zamiat ciagle skanowac?
+  updateAllBroadcastAdresses(); // we need update all broadcast addreses to void situation when user first start app and then connect to network
 
   QByteArray data;
   data.append(char(1));

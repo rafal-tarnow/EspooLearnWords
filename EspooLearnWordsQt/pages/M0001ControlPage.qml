@@ -30,6 +30,19 @@ ScrollablePage {
             spacing: 20
             anchors.horizontalCenter: parent.horizontalCenter
 
+            ComboBox {
+                id: networkMode
+                model: ["AP mode", "WiFi mode"]
+                anchors.horizontalCenter: parent.horizontalCenter
+                onActivated: {
+                    if(networkMode.currentIndex === 0){
+                        device.setNetworkConfiguration(true);
+                    }else if(networkMode.currentIndex === 1){
+                        device.setNetworkConfiguration(false);
+                    }
+                }
+            }
+
             Switch {
                 id: firstSwitch
                 text: "First"

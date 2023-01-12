@@ -9,11 +9,13 @@ public:
   typedef enum {
     TURN_OFF_LED,
     TURN_ON_LED,
+    SET_NETWORK_CONFIG,
   } ApiCommand;
 
   M0001(QString moduleName);
   ~M0001();
   void executeApiCommand(ApiCommand);
+  void executeApiCommand(ApiCommand cmd, bool val);
 
 signals:
 
@@ -36,5 +38,5 @@ private:
   void initGetIpTimer();
   void uninitGetIpTimer();
   void stopGettingIpAddress();
-  void findAllBroadcastAdresses();
+  void updateAllBroadcastAdresses();
 };

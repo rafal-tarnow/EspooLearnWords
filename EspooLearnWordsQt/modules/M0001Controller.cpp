@@ -17,6 +17,8 @@ void M0001Controller::initialize(QString name)
   qDebug() << "M0001Controller::initialize with name = " << deviceName;
 }
 
+void M0001Controller::setNetworkConfiguration(bool ap_mode) { module->executeApiCommand(M0001::SET_NETWORK_CONFIG, ap_mode); }
+
 void M0001Controller::setDeviceName(const QString &name)
 {
   deviceName = name;

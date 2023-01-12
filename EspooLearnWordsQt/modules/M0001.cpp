@@ -42,7 +42,7 @@ void M0001::uninitGetIpTimer()
   disconnect(getIpAddresTimer, &QTimer::timeout, this, &M0001::getIpAddressTimerCallback);
 }
 
-void M0001::findAllBroadcastAdresses()
+void M0001::updateAllBroadcastAdresses()
 {
   QList<QNetworkInterface> listOfInterfaces = QNetworkInterface::allInterfaces();
   for (auto &interface : listOfInterfaces) {
@@ -58,7 +58,7 @@ void M0001::findAllBroadcastAdresses()
 
 void M0001::getDeviceIpAddress()
 {
-  findAllBroadcastAdresses();
+  updateAllBroadcastAdresses();
   initGetIpSocket();
   initGetIpTimer();
   getIpAddressTimerCallback(); // call immediatli callback to get fastest Ip
@@ -92,6 +92,9 @@ void M0001::getIpAddressTimerCallback()
 {
   qDebug() << "M0001::getIpAddressTimerCallback() ";
 
+#warning moze jest mozliwe sluchanie czy nie zmienilo sie polaczenie z siecia zamiat ciagle skanowac?
+  updateAllBroadcastAdresses(); // we need update all broadcast addreses to void situation when user first start app and then connect to network
+
   QByteArray data;
   data.append(char(1));
 
@@ -110,6 +113,21 @@ void M0001::getIpAddressTimerCallback()
     datagram.setData(data);
     qDebug() << "send broadcast = " << adresses.broadcast();
     qDebug() << "send = " << getIpSocket->writeDatagram(datagram);
+  }
+}
+
+void M0001::executeApiCommand(ApiCommand cmd, bool val)
+{
+  qDebug() << "M0001::executeApiCommand = " << cmd;
+  if (ipAddressOk) {
+    if (cmd == SET_NETWORK_CONFIG) {
+      QByteArray data;
+      data.append(char(3));
+      data.append(char(val));
+      qDebug() << "M0001::befor writeDatagram ";
+      commandSocket->writeDatagram(data, ipAddress, 45455);
+      qDebug() << "M0001::after writeDatagram ";
+    }
   }
 }
 

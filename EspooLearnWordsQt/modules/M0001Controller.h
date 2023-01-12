@@ -11,6 +11,7 @@ public:
   ~M0001Controller();
 
   Q_INVOKABLE void initialize(QString deviceName);
+  Q_INVOKABLE void setNetworkConfiguration(bool ap_mode);
 
   void setTurnOn(const bool &search);
   bool getTurnOn() const;

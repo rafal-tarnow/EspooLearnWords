@@ -16,10 +16,10 @@ void Device::loop() {
   // If packet received...
   int packetSize = UDP.parsePacket();
   if (packetSize) {
-    Serial.print("Received packet ");
-    Serial.print(packageIndex++);
-    Serial.print("! Size: ");
-    Serial.println(packetSize);
+   // Serial.print("Received packet ");
+   // Serial.print(packageIndex++);
+    // Serial.print("! Size: ");
+   // Serial.println(packetSize);
     int len = UDP.read(packet, 255);
     if (len > 0) {
       if (packet[0] == 1) {
@@ -33,12 +33,30 @@ void Device::loop() {
         Serial.println("Status command");
         parseStatusCommand(packet);
       }
+      if (packet[0] == 3) {
+        Serial.println("Status command");
+        parseNetworkConfigCommand(packet);
+      }
     }
   }
   // Serial.print("Packet received: ");
   // Serial.println(packet);
 
   // Send return packet
+}
+
+void Device::parseNetworkConfigCommand(char *packet) {
+  Serial.print("    packet[1] = ");
+  Serial.println(int(packet[1]));
+  preferences.begin("M0001", false);
+  if (packet[1] & 0b00000001) {
+    Serial.println("Network AP mode");
+    preferences.putBool("APMode", 1);
+  } else {
+    Serial.println("Network WiFi mode");
+    preferences.putBool("APMode", 0);
+  }
+  preferences.end();
 }
 
 void Device::parseStatusCommand(char *packet) {
