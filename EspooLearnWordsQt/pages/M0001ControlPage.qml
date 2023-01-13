@@ -27,6 +27,12 @@ ScrollablePage {
             onDeviceInited: {
                 firstSwitch.enabled = true;
                 firstSwitch.checked = getTurnOn();
+                networkMode.enabled = true;
+                if(getAPMode()){
+                    networkMode.currentIndex = 0;
+                }else{
+                    networkMode.currentIndex = 1;
+                }
             }
         }
 

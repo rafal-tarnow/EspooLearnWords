@@ -60,10 +60,18 @@ void Device::parseGetFullDeviceStatusCommand(char *packet) {
   UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
 
   bool onOff = getOnOffState();
-  if(onOff){
-    deviceStatus[1] |= 0b00000001; 
+  if (onOff) {
+    deviceStatus[1] |= 0b00000001;
   }
-  UDP.write(deviceStatus,2);
+
+  preferences.begin("M0001", true);
+  bool apMode = preferences.getBool("APMode", false);
+  preferences.end();
+  if (apMode) {
+    deviceStatus[1] |= 0b00000010;
+  }
+
+  UDP.write(deviceStatus, 2);
   UDP.endPacket();
 }
 

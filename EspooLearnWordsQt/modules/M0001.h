@@ -18,6 +18,7 @@ public:
   void executeApiCommand(ApiCommand);
   void executeApiCommand(ApiCommand cmd, bool val);
   bool getOnOff();
+    bool getApMode();
 
 signals:
   void deviceInited();
@@ -29,6 +30,7 @@ private slots:
 private:
   struct {
       bool onOff = false;
+      bool apMode = false;
   } deviceStatus;
   bool ipAddressOK = false;
   bool deviceInitOK = false;
@@ -47,4 +49,5 @@ private:
   void updateAllBroadcastAdresses();
   void parseEchoAcqFrame(const QNetworkDatagram &datagram);
   void parseFullStatusAcqFrame(const QByteArray &data);
+
 };

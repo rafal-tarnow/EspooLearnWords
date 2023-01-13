@@ -45,6 +45,13 @@ void M0001Controller::setTurnOn(const bool &state)
   }
 }
 
+
+
+bool M0001Controller::getAPMode() const {
+    qDebug() << "M0001Controller::getAPMode() = " << module->getApMode();
+    return module->getApMode();
+}
+
 bool M0001Controller::getTurnOn() const {
     qDebug() << "M0001Controller::getTurnOn() = " << module->getOnOff();
     return module->getOnOff();

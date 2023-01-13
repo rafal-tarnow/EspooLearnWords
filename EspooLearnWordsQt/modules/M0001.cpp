@@ -98,11 +98,21 @@ void M0001::parseFullStatusAcqFrame(const QByteArray & data){
         deviceStatus.onOff = false;
     }
 
+    if(secondByte & 0b00000010){
+        deviceStatus.apMode = true;
+    }else{
+        deviceStatus.apMode = false;
+    }
+
     emit deviceInited();
 }
 
 bool M0001::getOnOff(){
     return deviceStatus.onOff;
+}
+
+bool M0001::getApMode(){
+    return deviceStatus.apMode;
 }
 
 void M0001::parseEchoAcqFrame(const QNetworkDatagram & datagram){

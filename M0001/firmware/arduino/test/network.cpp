@@ -22,7 +22,6 @@ void setupAP(){
 
 }
 
-
 // Set WiFi credentials
 #define WIFI_SSID "AndroidAP"
 #define WIFI_PASS "wicl3264"

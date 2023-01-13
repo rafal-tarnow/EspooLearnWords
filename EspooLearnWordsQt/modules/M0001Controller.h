@@ -3,29 +3,30 @@
 #include <QObject>
 
 class M0001Controller : public QObject {
-  Q_OBJECT
-  Q_PROPERTY(bool turnOnLed WRITE setTurnOn)
-  Q_PROPERTY(QString deviceName READ getDeviceName WRITE setDeviceName NOTIFY deviceNameChanged)
+    Q_OBJECT
+    Q_PROPERTY(bool turnOnLed WRITE setTurnOn)
+    Q_PROPERTY(QString deviceName READ getDeviceName WRITE setDeviceName NOTIFY deviceNameChanged)
 public:
-  M0001Controller(QObject *parent = nullptr);
-  ~M0001Controller();
+    M0001Controller(QObject *parent = nullptr);
+    ~M0001Controller();
 
-  Q_INVOKABLE void initialize(QString deviceName);
-  Q_INVOKABLE void setNetworkConfiguration(bool ap_mode);
+    Q_INVOKABLE void initialize(QString deviceName);
+    Q_INVOKABLE void setNetworkConfiguration(bool ap_mode);
 
-  void setTurnOn(const bool &search);
-  Q_INVOKABLE bool getTurnOn() const;
+    void setTurnOn(const bool &search);
+    Q_INVOKABLE bool getTurnOn() const;
+    Q_INVOKABLE bool getAPMode() const;
 
-  void setDeviceName(const QString &search);
-  QString getDeviceName() const;
+    void setDeviceName(const QString &search);
+    QString getDeviceName() const;
 
 Q_SIGNALS:
-  void deviceNameChanged();
-  void deviceInited();
+    void deviceNameChanged();
+    void deviceInited();
 
 private slots:
-  void deviceInitedEvent();
+    void deviceInitedEvent();
 private:
-  M0001 *module = nullptr;
-  QString deviceName;
+    M0001 *module = nullptr;
+    QString deviceName;
 };
