@@ -5,6 +5,7 @@
 #include <QNetworkAddressEntry>
 #include <QTimer>
 #include <QUdpSocket>
+#include <QElapsedTimer>
 
 class DevicesManager : public QAbstractListModel {
   Q_OBJECT
@@ -36,6 +37,7 @@ private slots:
   void sendTimerEvent();
   void readPendingDatagrams();
 
+  void timeoutTimerEvent();
 private:
   struct Device {
     QString deviceName;
@@ -43,14 +45,18 @@ private:
     QString ipAddress;
     QString port;
     QString serialNumber;
+    qint64 lastResponseTime;
   };
   QMap<int, QNetworkAddressEntry> broadcasts; // all broadcast adresses from all network interfaces, int value is interface index index, and QHostAddress is broadcast addres for that interface
   QUdpSocket *udpSocket = nullptr;
   QTimer *sendTimer = nullptr;
+  QTimer *timoutTimer = nullptr;
+  QElapsedTimer elapsedTimer;
   QList<Device> m_devices;
   bool searchStatus = false;
   void initSocket();
   bool deviceArleadyAdded(const QString &deviceName);
   void uninitSocket();
   void updateAllBroadcastAdresses();
+  void updateLastResponseTime(const QString &devName, const QString &ipAddress);
 };

@@ -65,11 +65,15 @@ void Device::parseGetFullDeviceStatusCommand(char *packet) {
   }
 
   preferences.begin("M0001", true);
-  bool apMode = preferences.getBool("APMode", false);
+  bool apMode = preferences.getBool("APMode", 0);
   preferences.end();
+  
   if (apMode) {
     deviceStatus[1] |= 0b00000010;
   }
+   Serial.println("GetAP Mode");
+      Serial.println(apMode);
+
 
   UDP.write(deviceStatus, 2);
   UDP.endPacket();
