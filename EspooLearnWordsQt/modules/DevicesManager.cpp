@@ -92,7 +92,10 @@ void DevicesManager::readPendingDatagrams()
 
   while (udpSocket->hasPendingDatagrams()) {
     QNetworkDatagram datagram = udpSocket->receiveDatagram();
-    QString deviceName(datagram.data());
+    QByteArray data = datagram.data();
+    int startIndex = 1;
+    int length = data.size() - startIndex;
+    QString deviceName = QString::fromUtf8(data.mid(startIndex, length).data());
 
     if (!deviceName.isNull() && !deviceArleadyAdded(datagram.senderAddress().toString())) {
       append(deviceName, "M0001", datagram.senderAddress().toString(), QString::number(datagram.senderPort()), "57230457");

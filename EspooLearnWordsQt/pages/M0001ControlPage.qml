@@ -24,6 +24,10 @@ ScrollablePage {
                 initialize(stackView.deviceName)
             }
             id: device
+            onDeviceInited: {
+                firstSwitch.enabled = true;
+                firstSwitch.checked = getTurnOn();
+            }
         }
 
         Column {
@@ -34,6 +38,7 @@ ScrollablePage {
                 id: networkMode
                 model: ["AP mode", "WiFi mode"]
                 anchors.horizontalCenter: parent.horizontalCenter
+                enabled: false
                 onActivated: {
                     if(networkMode.currentIndex === 0){
                         device.setNetworkConfiguration(true);
@@ -46,6 +51,7 @@ ScrollablePage {
             Switch {
                 id: firstSwitch
                 text: "First"
+                enabled: false
                 onToggled: {
                     device.turnOnLed = checked;
                 }

@@ -1,4 +1,5 @@
 #pragma once
 
-void initLED();
-void LED(bool state);
+void initOnOff();
+void setOnOff(bool state);
+bool getOnOffState();

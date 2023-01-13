@@ -14,7 +14,7 @@
 
 
 Device device;
-Preferences preferences;
+static Preferences preferences;
 
 
 auto timer = timer_create_default();
@@ -26,7 +26,7 @@ void setup() {
   bool apMode = preferences.getBool("APMode", 0);
   preferences.end();
 
-  initLED();
+  initOnOff();
   // Setup serial port
   Serial.begin(921600);
   Serial.println();
@@ -49,10 +49,8 @@ bool timer_event(void *) {
   static bool led_state = false;
   led_state = !led_state;
   if (led_state) {
-    LED(true);
     setupAP();
   } else {
-    LED(false);
     setupWiFi();
   }
   return true;
@@ -60,23 +58,6 @@ bool timer_event(void *) {
 
 
 void loop() {
-  // static bool setLedWifiStatus = false;
-  // if (setLedWifiStatus == false) {
-  //   setLedWifiStatus = true;
-  //   if (wifiConnected()) {
-  //     LED(false);
-  //   } else {
-  //     LED(true);
-  //   }
-  // }
-
-
-
-
-
-
-
   device.loop();
-  timer.tick();
-  
+  timer.tick();  
 }

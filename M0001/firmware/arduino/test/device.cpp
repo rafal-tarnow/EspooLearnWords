@@ -11,31 +11,30 @@ void Device::setup() {
 }
 
 void Device::loop() {
-  static int packageIndex = 0;
 
   // If packet received...
   int packetSize = UDP.parsePacket();
   if (packetSize) {
-   // Serial.print("Received packet ");
-   // Serial.print(packageIndex++);
+    // Serial.print("Received packet ");
+    // Serial.print(packageIndex++);
     // Serial.print("! Size: ");
-   // Serial.println(packetSize);
+    // Serial.println(packetSize);
     int len = UDP.read(packet, 255);
     if (len > 0) {
       if (packet[0] == 1) {
-        Serial.println("Echo command");
-        UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
-        //UDP.write(packet,4);
-        UDP.write(deviceNameReply);
-        UDP.endPacket();
+        parseEchoCommand(packet);
       }
       if (packet[0] == 2) {
         Serial.println("Status command");
         parseStatusCommand(packet);
       }
       if (packet[0] == 3) {
-        Serial.println("Status command");
+        Serial.println("Set network config command");
         parseNetworkConfigCommand(packet);
+      }
+      if (packet[0] == 4) {
+        Serial.println("Get full device status command");
+        parseGetFullDeviceStatusCommand(packet);
       }
     }
   }
@@ -45,9 +44,30 @@ void Device::loop() {
   // Send return packet
 }
 
+void Device::parseEchoCommand(char *packet) {
+  Serial.println("Echo command");
+  UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
+  UDP.write(0x01);
+  UDP.write(deviceNameReply);
+  UDP.endPacket();
+}
+
+void Device::parseGetFullDeviceStatusCommand(char *packet) {
+  char deviceStatus[2];
+  deviceStatus[0] = 4;
+  deviceStatus[1] = 0x00;
+
+  UDP.beginPacket(UDP.remoteIP(), UDP.remotePort());
+
+  bool onOff = getOnOffState();
+  if(onOff){
+    deviceStatus[1] |= 0b00000001; 
+  }
+  UDP.write(deviceStatus,2);
+  UDP.endPacket();
+}
+
 void Device::parseNetworkConfigCommand(char *packet) {
-  Serial.print("    packet[1] = ");
-  Serial.println(int(packet[1]));
   preferences.begin("M0001", false);
   if (packet[1] & 0b00000001) {
     Serial.println("Network AP mode");
@@ -60,11 +80,9 @@ void Device::parseNetworkConfigCommand(char *packet) {
 }
 
 void Device::parseStatusCommand(char *packet) {
-  Serial.print("    packet[1] = ");
-  Serial.println(int(packet[1]));
   if (packet[1] & 0b00000001) {
-    LED(true);
+    setOnOff(true);
   } else {
-    LED(false);
+    setOnOff(false);
   }
 }

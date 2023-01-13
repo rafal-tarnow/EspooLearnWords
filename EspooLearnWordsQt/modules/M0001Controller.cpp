@@ -15,6 +15,12 @@ void M0001Controller::initialize(QString name)
   deviceName = name;
   module = new M0001(deviceName);
   qDebug() << "M0001Controller::initialize with name = " << deviceName;
+  connect(module, &M0001::deviceInited, this, &M0001Controller::deviceInitedEvent);
+}
+
+void M0001Controller::deviceInitedEvent(){
+    qDebug() << "M0001Controller::deviceInitedEvent Module Inited";
+    emit deviceInited();
 }
 
 void M0001Controller::setNetworkConfiguration(bool ap_mode) { module->executeApiCommand(M0001::SET_NETWORK_CONFIG, ap_mode); }
@@ -30,19 +36,19 @@ QString M0001Controller::getDeviceName() const { return deviceName; }
 
 void M0001Controller::setTurnOn(const bool &state)
 {
-  turnOnState = state;
-  qDebug() << "M0001Controller:: turnOnState = " << turnOnState;
-  if (turnOnState) {
+  qDebug() << "M0001Controller:: turnOnState = " << state;
+  if (state) {
     module->executeApiCommand(M0001::TURN_ON_LED);
   }
   else {
     module->executeApiCommand(M0001::TURN_OFF_LED);
   }
-
-  Q_EMIT turnOnChanged();
 }
 
-bool M0001Controller::getTurnOn() const { return turnOnState; }
+bool M0001Controller::getTurnOn() const {
+    qDebug() << "M0001Controller::getTurnOn() = " << module->getOnOff();
+    return module->getOnOff();
+}
 
 void registerQmlM0001Types() { qmlRegisterType<M0001Controller>("Backend", 1, 0, "M0001Controller"); }
 
