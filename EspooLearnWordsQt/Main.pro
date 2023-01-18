@@ -11,9 +11,10 @@ HEADERS += \
     database.hpp \
     model/qqmlsortfilterproxymodel.hpp \
     modules/DevicesManager.h \
-    modules/M0001.h \
-    modules/M0001Controller.h \
-    modules/dataobject.h \
+    modules/M0001/M0001.h \
+    modules/M0001/M0001Controller.h \
+    modules/M0002/M0002.h \
+    modules/M0002/M0002Controller.h \
     test_model.hpp \
     test_model_2.hpp
 
@@ -23,9 +24,10 @@ SOURCES += \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
     modules/DevicesManager.cpp \
-    modules/M0001.cpp \
-    modules/M0001Controller.cpp \
-    modules/dataobject.cpp \
+    modules/M0001/M0001.cpp \
+    modules/M0001/M0001Controller.cpp \
+    modules/M0002/M0002.cpp \
+    modules/M0002/M0002Controller.cpp \
     test_model.cpp \
     test_model_2.cpp
 
@@ -43,6 +45,7 @@ RESOURCES += \
     pages/FramePage.qml \
     pages/GroupBoxPage.qml \
     pages/M0001ControlPage.qml \
+    pages/M0002ControlPage.qml \
     pages/PageIndicatorPage.qml \
     pages/ProgressBarPage.qml \
     pages/RadioButtonPage.qml \
@@ -122,6 +125,7 @@ INSTALLS += target
 
 DISTFILES += \
     android-sources/AndroidManifest.xml
+
 
 
 

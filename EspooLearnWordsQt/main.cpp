@@ -1,8 +1,4 @@
 #include "contactmodel.h"
-#include "modules/DevicesManager.h"
-#include "modules/M0001.h"
-#include "test_model.hpp"
-#include "test_model_2.hpp"
 #include <QGuiApplication>
 #include <QHash>
 #include <QQuickStyle>
