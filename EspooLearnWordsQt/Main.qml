@@ -203,6 +203,7 @@ ApplicationWindow {
 
             model: ListModel {
                 ListElement { title: "Devices"; source: "qrc:/pages/DevicesPage.qml" }
+                ListElement { title: "Mqtt Messages"; source: "qrc:/pages/MqttMessagesPage.qml" }
                 ListElement { title: "Dictionary"; source: "qrc:/pages/DictionaryPage.qml" }
                 ListElement { title: "BusyIndicator"; source: "qrc:/pages/BusyIndicatorPage.qml" }
                 ListElement { title: "Button"; source: "qrc:/pages/ButtonPage.qml" }

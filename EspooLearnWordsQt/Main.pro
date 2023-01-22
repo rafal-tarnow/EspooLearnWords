@@ -1,33 +1,39 @@
 include(./autostart/qautostart.pri)
+include(./mqtt/qmqtt.pri)
 
 TEMPLATE = app
 TARGET = contactlist
-QT += quick quickcontrols2 sql network
+QT += quick quickcontrols2 sql network mqtt
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 
 HEADERS += \
     contactmodel.h \
     database.hpp \
+    iot/MessagesModel.h \
+    iot/mqtt/QMqttWebsocketClient.h \
+    iot/mqtt/websocketiodevice.h \
     model/qqmlsortfilterproxymodel.hpp \
-    modules/DevicesManager.h \
-    modules/M0001/M0001.h \
-    modules/M0001/M0001Controller.h \
-    modules/M0002/M0002.h \
-    modules/M0002/M0002Controller.h \
+#    modules/DevicesManager.h \
+#    modules/M0001/M0001.h \
+#    modules/M0001/M0001Controller.h \
+#    modules/M0002/M0002.h \
+#    modules/M0002/M0002Controller.h \
     test_model.hpp \
     test_model_2.hpp
 
 SOURCES += \
     database.cpp \
+    iot/MessagesModel.cpp \
+    iot/mqtt/websocketiodevice.cpp \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
-    modules/DevicesManager.cpp \
-    modules/M0001/M0001.cpp \
-    modules/M0001/M0001Controller.cpp \
-    modules/M0002/M0002.cpp \
-    modules/M0002/M0002Controller.cpp \
+#    modules/DevicesManager.cpp \
+#    modules/M0001/M0001.cpp \
+#    modules/M0001/M0001Controller.cpp \
+#    modules/M0002/M0002.cpp \
+#    modules/M0002/M0002Controller.cpp \
     test_model.cpp \
     test_model_2.cpp
 
@@ -46,6 +52,7 @@ RESOURCES += \
     pages/GroupBoxPage.qml \
     pages/M0001ControlPage.qml \
     pages/M0002ControlPage.qml \
+    pages/MqttMessagesPage.qml \
     pages/PageIndicatorPage.qml \
     pages/ProgressBarPage.qml \
     pages/RadioButtonPage.qml \
@@ -125,6 +132,7 @@ INSTALLS += target
 
 DISTFILES += \
     android-sources/AndroidManifest.xml
+
 
 
 

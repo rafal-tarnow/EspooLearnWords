@@ -9,6 +9,7 @@
 #include <QtQml>
 #include <QtSql>
 #include <qautostart.h>
+#include <QString>
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,8 @@ int main(int argc, char *argv[])
   app.setApplicationName("Espoo words");
 
   QIcon::setThemeName("espoo");
+
+  qDebug() << "RTT main";
 
   Autostart as;
   as.setAutostart(true);
