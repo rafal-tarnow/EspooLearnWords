@@ -7,10 +7,10 @@ MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
     append("fadljfnal", "M0001", "faldnfa", "1234", "57230457");
     append("222 fadljfnal", "M0001", "faldnfa", "1234", "57230457");
 
-/*
-      client = new QMQTT::Client(QHostAddress::LocalHost, 1883);
+    /*
+  //    client = new QMQTT::Client(QHostAddress::LocalHost, 1883);
           qDebug() << "RTT New QMQTT::Client";
-   //   client = new QMQTT::Client("ws://localhost:9001/", "<origin>", QWebSocketProtocol::VersionLatest);
+      client = new QMQTT::Client("ws://localhost:9001/", "<origin>", QWebSocketProtocol::VersionLatest);
 //      client->setHost(QHostAddress("127.0.0.1"));
 //      client->setPort(9001);
       //client->setClientId(QString("clientId"));
@@ -31,12 +31,13 @@ MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
           append(message.payload(), "M0001", "faldnfa", "1234", "57230457");
       });
 
-      */
+*/
 
-
+/*
     m_client = new QMqttWebsocketClient(this);
-    m_client->setHostname("localhost");
-    m_client->setPort(9001);
+    m_client->setHostname("ws://broker.hivemq.com:8000/mqtt");
+    m_client->setPort(8000);
+   // m_client->setClientId("dfadfadfad");
 
    // connect(m_client, &QMqttClient::stateChanged, this, &MainWindow::updateLogStateChange);
    // connect(m_client, &QMqttClient::disconnected, this, &MainWindow::brokerDisconnected);
@@ -44,7 +45,7 @@ MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
 
     connect(m_client, &QMqttClient::connected, this, [this](){
 
-        auto subscription = m_client->subscribe(QString("outTopic"));
+        auto subscription = m_client->subscribe(QString("rafal-tarnow"));
         if (!subscription) {
             //QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
             return;
@@ -72,11 +73,32 @@ MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
     });
 
       m_client->connectToWebSocketHost();
+*/
+
+    clientsub = new ClientSubscription();
+    clientsub->setUrl(QUrl("ws://broker.hivemq.com:8000/mqtt"));
+    clientsub->setTopic("rafal-tarnow");
+
+    //clientsub.setVersion(4);
+    clientsub->setVersion(3);
+
+    clientsub->connectAndSubscribe();
+
+    connect(clientsub, &ClientSubscription::messageReceived, this, [this](const QByteArray & message){
+        qDebug() << "Newwwww messsage  " << message;
+        append(QString(message), "M0001", "faldnfa", "1234", "57230457");
+    });
+
 }
 
 MessagesModel::~MessagesModel()
 {
-    delete client;
+    if(m_client != nullptr)
+        delete m_client;
+    if(clientsub != nullptr)
+        delete clientsub;
+    if(client != nullptr)
+        delete client;
 }
 
 void MessagesModel::setSearchStatus(const bool &search)

@@ -6,7 +6,8 @@
 #include <QUdpSocket>
 #include <QElapsedTimer>
 #include <qmqtt.h>
-#include "./mqtt/QMqttWebsocketClient.h"
+#include "./mqtt_impl_1/QMqttWebsocketClient.h"
+#include "./mqtt_impl_2/clientsubscription.h"
 
 class MessagesModel : public QAbstractListModel {
   Q_OBJECT
@@ -47,6 +48,7 @@ private:
   };
   QMQTT::Client *client = nullptr; //github lib
   QMqttWebsocketClient *m_client = nullptr; //Qt module
+  ClientSubscription *clientsub = nullptr; //Qt module, Qt exampl
   QElapsedTimer elapsedTimer;
   QList<Device> m_devices;
   bool searchStatus = false;

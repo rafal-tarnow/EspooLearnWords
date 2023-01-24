@@ -57,6 +57,7 @@ void QMQTT::WebSocket::connectToHost(const QHostAddress& address, quint16 port)
 void QMQTT::WebSocket::connectToHost(const QString& hostName, quint16 port)
 {
     Q_UNUSED(port)
+    qDebug() << "RTT QMQTT::WebSocket::connectToHost hostName = " << hostName << " port = " << port;
     QUrl url(hostName);
     QNetworkRequest request(url);
     //request.setRawHeader("Sec-WebSocket-Protocol", "mqtt");

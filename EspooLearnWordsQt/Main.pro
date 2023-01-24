@@ -11,8 +11,10 @@ HEADERS += \
     contactmodel.h \
     database.hpp \
     iot/MessagesModel.h \
-    iot/mqtt/QMqttWebsocketClient.h \
-    iot/mqtt/websocketiodevice.h \
+    iot/mqtt_impl_1/QMqttWebsocketClient.h \
+    iot/mqtt_impl_1/websocketiodevice.h \
+    iot/mqtt_impl_2/clientsubscription.h \
+    iot/mqtt_impl_2/websocketiodevice_2.h \
     model/qqmlsortfilterproxymodel.hpp \
 #    modules/DevicesManager.h \
 #    modules/M0001/M0001.h \
@@ -25,7 +27,9 @@ HEADERS += \
 SOURCES += \
     database.cpp \
     iot/MessagesModel.cpp \
-    iot/mqtt/websocketiodevice.cpp \
+    iot/mqtt_impl_1/websocketiodevice.cpp \
+    iot/mqtt_impl_2/clientsubscription.cpp \
+    iot/mqtt_impl_2/websocketiodevice_2.cpp \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
