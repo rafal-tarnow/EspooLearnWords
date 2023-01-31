@@ -62,11 +62,6 @@ Page {
                     width: parent.width
                     checkable: true
 
-                    onCheckedChanged:  {
-                        stackView.deviceName = devNameLabel.text;
-                        page.parent.push("qrc:/pages/M0001ControlPage.qml");
-                    }
-
                     contentItem: ColumnLayout {
                         spacing: 10
 

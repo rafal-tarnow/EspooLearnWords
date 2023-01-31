@@ -2,7 +2,7 @@ include(./autostart/qautostart.pri)
 include(./mqtt/qmqtt.pri)
 
 TEMPLATE = app
-TARGET = contactlist
+TARGET = espoo
 QT += quick quickcontrols2 sql network mqtt
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
