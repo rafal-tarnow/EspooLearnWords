@@ -186,11 +186,13 @@ void QMQTT::ClientPrivate::connectToHost()
 
 void QMQTT::ClientPrivate::onNetworkConnected()
 {
+    qDebug() << "QMQTT::ClientPrivate::onNetworkConnected()";
     sendConnect();
 }
 
 void QMQTT::ClientPrivate::sendConnect()
 {
+    qDebug() << "QMQTT::ClientPrivate::sendConnect()" ;
     quint8 header = CONNECT;
     quint8 flags = 0;
 
@@ -323,6 +325,7 @@ void QMQTT::ClientPrivate::sendDisconnect()
 
 void QMQTT::ClientPrivate::sendFrame(const Frame &frame)
 {
+
     _network->sendFrame(frame);
     _timer.start();
 }

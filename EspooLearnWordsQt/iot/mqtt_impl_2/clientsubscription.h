@@ -15,7 +15,7 @@ class ClientSubscription : public QObject
     Q_OBJECT
 public:
     ClientSubscription(QObject *parent = nullptr);
-
+    ~ClientSubscription();
     void setUrl(const QUrl &url); // ie ws://broker.hivemq.com:8000/mqtt
     void setTopic(const QString &topic);
     void setVersion(int v);

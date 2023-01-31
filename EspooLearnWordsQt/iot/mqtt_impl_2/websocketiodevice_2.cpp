@@ -16,6 +16,7 @@ WebSocketIODevice_2::WebSocketIODevice_2(QObject *parent)
 
 bool WebSocketIODevice_2::open(QIODevice::OpenMode mode)
 {
+    qDebug() << "RR WebSocketIODevice_2::open()";
     QWebSocketHandshakeOptions options;
     options.setSubprotocols({m_protocol});
 
@@ -63,5 +64,6 @@ void WebSocketIODevice_2::handleBinaryMessage(const QByteArray &msg)
 
 void WebSocketIODevice_2::onSocketConnected()
 {
+    qDebug() << "RR WebSocketIODevice_2::onSocketConnected()";
     emit socketConnected();
 }

@@ -184,10 +184,18 @@ void QMQTT::Network::onSocketError(QAbstractSocket::SocketError socketError)
 
 void QMQTT::Network::sendFrame(const Frame& frame)
 {
+    qDebug() << "QMQTT::Network::sendFrame()";
     if(_socket->state() == QAbstractSocket::ConnectedState)
     {
+        if(_socket->ioDevice() == nullptr){
+            qDebug() << "null ioDevice";
+        }else{
+            qDebug() << "not null ioDevice";
+        }
         QDataStream out(_socket->ioDevice());
+        qDebug() << "frame.write(out)";
         frame.write(out);
+        qDebug() << "stream status = " << out.status();
     }
 }
 

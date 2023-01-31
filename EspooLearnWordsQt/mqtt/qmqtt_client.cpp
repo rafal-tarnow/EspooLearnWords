@@ -330,7 +330,8 @@ void QMQTT::Client::connectToHost()
 }
 
 void QMQTT::Client::onNetworkConnected()
-{    
+{
+    qDebug() << "QMQTT::Client::onNetworkConnected()";
     Q_D(Client);
     d->onNetworkConnected();
 }

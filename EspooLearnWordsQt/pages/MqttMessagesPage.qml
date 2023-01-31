@@ -5,7 +5,7 @@ import Backend 1.0
 
 Page {
     id: page
-    property string pageName: qsTr("MqttMessagesPage")
+    property string pageName: qsTr("Telemetry")
 
     onFocusChanged: {
         if(page.focus === true){

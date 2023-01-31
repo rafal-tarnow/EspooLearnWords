@@ -13,6 +13,14 @@ ClientSubscription::ClientSubscription(QObject *parent) : QObject(parent)
     connect(this, &ClientSubscription::errorOccured, qApp, &QCoreApplication::quit);
 }
 
+ClientSubscription::~ClientSubscription(){
+    m_client.disconnectFromHost();
+    m_device.close();
+    if(m_subscription){
+        delete m_subscription;
+    }
+}
+
 void ClientSubscription::setUrl(const QUrl &url)
 {
     m_url = url;

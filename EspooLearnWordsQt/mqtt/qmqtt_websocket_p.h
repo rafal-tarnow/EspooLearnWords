@@ -73,6 +73,7 @@ public:
 
     QIODevice *ioDevice()
     {
+        qDebug() << "WebSocket::ioDevice()";
         return _ioDevice;
     }
 
@@ -91,8 +92,8 @@ public:
 private:
     void initialize();
 
-    QWebSocket *_socket;
-    WebSocketIODevice *_ioDevice;
+    QWebSocket *_socket = nullptr;
+    WebSocketIODevice *_ioDevice = nullptr;
 };
 
 }

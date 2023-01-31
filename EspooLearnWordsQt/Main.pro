@@ -122,6 +122,7 @@ RESOURCES += \
     images/qt-logo@2x.png \
     images/qt-logo@3x.png \
     images/qt-logo@4x.png \
+    images/qtlogo.svg \
     qml.qrc
 
 

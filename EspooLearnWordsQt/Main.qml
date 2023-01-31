@@ -203,7 +203,7 @@ ApplicationWindow {
 
             model: ListModel {
                 ListElement { title: "Devices"; source: "qrc:/pages/DevicesPage.qml" }
-                ListElement { title: "Mqtt Messages"; source: "qrc:/pages/MqttMessagesPage.qml" }
+                ListElement { title: "Telemetry"; source: "qrc:/pages/MqttMessagesPage.qml" }
                 ListElement { title: "Dictionary"; source: "qrc:/pages/DictionaryPage.qml" }
                 ListElement { title: "BusyIndicator"; source: "qrc:/pages/BusyIndicatorPage.qml" }
                 ListElement { title: "Button"; source: "qrc:/pages/ButtonPage.qml" }
@@ -260,10 +260,10 @@ ApplicationWindow {
         //        z: 3
 
 
-        Timer {
-            interval: 60*1000; running: true; repeat: false
-            onTriggered: stackView.push("qrc:/pages/DictionaryPage.qml")
-        }
+//        Timer {
+//            interval: 60*1000; running: true; repeat: false
+//            onTriggered: stackView.push("qrc:/pages/DictionaryPage.qml")
+//        }
 
 
         initialItem: Pane {
@@ -277,7 +277,8 @@ ApplicationWindow {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: -50
                 fillMode: Image.PreserveAspectFit
-                source: "images/qt-logo.png"
+                //source: "images/qt-logo.png"
+                source: "images/qtlogo.svg"
             }
 
             Label {

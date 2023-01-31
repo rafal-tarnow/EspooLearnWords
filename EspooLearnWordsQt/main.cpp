@@ -13,6 +13,7 @@
 
 int main(int argc, char *argv[])
 {
+
   QGuiApplication app(argc, argv);
   app.setOrganizationName("Espoo");
   app.setOrganizationDomain("espoo.com");
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
   QQmlApplicationEngine engine;
   // engine.rootContext()->setContextProperty("sqlModel", &sqlModel);
   engine.load(QUrl(QStringLiteral("qrc:/Main.qml")));
+
 
   return app.exec();
 }

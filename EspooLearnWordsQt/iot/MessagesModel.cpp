@@ -4,15 +4,13 @@
 
 MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
 {
-    append("fadljfnal", "M0001", "faldnfa", "1234", "57230457");
-    append("222 fadljfnal", "M0001", "faldnfa", "1234", "57230457");
+/*
 
-    /*
   //    client = new QMQTT::Client(QHostAddress::LocalHost, 1883);
           qDebug() << "RTT New QMQTT::Client";
       client = new QMQTT::Client("ws://localhost:9001/", "<origin>", QWebSocketProtocol::VersionLatest);
 //      client->setHost(QHostAddress("127.0.0.1"));
-//      client->setPort(9001);
+      client->setPort(9001);
       //client->setClientId(QString("clientId"));
       //client->setUsername("user");
       //client->setPassword("password");
@@ -77,7 +75,7 @@ MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
 
     clientsub = new ClientSubscription();
     clientsub->setUrl(QUrl("ws://broker.hivemq.com:8000/mqtt"));
-    clientsub->setTopic("rafal-tarnow");
+    clientsub->setTopic("testOutTopic");
 
     //clientsub.setVersion(4);
     clientsub->setVersion(3);

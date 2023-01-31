@@ -60,9 +60,9 @@ void QMQTT::WebSocket::connectToHost(const QString& hostName, quint16 port)
     qDebug() << "RTT QMQTT::WebSocket::connectToHost hostName = " << hostName << " port = " << port;
     QUrl url(hostName);
     QNetworkRequest request(url);
-    //request.setRawHeader("Sec-WebSocket-Protocol", "mqtt");
-    request.setRawHeader("Sec-WebSocket-Protocol", "mqttv3.1");
-    _ioDevice->connectToHost(request);
+    request.setRawHeader("Sec-WebSocket-Protocol", "mqtt");
+    //request.setRawHeader("Sec-WebSocket-Protocol", "mqttv3.1");
+    qDebug() << "ioDevice connectToHost() = "<< _ioDevice->connectToHost(request);
 }
 
 void QMQTT::WebSocket::disconnectFromHost()

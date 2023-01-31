@@ -181,12 +181,12 @@ void Frame::write(QDataStream &stream) const
     }
     if (stream.writeRawData(lenbuf.data(), lenbuf.size()) != lenbuf.size())
     {
-        qCritical("qmqtt: Control packet write error!");
+        qCritical("qmqtt: Control packet lenbuf write error!");
         return;
     }
     if (stream.writeRawData(_data.data(), _data.size()) != _data.size())
     {
-        qCritical("qmqtt: Control packet write error!");
+        qCritical("qmqtt: Control packet _data write error!");
     }
 }
 

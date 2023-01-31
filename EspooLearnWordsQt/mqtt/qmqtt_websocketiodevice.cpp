@@ -21,7 +21,7 @@ bool QMQTT::WebSocketIODevice::connectToHost(const QNetworkRequest &request)
 
 qint64 QMQTT::WebSocketIODevice::bytesAvailable() const
 {
-    return _buffer.count();
+    return _buffer.size();
 }
 
 void QMQTT::WebSocketIODevice::binaryMessageReceived(const QByteArray &frame)
@@ -32,7 +32,7 @@ void QMQTT::WebSocketIODevice::binaryMessageReceived(const QByteArray &frame)
 
 qint64 QMQTT::WebSocketIODevice::readData(char *data, qint64 maxSize)
 {
-    int size = qMin(static_cast<int>(maxSize), _buffer.count());
+    int size = qMin(static_cast<int>(maxSize), _buffer.size());
     for (int i=0; i<size; ++ i)
         data[i] = _buffer[i];
     _buffer.remove(0, size);
@@ -41,8 +41,13 @@ qint64 QMQTT::WebSocketIODevice::readData(char *data, qint64 maxSize)
 
 qint64 QMQTT::WebSocketIODevice::writeData(const char *data, qint64 maxSize)
 {
+    qDebug() << "QMQTT::WebSocketIODevice::writeData() maxSize = " << maxSize;
     QByteArray d(data, static_cast<int>(maxSize));
-    return _webSocket->sendBinaryMessage(d);
+    qint64 writeBytes = _webSocket->sendBinaryMessage(d);
+    qDebug() << "socket error = " << _webSocket->errorString();
+    qDebug() << "socket error = " << _webSocket->error();
+    qDebug() << "writeBytes = " << writeBytes;
+    return writeBytes;
 }
 
 #endif // QT_WEBSOCKETS_LIB
