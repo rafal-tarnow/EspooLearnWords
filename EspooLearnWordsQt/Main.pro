@@ -1,9 +1,8 @@
 include(./autostart/qautostart.pri)
-include(./mqtt/qmqtt.pri)
 
 TEMPLATE = app
 TARGET = espoo
-QT += quick quickcontrols2 sql network mqtt
+QT += quick quickcontrols2 sql network websockets mqtt
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 
@@ -11,10 +10,8 @@ HEADERS += \
     contactmodel.h \
     database.hpp \
     iot/MessagesModel.h \
-    iot/mqtt_impl_1/QMqttWebsocketClient.h \
-    iot/mqtt_impl_1/websocketiodevice.h \
-    iot/mqtt_impl_2/clientsubscription.h \
-    iot/mqtt_impl_2/websocketiodevice_2.h \
+    iot/mqtt/clientsubscription.h \
+    iot/mqtt/websocketiodevice.h \
     model/qqmlsortfilterproxymodel.hpp \
 #    modules/DevicesManager.h \
 #    modules/M0001/M0001.h \
@@ -27,9 +24,8 @@ HEADERS += \
 SOURCES += \
     database.cpp \
     iot/MessagesModel.cpp \
-    iot/mqtt_impl_1/websocketiodevice.cpp \
-    iot/mqtt_impl_2/clientsubscription.cpp \
-    iot/mqtt_impl_2/websocketiodevice_2.cpp \
+    iot/mqtt/clientsubscription.cpp \
+    iot/mqtt/websocketiodevice.cpp \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
@@ -56,7 +52,8 @@ RESOURCES += \
     pages/GroupBoxPage.qml \
     pages/M0001ControlPage.qml \
     pages/M0002ControlPage.qml \
-    pages/MqttMessagesPage.qml \
+    pages/telemetry/MqttMessagesPage.qml \
+    pages/telemetry/NewConnectionDialog.qml \
     pages/PageIndicatorPage.qml \
     pages/ProgressBarPage.qml \
     pages/RadioButtonPage.qml \
@@ -137,6 +134,7 @@ INSTALLS += target
 
 DISTFILES += \
     android-sources/AndroidManifest.xml
+
 
 
 

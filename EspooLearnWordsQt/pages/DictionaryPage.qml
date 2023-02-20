@@ -30,7 +30,7 @@ Page {
 
         x: 10
         y: 10
-        width: parent.width - 20
+        width: parent.width - 20 > 100 ? 100 : parent.width - 20
 //        height: (parent.height / 2) - 20
 
         focus: true

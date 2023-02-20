@@ -4,32 +4,33 @@
 
 MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
 {
-/*
 
-  //    client = new QMQTT::Client(QHostAddress::LocalHost, 1883);
-          qDebug() << "RTT New QMQTT::Client";
-      client = new QMQTT::Client("ws://localhost:9001/", "<origin>", QWebSocketProtocol::VersionLatest);
-//      client->setHost(QHostAddress("127.0.0.1"));
-      client->setPort(9001);
-      //client->setClientId(QString("clientId"));
-      //client->setUsername("user");
-      //client->setPassword("password");
-      //client->setHostName("ws://localhost:9001/");
-      client->connectToHost();
-      QObject::connect(client, &QMQTT::Client::connected, [&]() {
-          // Investigate the errors here, if you find no serious problems, call ignoreSslErrors()
-          // to continue connecting.
-          qDebug( )<< "Connected mqtt";
-          client->subscribe("outTopic");
-      });
-      QObject::connect(client, &QMQTT::Client::received, [&](const QMQTT::Message &message) {
-          // Investigate the errors here, if you find no serious problems, call ignoreSslErrors()
-          // to continue connecting.
-          qDebug() << message.payload();
-          append(message.payload(), "M0001", "faldnfa", "1234", "57230457");
-      });
 
-*/
+//    //  client = new QMQTT::Client(QHostAddress::LocalHost, 1883);
+//          qDebug() << "RTT New QMQTT::Client";
+//     client = new QMQTT::Client("ws://localhost:9001/", "<origin>", QWebSocketProtocol::VersionLatest);
+//   //   client->setHost("ws://broker.hivemq.com:8884/mqtt");
+//     client->setHostName()
+//      client->setPort(9001);
+//      //client->setClientId(QString("clientId"));
+//      //client->setUsername("user");
+//      //client->setPassword("password");
+//      //client->setHostName("ws://localhost:9001/");
+//      client->connectToHost();
+//      QObject::connect(client, &QMQTT::Client::connected, [&]() {
+//          // Investigate the errors here, if you find no serious problems, call ignoreSslErrors()
+//          // to continue connecting.
+//          qDebug( )<< "Connected mqtt";
+//          client->subscribe("outTopic");
+//      });
+//      QObject::connect(client, &QMQTT::Client::received, [&](const QMQTT::Message &message) {
+//          // Investigate the errors here, if you find no serious problems, call ignoreSslErrors()
+//          // to continue connecting.
+//          qDebug() << message.payload();
+//          append(message.payload(), "M0001", "faldnfa", "1234", "57230457");
+//      });
+
+
 
 /*
     m_client = new QMqttWebsocketClient(this);
@@ -74,36 +75,32 @@ MessagesModel::MessagesModel(QObject *parent) : QAbstractListModel(parent)
 */
 
     clientsub = new ClientSubscription();
-    clientsub->setUrl(QUrl("ws://broker.hivemq.com:8000/mqtt"));
-    clientsub->setTopic("testOutTopic");
-
+    clientsub->setUrl(QUrl("wss://broker.hivemq.com:8884/mqtt"));
+    //  clientsub->setUrl(QUrl("ws://localhost:8000"));
     //clientsub.setVersion(4);
     clientsub->setVersion(3);
 
-    clientsub->connectAndSubscribe();
 
     connect(clientsub, &ClientSubscription::messageReceived, this, [this](const QByteArray & message){
         qDebug() << "Newwwww messsage  " << message;
         append(QString(message), "M0001", "faldnfa", "1234", "57230457");
     });
+    clientsub->setTopic("AA:BB:CC");
+    clientsub->connectAndSubscribe();
 
 }
 
 MessagesModel::~MessagesModel()
 {
-    if(m_client != nullptr)
-        delete m_client;
     if(clientsub != nullptr)
         delete clientsub;
-    if(client != nullptr)
-        delete client;
 }
 
 void MessagesModel::setSearchStatus(const bool &search)
 {
     searchStatus = search;
     if (searchStatus) {
-        elapsedTimer.start();
+
     }
     else {
 
@@ -115,17 +112,9 @@ void MessagesModel::setSearchStatus(const bool &search)
 bool MessagesModel::searchDevices() const { return searchStatus; }
 
 
-void MessagesModel::updateLastResponseTime(const QString &devName,const QString &ipAddress){
-    for (auto &device : m_devices) {
-        if ((device.deviceName == devName) && (device.ipAddress == ipAddress)) {
-            device.lastResponseTime = elapsedTimer.elapsed();
-        }
-    }
-}
-
 bool MessagesModel::deviceArleadyAdded(const QString &ipAddress)
 {
-    for (auto &device : m_devices) {
+    for (auto &device : messages) {
         if (device.ipAddress == ipAddress) {
             return true;
         }
@@ -133,22 +122,22 @@ bool MessagesModel::deviceArleadyAdded(const QString &ipAddress)
     return false;
 }
 
-int MessagesModel::rowCount(const QModelIndex &) const { return m_devices.count(); }
+int MessagesModel::rowCount(const QModelIndex &) const { return messages.count(); }
 
 QVariant MessagesModel::data(const QModelIndex &index, int role) const
 {
     if (index.row() < rowCount())
         switch (role) {
         case DeviceNameRole:
-            return m_devices.at(index.row()).deviceName;
+            return messages.at(index.row()).deviceName;
         case ModuleType:
-            return m_devices.at(index.row()).moduleType;
+            return messages.at(index.row()).moduleType;
         case IpAddressRole:
-            return m_devices.at(index.row()).ipAddress;
+            return messages.at(index.row()).ipAddress;
         case PortRole:
-            return m_devices.at(index.row()).port;
+            return messages.at(index.row()).port;
         case SerialNumberRole:
-            return m_devices.at(index.row()).serialNumber;
+            return messages.at(index.row()).serialNumber;
         default:
             return QVariant();
         }
@@ -163,43 +152,51 @@ QHash<int, QByteArray> MessagesModel::roleNames() const
 
 QVariantMap MessagesModel::get(int row) const
 {
-    const Device device = m_devices.value(row);
+    const Device device = messages.value(row);
     return {{"deviceName", device.deviceName}, {"moduleType", device.moduleType}, {"ipAddress", device.ipAddress}, {"port", device.port}, {"serialNumber", device.serialNumber}};
 }
 
 void MessagesModel::append(const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber)
 {
     int row = 0;
-    while (row < m_devices.count() && deviceName > m_devices.at(row).deviceName)
+    while (row < messages.count() && deviceName > messages.at(row).deviceName)
         ++row;
     beginInsertRows(QModelIndex(), row, row);
-    m_devices.insert(row, {deviceName, moduleType, ipAddress, port, serialNumber, elapsedTimer.elapsed()});
+    messages.insert(row, {deviceName, moduleType, ipAddress, port, serialNumber});
     endInsertRows();
 }
 
 void MessagesModel::set(int row, const QString &deviceName, const QString &moduleType, const QString &ipAddress, const QString &port, const QString &serialNumber)
 {
-    if (row < 0 || row >= m_devices.count())
+    if (row < 0 || row >= messages.count())
         return;
 
-    m_devices.replace(row, {deviceName, moduleType, ipAddress, port, serialNumber});
+    messages.replace(row, {deviceName, moduleType, ipAddress, port, serialNumber});
     dataChanged(index(row, 0), index(row, 0), {DeviceNameRole, ModuleType, IpAddressRole, PortRole, SerialNumberRole});
 }
 
 void MessagesModel::remove(int row)
 {
-    if (row < 0 || row >= m_devices.count())
+    if (row < 0 || row >= messages.count())
         return;
 
     beginRemoveRows(QModelIndex(), row, row);
-    m_devices.removeAt(row);
+    messages.removeAt(row);
     endRemoveRows();
+}
+
+void MessagesModel::newConnection(QString topic){
+    qDebug() << "MessagesModel::newConnection topic = " << topic;
+    clientsub->disconnectFromHost();
+    this->clear();
+    clientsub->setTopic("AA:BB:CC");
+    clientsub->connectAndSubscribe();
 }
 
 void MessagesModel::clear()
 {
-    beginRemoveRows(QModelIndex(), 0, m_devices.count() - 1);
-    m_devices.clear();
+    beginRemoveRows(QModelIndex(), 0, messages.count() - 1);
+    messages.clear();
     endRemoveRows();
 }
 

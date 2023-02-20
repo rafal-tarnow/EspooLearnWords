@@ -4,7 +4,7 @@
 #ifndef CLIENTSUBSCRIPTION_H
 #define CLIENTSUBSCRIPTION_H
 
-#include "websocketiodevice_2.h"
+#include "websocketiodevice.h"
 
 #include <QtCore/QObject>
 #include <QtMqtt/QMqttClient>
@@ -15,7 +15,7 @@ class ClientSubscription : public QObject
     Q_OBJECT
 public:
     ClientSubscription(QObject *parent = nullptr);
-    ~ClientSubscription();
+
     void setUrl(const QUrl &url); // ie ws://broker.hivemq.com:8000/mqtt
     void setTopic(const QString &topic);
     void setVersion(int v);
@@ -25,14 +25,21 @@ signals:
 
 public slots:
     void connectAndSubscribe();
+    void disconnectFromHost();
     void handleMessage(const QByteArray &msgContent);
+
+private:
+    void onMqttConnected();
+    void onMqttDisconnected();
+    void onSocketConnected();
+    void onSocketDisconnected();
 
 private:
     QMqttClient m_client;
     QMqttSubscription *m_subscription;
     QUrl m_url;
     QString m_topic;
-    WebSocketIODevice_2 m_device;
+    WebSocketIODevice ioDevice;
     int m_version;
 };
 

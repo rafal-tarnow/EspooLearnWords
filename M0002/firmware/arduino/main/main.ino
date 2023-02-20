@@ -1,60 +1,207 @@
-#include <WiFi.h>
+// #include <WiFi.h>
+// #include <PubSubClient.h>
+
+
+// // Replace the next variables with your SSID/Password combination
+// const char* ssid = "AndroidAP";
+// const char* password = "wicl3264";
+
+// // Add your MQTT Broker IP address, example:
+// const char* mqtt_server = "192.168.135.209";
+// //const char* mqtt_server = "YOUR_MQTT_BROKER_IP_ADDRESS";
+
+// WiFiClient espClient;
+// PubSubClient client(espClient);
+// long lastMsg = 0;
+// char msg[50];
+// int value = 0;
+
+// //uncomment the following lines if you're using SPI
+// /*#include <SPI.h>
+// #define BME_SCK 18
+// #define BME_MISO 19
+// #define BME_MOSI 23
+// #define BME_CS 5*/
+
+// Adafruit_BME280 bme; // I2C
+// //Adafruit_BME280 bme(BME_CS); // hardware SPI
+// //Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
+// float temperature = 0;
+// float humidity = 0;
+
+// // LED Pin
+// const int ledPin = 4;
+
+// void setup() {
+//   Serial.begin(115200);
+//   // default settings
+//   // (you can also pass in a Wire library object like &Wire2)
+//   //status = bme.begin();  
+//   if (!bme.begin(0x76)) {
+//     Serial.println("Could not find a valid BME280 sensor, check wiring!");
+//     while (1);
+//   }
+//   setup_wifi();
+//   client.setServer(mqtt_server, 1883);
+//   client.setCallback(callback);
+
+//   pinMode(ledPin, OUTPUT);
+// }
+
+// void setup_wifi() {
+//   delay(100);
+//   // We start by connecting to a WiFi network
+//   Serial.println();
+//   Serial.print("Connecting to ");
+//   Serial.println(ssid);
+
+//   WiFi.begin(ssid, password);
+
+//   while (WiFi.status() != WL_CONNECTED) {
+//     delay(500);
+//     Serial.print(".");
+//   }
+
+//   Serial.println("");
+//   Serial.println("WiFi connected");
+//   Serial.println("IP address: ");
+//   Serial.println(WiFi.localIP());
+// }
+
+// void callback(char* topic, byte* message, unsigned int length) {
+//   Serial.print("Message arrived on topic: ");
+//   Serial.print(topic);
+//   Serial.print(". Message: ");
+//   String messageTemp;
+  
+//   for (int i = 0; i < length; i++) {
+//     Serial.print((char)message[i]);
+//     messageTemp += (char)message[i];
+//   }
+//   Serial.println();
+
+//   // Feel free to add more if statements to control more GPIOs with MQTT
+
+//   // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
+//   // Changes the output state according to the message
+//   if (String(topic) == "esp32/output") {
+//     Serial.print("Changing output to ");
+//     if(messageTemp == "on"){
+//       Serial.println("on");
+//       digitalWrite(ledPin, HIGH);
+//     }
+//     else if(messageTemp == "off"){
+//       Serial.println("off");
+//       digitalWrite(ledPin, LOW);
+//     }
+//   }
+// }
+
+// void reconnect() {
+//   // Loop until we're reconnected
+//   while (!client.connected()) {
+//     Serial.print("Attempting MQTT connection...");
+//     // Attempt to connect
+//     if (client.connect("ESP8266Client")) {
+//       Serial.println("connected");
+//       // Subscribe
+//       client.subscribe("esp32/output");
+//     } else {
+//       Serial.print("failed, rc=");
+//       Serial.print(client.state());
+//       Serial.println(" try again in 5 seconds");
+//       // Wait 5 seconds before retrying
+//       delay(5000);
+//     }
+//   }
+// }
+// void loop() {
+//   if (!client.connected()) {
+//     reconnect();
+//   }
+//   client.loop();
+
+//   long now = millis();
+//   if (now - lastMsg > 5000) {
+//     lastMsg = now;
+    
+//     // Temperature in Celsius
+//     temperature = bme.readTemperature();   
+//     // Uncomment the next line to set temperature in Fahrenheit 
+//     // (and comment the previous temperature line)
+//     //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
+    
+//     // Convert the value to a char array
+//     char tempString[8];
+//     dtostrf(temperature, 1, 2, tempString);
+//     Serial.print("Temperature: ");
+//     Serial.println(tempString);
+//     client.publish("esp32/temperature", tempString);
+
+//     humidity = bme.readHumidity();
+    
+//     // Convert the value to a char array
+//     char humString[8];
+//     dtostrf(humidity, 1, 2, humString);
+//     Serial.print("Humidity: ");
+//     Serial.println(humString);
+//     client.publish("esp32/humidity", humString);
+//   }
+// }
+
+
+
+
+
+
+
+
+
+/*
+ Basic ESP8266 MQTT example
+ This sketch demonstrates the capabilities of the pubsub library in combination
+ with the ESP8266 board/library.
+ It connects to an MQTT server then:
+  - publishes "hello world" to the topic "AA:BB:CC" every two seconds
+  - subscribes to the topic "inTopic", printing out any messages
+    it receives. NB - it assumes the received payloads are strings not binary
+  - If the first character of the topic "inTopic" is an 1, switch ON the ESP Led,
+    else switch it off
+ It will reconnect to the server if the connection is lost using a blocking
+ reconnect function. See the 'mqtt_reconnect_nonblocking' example for how to
+ achieve the same result without blocking the main loop.
+ To install the ESP8266 board, (using Arduino 1.6.4+):
+  - Add the following 3rd party board manager under "File -> Preferences -> Additional Boards Manager URLs":
+       http://arduino.esp8266.com/stable/package_esp8266com_index.json
+  - Open the "Tools -> Board -> Board Manager" and click install for the ESP8266"
+  - Select your ESP8266 in "Tools -> Board"
+*/
+
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+// Update these with values suitable for your network.
 
-// Replace the next variables with your SSID/Password combination
-const char* ssid = "AndroidAP";
-const char* password = "wicl3264";
-
-// Add your MQTT Broker IP address, example:
-const char* mqtt_server = "192.168.135.209";
-//const char* mqtt_server = "YOUR_MQTT_BROKER_IP_ADDRESS";
+static const char* ssid = "AndroidAP";
+static const char* password = "wicl3264";
+static const char* mqtt_server = "broker.hivemq.com";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-long lastMsg = 0;
-char msg[50];
+unsigned long lastMsg = 0;
+#define MSG_BUFFER_SIZE	(50)
+char msg[MSG_BUFFER_SIZE];
 int value = 0;
 
-//uncomment the following lines if you're using SPI
-/*#include <SPI.h>
-#define BME_SCK 18
-#define BME_MISO 19
-#define BME_MOSI 23
-#define BME_CS 5*/
-
-Adafruit_BME280 bme; // I2C
-//Adafruit_BME280 bme(BME_CS); // hardware SPI
-//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
-float temperature = 0;
-float humidity = 0;
-
-// LED Pin
-const int ledPin = 4;
-
-void setup() {
-  Serial.begin(115200);
-  // default settings
-  // (you can also pass in a Wire library object like &Wire2)
-  //status = bme.begin();  
-  if (!bme.begin(0x76)) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1);
-  }
-  setup_wifi();
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
-
-  pinMode(ledPin, OUTPUT);
-}
-
 void setup_wifi() {
-  delay(100);
+
+  delay(10);
   // We start by connecting to a WiFi network
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
 
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -62,50 +209,48 @@ void setup_wifi() {
     Serial.print(".");
   }
 
+  randomSeed(micros());
+
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
-void callback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Message arrived on topic: ");
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
   Serial.print(topic);
-  Serial.print(". Message: ");
-  String messageTemp;
-  
+  Serial.print("] ");
   for (int i = 0; i < length; i++) {
-    Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
+    Serial.print((char)payload[i]);
   }
   Serial.println();
 
-  // Feel free to add more if statements to control more GPIOs with MQTT
-
-  // If a message is received on the topic esp32/output, you check if the message is either "on" or "off". 
-  // Changes the output state according to the message
-  if (String(topic) == "esp32/output") {
-    Serial.print("Changing output to ");
-    if(messageTemp == "on"){
-      Serial.println("on");
-      digitalWrite(ledPin, HIGH);
-    }
-    else if(messageTemp == "off"){
-      Serial.println("off");
-      digitalWrite(ledPin, LOW);
-    }
+  // Switch on the LED if an 1 was received as first character
+  if ((char)payload[0] == '1') {
+    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
+    // but actually the LED is on; this is because
+    // it is active low on the ESP-01)
+  } else {
+    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
+
 }
 
 void reconnect() {
   // Loop until we're reconnected
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
+    // Create a random client ID
+    String clientId = "ESP8266Client-";
+    clientId += String(random(0xffff), HEX);
     // Attempt to connect
-    if (client.connect("ESP8266Client")) {
+    if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      // Subscribe
-      client.subscribe("esp32/output");
+      // Once connected, publish an announcement...
+      client.publish("AA:BB:CC", "hello world");
+      // ... and resubscribe
+      client.subscribe("inTopic");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -115,112 +260,29 @@ void reconnect() {
     }
   }
 }
+
+void setup() {
+  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  Serial.begin(115200);
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
+
 void loop() {
+
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
 
-  long now = millis();
-  if (now - lastMsg > 5000) {
+  unsigned long now = millis();
+  if (now - lastMsg > 2000) {
     lastMsg = now;
-    
-    // Temperature in Celsius
-    temperature = bme.readTemperature();   
-    // Uncomment the next line to set temperature in Fahrenheit 
-    // (and comment the previous temperature line)
-    //temperature = 1.8 * bme.readTemperature() + 32; // Temperature in Fahrenheit
-    
-    // Convert the value to a char array
-    char tempString[8];
-    dtostrf(temperature, 1, 2, tempString);
-    Serial.print("Temperature: ");
-    Serial.println(tempString);
-    client.publish("esp32/temperature", tempString);
-
-    humidity = bme.readHumidity();
-    
-    // Convert the value to a char array
-    char humString[8];
-    dtostrf(humidity, 1, 2, humString);
-    Serial.print("Humidity: ");
-    Serial.println(humString);
-    client.publish("esp32/humidity", humString);
+    ++value;
+    snprintf (msg, MSG_BUFFER_SIZE, "Temperatura w kuchni 22*C #%ld", value);
+    Serial.print("Publish message: ");
+    Serial.println(msg);
+    client.publish("AA:BB:CC", msg);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/*#include <ESP8266WiFi.h>
-#include <arduino-timer.h>
-#include <Preferences.h>
-#include "diode.h"
-#include "device.h"
-#include "network.h"
-
-
-//WS2812B
-//button D3
-//pixel D4
-
-
-
-
-Device device;
-static Preferences preferences;
-
-
-auto timer = timer_create_default();
-bool timer_event(void *);
-
-void setup() {
-  delay(100);
-  preferences.begin("M0001", true);
-  bool apMode = preferences.getBool("APMode", 0);
-  preferences.end();
-
-  initOnOff();
-  // Setup serial port
-  Serial.begin(921600);
-  Serial.println();
-
-
-
-  if (apMode) {
-    setupAP();
-  } else {
-    setupWiFi();
-  }
-
-
-  device.setup();
-
-  //timer.every(2 * 60 * 1000, timer_event);
-}
-
-bool timer_event(void *) {
-  static bool led_state = false;
-  led_state = !led_state;
-  if (led_state) {
-    setupAP();
-  } else {
-    setupWiFi();
-  }
-  return true;
-}
-
-
-void loop() {
-  device.loop();
-  timer.tick();  
-}
-*/

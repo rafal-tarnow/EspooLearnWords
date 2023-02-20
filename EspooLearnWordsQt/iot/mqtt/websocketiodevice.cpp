@@ -1,28 +1,27 @@
+// Copyright (C) 2017 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+
 #include "websocketiodevice.h"
 
 #include <QtCore/QDebug>
+
 #include <QtWebSockets/qwebsockethandshakeoptions.h>
 
 WebSocketIODevice::WebSocketIODevice(QObject *parent)
     : QIODevice(parent)
 {
     connect(&m_socket, &QWebSocket::connected, this, &WebSocketIODevice::onSocketConnected);
+    connect(&m_socket, &QWebSocket::disconnected, this, &WebSocketIODevice::onSocketDisconnected);
     connect(&m_socket, &QWebSocket::binaryMessageReceived, this, &WebSocketIODevice::handleBinaryMessage);
 }
 
 bool WebSocketIODevice::open(QIODevice::OpenMode mode)
 {
-//    QWebSocketHandshakeOptions options;
-//    options.setSubprotocols({m_protocol});
-//    m_socket.open(m_url, options);
-//    return QIODevice::open(mode);
+    QWebSocketHandshakeOptions options;
+    options.setSubprotocols({m_protocol});
 
-    // Cannot use an URL because of missing sub protocol support
-    // Have to use QNetworkRequest, see QTBUG-38742
-    QNetworkRequest request;
-    request.setUrl(m_url);
-    request.setRawHeader("Sec-WebSocket-Protocol", m_protocol.constData());
-    m_socket.open(request);
+    m_socket.open(m_url, options);
+
     return QIODevice::open(mode);
 }
 
@@ -66,4 +65,9 @@ void WebSocketIODevice::handleBinaryMessage(const QByteArray &msg)
 void WebSocketIODevice::onSocketConnected()
 {
     emit socketConnected();
+}
+
+void WebSocketIODevice::onSocketDisconnected()
+{
+    emit socketDisconnected();
 }

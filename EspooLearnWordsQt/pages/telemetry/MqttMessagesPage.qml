@@ -1,7 +1,8 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Backend 1.0
+import "../telemetry"
 
 Page {
     id: page
@@ -48,7 +49,25 @@ Page {
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
 
+            Button {
+                id: button
+                text: qsTr("Connect")
+                Layout.alignment: Qt.AlignHCenter
+            }
+            Button {
+                text: qsTr("Disconnect")
+                Layout.alignment: Qt.AlignHCenter
+            }
 
+            TextField {
+                id: deviceAddress
+                focus: true
+                Layout.alignment: Qt.AlignHCenter
+                //Layout.fillWidth: true
+                //Layout.minimumWidth: grid.minimumInputSize
+                //Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+                placeholderText: qsTr("Topic")
+            }
 
             ListView {
                 id: listview
@@ -199,6 +218,27 @@ Page {
                 //                    }
                 //                }
             }
+        }
+    }
+
+    NewConnectionDialog {
+        id: contactDialog
+        onFinished: {
+            console.log("Device address = ", topic);
+            if (topic.length === 0)
+                return
+            devicesModel.newConnection(topic)
+        }
+    }
+
+    RoundButton {
+        text: qsTr("+")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        onClicked: {
+            contactDialog.createConnection()
         }
     }
 

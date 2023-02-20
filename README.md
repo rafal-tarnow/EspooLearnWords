@@ -1,6 +1,14 @@
+MQTT connection settings
+Host: broker.hivemq.com
+TCP Port: 1883
+Websocket Port: 8000
+TLS TCP Port: 8883
+TLS Websocket Port: 8884
+
+
 TEST
 
-kompilacja mqqt, ściągnąć repozytorium, przełączyć się na branch, otworzyć Cmake w qtreator, wybrać zestaw narzędzi, potem projekty→WebAssembly 6.4.1 (Budowanie) → Kroki build → Szegóły →Zaznaczyć produkty docelowe all i install, przejść do projektu, Zbuduj
+kompilacja mqqt, ściągnąć repozytorium, przełączyć się na branch, otworzyć Cmake w qtreator, wybrać zestaw narzędzi, potem projekty→WebAssembly 6.4.1 (Budowanie) → Kroki build → Szegóły →Zaznaczyć produkty docelowe all i install, przejść do projektu, Zbuduj /Zaintaluj (może wyskoczyć komunikat : No target architecture defined in json file. , ale jest to związane z próbja uruchomienia biblioteki, projekt powinien sie zainstalować w źródłach qt bez względu na ten błąd
 
 
 

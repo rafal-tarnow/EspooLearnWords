@@ -15,6 +15,8 @@ int main(int argc, char *argv[])
 {
 
   QGuiApplication app(argc, argv);
+
+   qDebug() << "*****************^^^^^^^^^^^^^^^^^^^^^%^^^^^^^^^^^^^^^^^^^^^^$$$$$$$$$$$$$$$$$$$$$$$$$$#########################@@@@@@@@@@@@@@@@@@@@@@@@@@@2";
   app.setOrganizationName("Espoo");
   app.setOrganizationDomain("espoo.com");
   app.setApplicationName("Espoo words");

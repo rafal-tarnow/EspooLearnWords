@@ -48,8 +48,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick
+import QtQuick.Controls
 
 Dialog {
     id: dialog
@@ -74,10 +74,12 @@ Dialog {
         dialog.open();
     }
 
-    x: 10
+//    x: 10
     y: 10
-    width: parent.width - 20
-    height: (parent.height / 2) - 20
+    x: (parent.width - width)/2
+    width: parent.width - 20 > 300 ? 300 : parent.width - 20
+    //width: parent.width - 20
+    //height: (parent.height / 2) - 20
 
     focus: true
     modal: true
