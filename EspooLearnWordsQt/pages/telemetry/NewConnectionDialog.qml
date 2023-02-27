@@ -8,8 +8,6 @@ Dialog {
     signal finished(string topic)
 
     function createConnection() {
-
-        dialog.title = qsTr("New Connection");
         dialog.open();
     }
 
@@ -21,6 +19,7 @@ Dialog {
     modal: true
     title: qsTr("New Connection")
     standardButtons: Dialog.Ok | Dialog.Cancel
+
 
     contentItem: GridLayout {
         id: form
@@ -40,10 +39,9 @@ Dialog {
             focus: true
             Layout.fillWidth: true
             Layout.minimumWidth: grid.minimumInputSize
-            Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
+            //Layout.alignment: Qt.AlignLeft | Qt.AlignBaseline
             placeholderText: form.placeholderDeviceAddress
         }
-
     }
 
     onAccepted: finished(form.deviceAddress.text)

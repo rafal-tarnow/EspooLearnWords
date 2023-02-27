@@ -280,7 +280,7 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    snprintf (msg, MSG_BUFFER_SIZE, "Temperatura w kuchni 22*C #%ld", value);
+    snprintf (msg, MSG_BUFFER_SIZE, "Temp kuchni=23;Wilgotnosc=50", value);
     Serial.print("Publish message: ");
     Serial.println(msg);
     client.publish("AA:BB:CC", msg);

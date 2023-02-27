@@ -25,6 +25,10 @@ bool WebSocketIODevice::open(QIODevice::OpenMode mode)
     return QIODevice::open(mode);
 }
 
+bool WebSocketIODevice::isDisconnected(){
+    return (m_socket.state() == QAbstractSocket::UnconnectedState);
+}
+
 void WebSocketIODevice::close()
 {
     m_socket.close();

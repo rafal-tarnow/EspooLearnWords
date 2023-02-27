@@ -15,7 +15,7 @@ ClientSubscription::ClientSubscription(QObject *parent) : QObject(parent)
     connect(&ioDevice, &WebSocketIODevice::socketConnected, this, &ClientSubscription::onSocketConnected);
     connect(&ioDevice, &WebSocketIODevice::socketDisconnected, this, &ClientSubscription::onSocketDisconnected);
     connect(&m_client, &QMqttClient::connected, this, &ClientSubscription::onMqttConnected);
-    connect(&m_client, &QMqttClient::disconnected, this, &ClientSubscription::onMqttDisconnected);
+    //connect(&m_client, &QMqttClient::disconnected, this, &ClientSubscription::onMqttDisconnected);
     m_client.setTransport(&ioDevice, QMqttClient::IODevice);
 }
 
@@ -37,21 +37,28 @@ void ClientSubscription::setVersion(int v)
     m_client.setProtocolVersion(m_version == 3 ? QMqttClient::MQTT_3_1 : QMqttClient::MQTT_3_1_1);
 }
 
-void ClientSubscription::disconnectFromHost(){
-    connect(&m_client, &QMqttClient::disconnected, this, [this]() {
-        qCDebug(lcWebSocketMqtt) << "MQTT disconnected";
-
-        disconnect(&m_client, &QMqttClient::connected, nullptr, nullptr);
-        disconnect(m_subscription, &QMqttSubscription::stateChanged,nullptr, nullptr);
-        disconnect(m_subscription, &QMqttSubscription::messageReceived,nullptr, nullptr);
-
-
-    });
-    m_client.disconnectFromHost();
+void ClientSubscription::onSocketDisconnected(){
+    qDebug() << "ClientSubscription::onSocketDisconnected()";
+    emit disconnectedFormHost();
 }
 
 void ClientSubscription::onMqttDisconnected(){
+    qDebug() << "ClientSubscription::onMqttDisconnected()";
+    if(!ioDevice.isDisconnected()){
+        ioDevice.close();
+    }else{
+        onSocketDisconnected();
+    }
+}
 
+bool ClientSubscription::isDisconnectedFromHost(){
+    return (m_client.state() == QMqttClient::Disconnected);
+}
+
+void ClientSubscription::disconnectFromHost(){
+    qDebug() << "ClientSubscription::disconnectFromHost()";
+        m_client.disconnectFromHost();
+        ioDevice.close();
 }
 
 void ClientSubscription::onMqttConnected(){
@@ -72,10 +79,8 @@ void ClientSubscription::onMqttConnected(){
             [this](QMqttMessage msg) {
         handleMessage(msg.payload());
     });
-}
 
-void ClientSubscription::onSocketDisconnected(){
-
+    emit connectedToMqtt();
 }
 
 void ClientSubscription::onSocketConnected(){
@@ -85,15 +90,21 @@ void ClientSubscription::onSocketConnected(){
 
 void ClientSubscription::connectAndSubscribe()
 {
-    qCDebug(lcWebSocketMqtt) << "Connecting to broker at " << m_url;
-
+    qDebug() << "ClientSubscription::connectAndSubscribe()";
+    if(m_client.state() != QMqttClient::Disconnected)
+    {
+        wantConnect = true;
+        this->disconnectFromHost();
+    }
+    else{
     if (!ioDevice.open(QIODevice::ReadWrite))
         qDebug() << "Could not open socket device";
+    }
 }
 
 void ClientSubscription::handleMessage(const QByteArray &msgContent)
 {
     // Should happen when the internal device has ready read?
-    qInfo() << "New message:" << msgContent;
+   // qInfo() << "New message:" << msgContent;
     emit messageReceived(msgContent);
 }

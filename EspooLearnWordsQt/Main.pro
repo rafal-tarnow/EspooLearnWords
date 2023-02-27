@@ -2,7 +2,7 @@ include(./autostart/qautostart.pri)
 
 TEMPLATE = app
 TARGET = espoo
-QT += quick quickcontrols2 sql network websockets mqtt
+QT += quick quickcontrols2 sql network websockets mqtt charts printsupport
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 
@@ -10,8 +10,11 @@ HEADERS += \
     contactmodel.h \
     database.hpp \
     iot/MessagesModel.h \
+    iot/customtablemodel.h \
     iot/mqtt/clientsubscription.h \
     iot/mqtt/websocketiodevice.h \
+    iot/plot/qcustomplot.h \
+    iot/plot/qmlplot.h \
     model/qqmlsortfilterproxymodel.hpp \
 #    modules/DevicesManager.h \
 #    modules/M0001/M0001.h \
@@ -24,8 +27,11 @@ HEADERS += \
 SOURCES += \
     database.cpp \
     iot/MessagesModel.cpp \
+    iot/customtablemodel.cpp \
     iot/mqtt/clientsubscription.cpp \
     iot/mqtt/websocketiodevice.cpp \
+    iot/plot/qcustomplot.cpp \
+    iot/plot/qmlplot.cpp \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
@@ -54,6 +60,7 @@ RESOURCES += \
     pages/M0002ControlPage.qml \
     pages/telemetry/MqttMessagesPage.qml \
     pages/telemetry/NewConnectionDialog.qml \
+    pages/telemetry/DisconnectDialog.qml \
     pages/PageIndicatorPage.qml \
     pages/ProgressBarPage.qml \
     pages/RadioButtonPage.qml \
@@ -134,6 +141,7 @@ INSTALLS += target
 
 DISTFILES += \
     android-sources/AndroidManifest.xml
+
 
 
 

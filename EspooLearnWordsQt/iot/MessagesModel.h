@@ -26,26 +26,37 @@ public:
   Q_INVOKABLE void clear();
 
   Q_INVOKABLE void newConnection(QString topic);
+  Q_INVOKABLE void disconnectFromHost();
+  Q_INVOKABLE bool isDisconnectedFromHost();
+
 
   void setSearchStatus(const bool &search);
   bool searchDevices() const;
 
 Q_SIGNALS:
   void seachChanged();
+  void connectedToMqtt();
+  void disconnectedFromHost();
 
 private slots:
+  void onMqttMessageArrive(const QByteArray & message);
+
+private:
+  void parseFrame(QString message);
 
 private:
   struct Device {
-    QString deviceName;
+    QString valueName;
     QString moduleType;
     QString ipAddress;
     QString port;
     QString serialNumber;
+    int row;
   };
 
   ClientSubscription *clientsub = nullptr; //Qt module, Qt exampl
-  QList<Device> messages;
+  QList<Device> mValues;
   bool searchStatus = false;
   bool deviceArleadyAdded(const QString &deviceName);
+  int valueExist(const QString &valueName);
 };

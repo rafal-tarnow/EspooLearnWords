@@ -22,10 +22,12 @@ public:
 signals:
     void messageReceived(QByteArray);
     void errorOccured();
-
+    void disconnectedFormHost();
+    void connectedToMqtt();
 public slots:
     void connectAndSubscribe();
     void disconnectFromHost();
+    bool isDisconnectedFromHost();
     void handleMessage(const QByteArray &msgContent);
 
 private:
@@ -41,6 +43,7 @@ private:
     QString m_topic;
     WebSocketIODevice ioDevice;
     int m_version;
+    bool wantConnect = false;
 };
 
 #endif // CLIENTSUBSCRIPTION_H
