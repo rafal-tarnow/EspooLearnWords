@@ -1,18 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-
 #ifndef CUSTOMTABLEMODEL_H
 #define CUSTOMTABLEMODEL_H
 
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QMultiHash>
 #include <QtCore/QRect>
+#include <QTimer>
 
 class CustomTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
     explicit CustomTableModel(QObject *parent = 0);
+    ~CustomTableModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -24,11 +23,16 @@ public:
     void addMapping(QString color, QRect area);
     void clearMapping() { m_mapping.clear(); }
 
+
+private slots:
+    void onTimer();
 private:
+    QTimer *timer;
     QList<QList<qreal> *> m_data;
     QMultiHash<QString, QRect> m_mapping;
-    int m_columnCount;
+    int m_columnCount = 2;
     int m_rowCount;
+    void append(const qreal &x, const qreal &y);
 };
 
 #endif // CUSTOMTABLEMODEL_H
