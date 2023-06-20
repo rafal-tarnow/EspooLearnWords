@@ -1,5 +1,5 @@
-#pragma once
+// #pragma once
 
-void initOnOff();
-void setOnOff(bool state);
-bool getOnOffState();
+// void initOnOff();
+// void setOnOff(bool state);
+// bool getOnOffState();

@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-bool APmode();
+// bool APmode();
 void setupAP();
-void setupWiFi();
-bool wifiConnected();
+// void setupWiFi();
+// bool wifiConnected();
