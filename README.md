@@ -8,11 +8,17 @@ TLS Websocket Port: 8884
 
 TEST
 
-kompilacja mqqt, ściągnąć repozytorium, przełączyć się na branch, otworzyć Cmake w qtreator, wybrać zestaw narzędzi, potem projekty→WebAssembly 6.4.1 (Budowanie) → Kroki build → Szegóły →Zaznaczyć produkty docelowe all i install, przejść do projektu, Zbuduj /Zaintaluj (może wyskoczyć komunikat : No target architecture defined in json file. , ale jest to związane z próbja uruchomienia biblioteki, projekt powinien sie zainstalować w źródłach qt bez względu na ten błąd
+kompilacja mqqt,
+ ściągnąć repozytorium, git clone https://github.com/qt/qtmqtt.git 
+ przełączyć się na branch, git checkout v6.5.1
+otworzyć Cmake w qtreator,
+wejść w Projekty -> Wersja -> CMake -> Current Configuration , zmienić zmienna CMAKE_INSTALL_PREFIX na /home/rafal/Qt_6_4_3/6.4.3/gcc_64
+  wybrać zestaw narzędzi, potem projekty→WebAssembly 6.4.1 (Budowanie) → Kroki build → Szegóły →Zaznaczyć produkty docelowe all i install, przejść do projektu, Zbuduj /Zaintaluj (może wyskoczyć komunikat : No target architecture defined in json file. , ale jest to związane z próbja uruchomienia biblioteki, projekt powinien sie zainstalować w źródłach qt bez względu na ten błąd
 
 
 
-
+XCB error
+To fix the xcb error while running a project in Qt Creator, execute the following command: sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev.
 
 
 
