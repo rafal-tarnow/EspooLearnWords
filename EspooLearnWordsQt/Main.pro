@@ -1,7 +1,7 @@
 include(./autostart/qautostart.pri)
 
 TEMPLATE = app
-TARGET = espoo
+TARGET = Aspoo
 QT += quick quickcontrols2 sql network websockets mqtt charts printsupport
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources

@@ -6,6 +6,13 @@ TLS TCP Port: 8883
 TLS Websocket Port: 8884
 
 
+
+CH340 Ubuntu 22.04 instalation
+1. sudo apt autoremove brltty
+
+
+
+
 TEST
 
 kompilacja mqqt,
@@ -15,10 +22,12 @@ otworzyć Cmake w qtreator,
 wejść w Projekty -> Wersja -> CMake -> Current Configuration , zmienić zmienna CMAKE_INSTALL_PREFIX na /home/rafal/Qt_6_4_3/6.4.3/gcc_64
   wybrać zestaw narzędzi, potem projekty→WebAssembly 6.4.1 (Budowanie) → Kroki build → Szegóły →Zaznaczyć produkty docelowe all i install, przejść do projektu, Zbuduj /Zaintaluj (może wyskoczyć komunikat : No target architecture defined in json file. , ale jest to związane z próbja uruchomienia biblioteki, projekt powinien sie zainstalować w źródłach qt bez względu na ten błąd
 
-
+Error: QtCreator Downloading Android SDK Tools from .. : TLS initialization failed
+This error occurs because QtCreator uses libssl version 1.1.1 while Ubuntu 22.04 defaults to version 3.0.0. The solution to this problem is to download the source code of the libssl library in version 1.1.1, compile it, and install the library. Then, run QtCreator using the following command: LD_PRELOAD=/usr/local/ssl/lib/libcrypto.so:/usr/local/ssl/lib/libssl.so ./qtcreator, where /usr/local/ssl/lib is the path to the installed libssl library in version 1.1.1.
 
 XCB error
 To fix the xcb error while running a project in Qt Creator, execute the following command: sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev.
+
 
 
 

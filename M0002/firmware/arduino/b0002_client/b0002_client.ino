@@ -313,17 +313,25 @@
 // }
 
 // Include the libraries we need
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "OneButton.h"
 #include "application.h"
 #include <memory>
 
+extern "C" {
+#include <osapi.h>
+#include <os_type.h>
+}
+
 
 #define ONE_WIRE_BUS 4
 const int ledPin = 2; 
 #define BUTTON_PIN 0
 
+static os_timer_t intervalTimer;
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
@@ -335,16 +343,48 @@ OneButton button = OneButton(
 
 std::unique_ptr<Application> application;
 
+//#define SSID "TP-LINK_A1AE89"
+#define SSID "DupaNetwork"
+#define PASSWORD "Krzysiu1"
+#define SERVER_HOST_NAME "Aspoo_server"
+#define TCP_PORT 7050
+
 void longPress();
 void click();
+
+static void replyToServer(void* arg) {
+	AsyncClient* client = reinterpret_cast<AsyncClient*>(arg);
+
+	// send reply
+	if (client->space() > 32 && client->canSend()) {
+		char message[32];
+		sprintf(message, "this is from %s", WiFi.localIP().toString().c_str());
+		client->add(message, strlen(message));
+		client->send();
+	}
+}
+
+/* event callbacks */
+static void handleData(void* arg, AsyncClient* client, void *data, size_t len) {
+	Serial.printf("\n data received from %s \n", client->remoteIP().toString().c_str());
+	Serial.write((uint8_t*)data, len);
+
+	os_timer_arm(&intervalTimer, 2000, true); // schedule for reply to server at next 2s
+}
+
+void onConnect(void* arg, AsyncClient* client) {
+	Serial.printf("\n client has been connected to %s on port %d \n", SERVER_HOST_NAME, TCP_PORT);
+	replyToServer(client);
+}
+
 /*
  * The setup function. We only start the sensors here
  */
 void setup(void)
 {
   // start serial port
-  Serial.begin(9600);
-  Serial.println("Dallas Temperature IC Control Library Demo");
+  Serial.begin(115200);
+  Serial.println("B0002 client");
 
   // Start up the library
   sensors.begin();
@@ -357,7 +397,26 @@ void setup(void)
   pinMode(ledPin, OUTPUT); 
 
   application = std::make_unique<Application>();
+
+  // connects to access point
+	WiFi.mode(WIFI_STA);
+	WiFi.begin(SSID, PASSWORD);
+	while (WiFi.status() != WL_CONNECTED) {
+		Serial.print('.');
+		delay(500);
+	}
+  Serial.print("Connected to WiFi Network! IP address: ");
+  Serial.println(WiFi.localIP());
+
+  AsyncClient* client = new AsyncClient;
+	client->onData(&handleData, client);
+	client->onConnect(&onConnect, client);
+	client->connect(SERVER_HOST_NAME, TCP_PORT);
+
+  os_timer_disarm(&intervalTimer);
+	os_timer_setfn(&intervalTimer, &replyToServer, client);
 }
+
 
 /*
  * Main function, get and show the temperature
@@ -397,5 +456,12 @@ void longPress() {
   state = !state;
   digitalWrite(ledPin, state);
   application->onButtonLongPressedEvent();
-} 
+}
+
+
+
+
+
+
+
 
