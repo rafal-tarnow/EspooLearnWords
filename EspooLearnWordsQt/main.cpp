@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
 
   qDebug() << "*****************^^^^^^^^^^^^^^^^^^^^^%^^^^^^^^^^^^^^^^^^^^^^$$$$$$$$$$$$$$$$$$$$$$$$$$#########################@@@@@@@@@@@@@@@@@@@@@@@@@@@2";
-  app.setOrganizationName("Espoo");
-  app.setOrganizationDomain("espoo.com");
-  app.setApplicationName("Espoo words");
+  app.setOrganizationName("Aspoo");
+  app.setOrganizationDomain("aspoo.com");
+  app.setApplicationName("Aspoo words");
 
   QIcon::setThemeName("espoo");
 

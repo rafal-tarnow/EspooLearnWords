@@ -10,14 +10,14 @@ class PseudoDNS{
   void startServer(std::string name);
   void stopServer();
   bool isRunning();
-  void loop();
+  void update();
 private:
-  void sendPseudoDNSPackage();
+  void sendSearchPackage();
+  IPAddress softAPbroadcastIP();
   private:
   std::string mName;
   bool mRunning = false;
   WiFiUDP Udp;
-  IPAddress broadcastIP = IPAddress(255, 255, 255, 255);
   unsigned long lastTime = 0;
   const unsigned long interval = 100;
 };

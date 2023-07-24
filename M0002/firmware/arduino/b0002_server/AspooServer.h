@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <ESP8266mDNS.h>
 
 #include "AspooClient.h"
 #include "PseudoDNS.h"
@@ -9,8 +10,8 @@
 class AspooServer{
   friend class AspooClient;
 public:
-  void setName(std::string name);
-  void loop();
+  void begin(std::string name);
+  void update();
 private:
   static void addClient(AspooClient * client);
   bool checkAllClientsConnected();

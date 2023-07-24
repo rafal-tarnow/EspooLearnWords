@@ -2,32 +2,51 @@
 
 std::vector<AspooClient *> AspooServer::mClients;
 
-void AspooServer::addClient(AspooClient *client){
+void AspooServer::addClient(AspooClient *client) {
   mClients.push_back(client);
 }
 
-void AspooServer::setName(std::string name) {
-  mName = name;
-}
-
-bool AspooServer::checkAllClientsConnected(){
-    for (AspooClient* client : mClients) {
-        if (!client->isConnected()) {
-            return false;
-        }
+bool AspooServer::checkAllClientsConnected() {
+  for (AspooClient *client : mClients) {
+    if (!client->isConnected()) {
+      return false;
     }
-    return true;
+  }
+  return true;
 }
 
-void AspooServer::loop() {
+void AspooServer::begin(std::string name) {
+  mName = name;
+  pseudoDNS.begin();
+    // Start mDNS
+  // if (!MDNS.begin(mName.c_str())) {
+  //   Serial.println("Error setting up mDNS!");
+  //   while (1) {
+  //     delay(1000);
+  //   }
+  // }
+}
 
-  if(!checkAllClientsConnected()){
-    if(!pseudoDNS.isRunning())
-      pseudoDNS.startServer(mName);
-  }else{
-    if(pseudoDNS.isRunning())
-      pseudoDNS.stopServer();
+void AspooServer::update() {
+
+
+  //pseudoDNS
+  // if (!checkAllClientsConnected()) {
+  //   if (!pseudoDNS.isRunning())
+  //     pseudoDNS.startServer(mName);
+  // } else {
+  //   if (pseudoDNS.isRunning())
+  //     pseudoDNS.stopServer();
+  // }
+
+  if(!pseudoDNS.isRunning()){
+    pseudoDNS.startServer(mName);
   }
 
-  pseudoDNS.loop();
+  pseudoDNS.update();
+
+  //mDNS
+  //  if (!checkAllClientsConnected()){
+     
+  //  }
 }

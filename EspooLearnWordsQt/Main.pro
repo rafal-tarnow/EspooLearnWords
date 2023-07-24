@@ -16,11 +16,11 @@ HEADERS += \
     iot/plot/qcustomplot.h \
     iot/plot/qmlplot.h \
     model/qqmlsortfilterproxymodel.hpp \
-#    modules/DevicesManager.h \
-#    modules/M0001/M0001.h \
-#    modules/M0001/M0001Controller.h \
-#    modules/M0002/M0002.h \
-#    modules/M0002/M0002Controller.h \
+    modules/DevicesManager.h \
+    modules/M0001/M0001.h \
+    modules/M0001/M0001Controller.h \
+    modules/M0002/M0002.h \
+    modules/M0002/M0002Controller.h \
     test_model.hpp \
     test_model_2.hpp
 
@@ -35,11 +35,11 @@ SOURCES += \
     main.cpp \
     contactmodel.cpp \
     model/qqmlsortfilterproxymodel.cpp \
-#    modules/DevicesManager.cpp \
-#    modules/M0001/M0001.cpp \
-#    modules/M0001/M0001Controller.cpp \
-#    modules/M0002/M0002.cpp \
-#    modules/M0002/M0002Controller.cpp \
+    modules/DevicesManager.cpp \
+    modules/M0001/M0001.cpp \
+    modules/M0001/M0001Controller.cpp \
+    modules/M0002/M0002.cpp \
+    modules/M0002/M0002Controller.cpp \
     test_model.cpp \
     test_model_2.cpp
 

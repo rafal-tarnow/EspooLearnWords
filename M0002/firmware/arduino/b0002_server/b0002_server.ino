@@ -1,6 +1,5 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
-#include <DNSServer.h>
 #include <vector>
 #include "Application.h"
 #include "AspooServer.h"
@@ -9,11 +8,10 @@
 #define SSID "DupaNetwork"
 #define PASSWORD "Krzysiu1"
 
-#define SERVER_HOST_NAME "Aspoo_server"
+#define SERVER_HOST_NAME "AspooServer"
 #define DNS_PORT 53
 #define TCP_PORT 7050
 
-static DNSServer DNS;
 static std::vector<AsyncClient*> clients; // a list to hold all clients
 
  /* clients events */
@@ -75,7 +73,7 @@ void setup(){
   Serial.printf("\n----- START ASPOO SERVER -----");
 
 
-  server.setName("main_server");
+  server.begin("AspooServer");
 
   tempRoom.setName("tempRoom");
   tempRoom.setAutoMeasure(true, 1000);
@@ -90,26 +88,20 @@ void setup(){
 
 
   // 	// connects to access point
-	// WiFi.mode(WIFI_STA);
-	// WiFi.begin(SSID, PASSWORD);
-	// while (WiFi.status() != WL_CONNECTED) {
-	// 	Serial.print('.');
-	// 	delay(500);
-	// }
+	WiFi.mode(WIFI_STA);
+	WiFi.begin("TP-LINK_A1AE89", "Krzysiu1");
+	while (WiFi.status() != WL_CONNECTED) {
+		Serial.print('.');
+		delay(500);
+	}
   // Serial.print("Connected! IP address: ");
   // Serial.println(WiFi.localIP());
 
   	// create access point
-	while (!WiFi.softAP(SSID, PASSWORD, 6, false, 15)) {
-		delay(500);
-	}
+	// while (!WiFi.softAP(SSID, PASSWORD, 6, false, 15)) {
+	// 	delay(500);
+	// }
 
-  	// start dns server
-	if (!DNS.start(DNS_PORT, SERVER_HOST_NAME, WiFi.softAPIP())){
-    Serial.printf("\n failed to start dns service \n");
-  }else{
-    Serial.printf("\n Sucessfull start dns service \n");
-  }
 
   AsyncServer* server = new AsyncServer(TCP_PORT); // start listening on tcp port 7050
 	server->onClient(&handleNewClient, server);
@@ -117,6 +109,5 @@ void setup(){
 }
 
 void loop(){
-  server.loop();
-  DNS.processNextRequest();
+  server.update();
 }

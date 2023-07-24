@@ -1,6 +1,6 @@
 #include "PseudoDNS.h"
 
-void PseudoDNS::begin(){
+void PseudoDNS::begin() {
   Udp.begin(1234);
 }
 
@@ -13,22 +13,35 @@ void PseudoDNS::stopServer() {
   mRunning = false;
 }
 
-bool PseudoDNS::isRunning(){
+bool PseudoDNS::isRunning() {
   return mRunning;
 }
 
-void PseudoDNS::sendPseudoDNSPackage() {
-    Udp.beginPacket(broadcastIP, 1234);
-    Udp.write(mName.c_str());
-    Udp.endPacket();
+IPAddress PseudoDNS::softAPbroadcastIP() {
+  struct ip_info ip;
+  wifi_get_ip_info(SOFTAP_IF, &ip);
+  return IPAddress(ip.ip.addr | ~(ip.netmask.addr));
 }
 
-void PseudoDNS::loop() {
-      if (mRunning) {
-        unsigned long currentTime = millis();
-        if (currentTime - lastTime >= interval) {
-            sendPseudoDNSPackage();
-            lastTime = currentTime;
-        }
+void PseudoDNS::sendSearchPackage() {
+  IPAddress broadcast;
+  if (WIFI_AP == WiFi.getMode()) {
+    broadcast = softAPbroadcastIP();
+  }else{
+    broadcast = WiFi.broadcastIP();
+  }
+  Udp.beginPacket(broadcast, 1234);
+  Udp.write(mName.c_str());
+  Udp.endPacket();
+  Serial.printf("\n Send Pseudo DNS package");
+}
+
+void PseudoDNS::update() {
+  if (mRunning) {
+    unsigned long currentTime = millis();
+    if (currentTime - lastTime >= interval) {
+      sendSearchPackage();
+      lastTime = currentTime;
     }
+  }
 }

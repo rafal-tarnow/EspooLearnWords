@@ -64,7 +64,7 @@ ApplicationWindow {
     width: 320
     height: 480
     visible: true
-    title: qsTr("Espoo")
+    title: qsTr("Aspoo")
 
     Settings {
         property alias x: window.x
