@@ -42,7 +42,7 @@ void PseudoDNSServer::sendQueryDatagrams()
         datagram.setInterfaceIndex(interfaceIndex);
         datagram.setDestination(adresses.broadcast(), PORT);
         datagram.setSender(adresses.ip(), PORT);
-        datagram.setData(QString("Test Data").toUtf8());
+        datagram.setData(data + QString("Test Data").toUtf8());
         //datagram.setData(data);
         qDebug() << "send broadcast = " << adresses.broadcast();
         qDebug() << "send = " << udpSocket->writeDatagram(datagram);

@@ -9,6 +9,32 @@ import Backend
 Page {
     id: page
 
+    ListModel {
+        id: asciModel
+    }
+
+    ListModel {
+        id: hexModel
+    }
+
+    function convertToHex(input) {
+        var hexString = "";
+        for (var i = 0; i < input.length; i++) {
+            var charCode = input.charCodeAt(i).toString(16);
+            hexString += "0x" + charCode + " ";
+        }
+        return hexString.trim();
+    }
+
+    function logMessage(message){
+        asciModel.append({ text: message })
+        hexModel.append({ text: convertToHex(message)})
+
+        //scroll messages to last one
+        swipeView.itemAt(0).children[0].children[0].currentIndex = asciModel.count - 1
+        swipeView.itemAt(1).children[0].children[0].currentIndex = hexModel.count - 1
+    }
+
     ColumnLayout {
         spacing: 5
         anchors.fill: parent
@@ -16,11 +42,9 @@ Page {
         UdpTerminal{
             id: udpTerminal
             onDataReceived: {
-                console.log("Received data:", data)
-                logTextArea.append(data)
+                logMessage(data)
             }
         }
-
 
         RowLayout{
             Layout.fillWidth: true
@@ -45,8 +69,6 @@ Page {
             onClicked: {
                 bindButton.highlighted = false
                 udpTerminal.close()
-
-                swipeView.itemAt(0).children[0].children[0].append("Sialala")
             }
         }
 
@@ -64,20 +86,20 @@ Page {
                     width: SwipeView.view.width
                     height: SwipeView.view.height
 
-                    ScrollView {
-                        id: view
+                    ListView {
+                        id: listView
                         anchors.fill: parent
+                        delegate: Text {
+                            text: model.text
 
-                        TextArea {
-                            id: logTextArea
-                            anchors.fill: parent
-                            readOnly: true
                             wrapMode: TextEdit.Wrap
-                            textFormat: Qt.RichText
+                            //textFormat: Qt.RichText
+                        }
+                        Component.onCompleted: {
+                            swipeView.itemAt(0).children[0].children[0].model = asciModel
+                            swipeView.itemAt(1).children[0].children[0].model = hexModel
                         }
                     }
-
-
                 }
             }
         }
