@@ -87,7 +87,7 @@ ApplicationWindow {
 
             Label {
                 id: titleLabel
-                text: listView.currentItem ? (listView.currentItem as ItemDelegate).text : qsTr("Gallery")
+                text: listView.currentItem ? (listView.currentItem as ItemDelegate).text : qsTr("Baboon App")
                 font.pixelSize: 20
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -138,9 +138,10 @@ ApplicationWindow {
             anchors.fill: parent
 
             model: ListModel {
+                ListElement { title: qsTr("Devices in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
+                ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
                 ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
                 ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }
-                ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
                 ListElement { title: qsTr("BusyIndicator"); source: "qrc:/pages/BusyIndicatorPage.qml" }
                 ListElement { title: qsTr("Button"); source: "qrc:/pages/ButtonPage.qml" }
                 ListElement { title: qsTr("CheckBox"); source: "qrc:/pages/CheckBoxPage.qml" }
@@ -212,7 +213,7 @@ ApplicationWindow {
             }
 
             Label {
-                text: qsTr("Qt Quick Controls provides a set of controls that can be used to build complete interfaces in Qt Quick.")
+                text: qsTr("Baboon App provides a set of functions that can be used to build complete IoT System.")
                 anchors.margins: 20
                 anchors.top: logo.bottom
                 anchors.left: parent.left

@@ -20,7 +20,7 @@ Page {
             id: emulatorM0002
         }
 
-        RowLayout{
+        ColumnLayout {
             Layout.topMargin: 10
             Layout.fillWidth: true
             TextField {
@@ -29,13 +29,22 @@ Page {
                 placeholderText: qsTr("Server Name")
             }
 
-            Switch {
-                text: qsTr("Start")
-                onToggled: {
-                    if (checked) {
-                        emulatorM0002.start(serverName.text)
-                    } else {
+            RowLayout{
+                Layout.fillWidth: true
+                TextField {
+                    id: moduleName
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Module Name")
+                }
 
+                Switch {
+                    text: qsTr("Start")
+                    onToggled: {
+                        if (checked) {
+                            emulatorM0002.start(moduleName.text, serverName.text)
+                        } else {
+                            emulatorM0002.stop()
+                        }
                     }
                 }
             }

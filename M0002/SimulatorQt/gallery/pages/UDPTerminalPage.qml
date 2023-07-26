@@ -27,12 +27,25 @@ Page {
     }
 
     function logMessage(message){
-        asciModel.append({ text: message })
-        hexModel.append({ text: convertToHex(message)})
+        logAsciMessage(message)
+        logHexMessage(convertToHex(message))
+    }
 
+    function logMessageIndex(index, message){
+        logAsciMessage("[" + index + "] " + message)
+        logHexMessage("[" + index + "] " + convertToHex(message))
+    }
+
+    function logHexMessage(message){
+        hexModel.append({ text: message})
+        //scroll messages to last one
+        swipeView.itemAt(1).children[0].children[0].currentIndex = hexModel.count - 1
+    }
+
+    function logAsciMessage(message){
+        asciModel.append({ text: message })
         //scroll messages to last one
         swipeView.itemAt(0).children[0].children[0].currentIndex = asciModel.count - 1
-        swipeView.itemAt(1).children[0].children[0].currentIndex = hexModel.count - 1
     }
 
     ColumnLayout {
@@ -41,8 +54,9 @@ Page {
 
         UdpTerminal{
             id: udpTerminal
+            property int messageIndex: 0
             onDataReceived: {
-                logMessage(data)
+                logMessageIndex(messageIndex++, data)
             }
         }
 
@@ -60,15 +74,16 @@ Page {
                 onClicked: {
                     udpTerminal.bind(portField.text)
                     bindButton.highlighted = true
+                    logAsciMessage("[Bind to port: " + portField.text + "]")
                 }
             }
-        }
-        Button {
-            text: qsTr("Close")
-            Layout.fillWidth: true
-            onClicked: {
-                bindButton.highlighted = false
-                udpTerminal.close()
+            Button {
+                text: qsTr("Close")
+                onClicked: {
+                    bindButton.highlighted = false
+                    udpTerminal.close()
+                    logAsciMessage("[UDP socket closed]")
+                }
             }
         }
 
@@ -77,6 +92,7 @@ Page {
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: tabBar.currentIndex
+            z: -1
 
             Repeater {
                 model: 2
@@ -89,11 +105,10 @@ Page {
                     ListView {
                         id: listView
                         anchors.fill: parent
+
                         delegate: Text {
                             text: model.text
-
                             wrapMode: TextEdit.Wrap
-                            //textFormat: Qt.RichText
                         }
                         Component.onCompleted: {
                             swipeView.itemAt(0).children[0].children[0].model = asciModel
@@ -103,6 +118,7 @@ Page {
                 }
             }
         }
+
     }
 
     footer: TabBar {

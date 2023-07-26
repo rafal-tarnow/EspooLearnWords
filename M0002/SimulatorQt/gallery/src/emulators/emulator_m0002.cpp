@@ -12,9 +12,21 @@ EmulatorM0002::~EmulatorM0002()
      qInfo() << "Delete EmulatorM0002";
 }
 
-void EmulatorM0002::start(const QString& serverName){
+void EmulatorM0002::start(const QString & moduleName, const QString& serverName){
      mServerName = serverName;
-     pseudoDNSServer->startQueriesForHost(mServerName);
+     mModuleName = moduleName;
+     pseudoDNSServer->run(moduleName);
+     pseudoDNSServer->startQueriesForAllHosts();
+}
+
+void EmulatorM0002::stop()
+{
+     if(pseudoDNSServer->isRunning()){
+         pseudoDNSServer->stopRunning();
+     }
+     if(pseudoDNSServer->isQueriesRunning()){
+         pseudoDNSServer->stopQueries();
+     }
 }
 
 static void registerEmulatorM0002Types() {
