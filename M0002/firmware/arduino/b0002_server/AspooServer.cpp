@@ -15,9 +15,18 @@ bool AspooServer::checkAllClientsConnected() {
   return true;
 }
 
+ void AspooServer::foundHost(const std::string & hostName, const std::string & hostIP){
+   Serial.print("AspooServer::foundHost: ");
+   Serial.print(hostName.c_str());
+   Serial.print(" ");
+   Serial.println(hostIP.c_str());
+ }
+
 void AspooServer::begin(std::string name) {
   mName = name;
-  pseudoDNS.begin();
+  pseudoDNS.run(mName);
+  pseudoDNS.onHostFound(this, &AspooServer::foundHost);
+  pseudoDNS.startQueriesForAllHosts();
     // Start mDNS
   // if (!MDNS.begin(mName.c_str())) {
   //   Serial.println("Error setting up mDNS!");
@@ -38,10 +47,6 @@ void AspooServer::update() {
   //   if (pseudoDNS.isRunning())
   //     pseudoDNS.stopServer();
   // }
-
-  if(!pseudoDNS.isRunning()){
-    pseudoDNS.startServer(mName);
-  }
 
   pseudoDNS.update();
 

@@ -12,9 +12,12 @@ class AspooServer{
 public:
   void begin(std::string name);
   void update();
+
+ void foundHost(const std::string & hostName, const std::string & hostIP);
 private:
   static void addClient(AspooClient * client);
   bool checkAllClientsConnected();
+  
 private:
   static std::vector<AspooClient *> mClients;
   std::string mName;

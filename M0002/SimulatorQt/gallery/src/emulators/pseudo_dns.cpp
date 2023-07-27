@@ -44,33 +44,29 @@ bool PseudoDNSServer::isRunning()
 void PseudoDNSServer::stopRunning()
 {
     isRun = false;
-    if(isRun == false && runQueriesForAllHosts == false &&  runQueriesForHost == false){
+    if(runQueriesForAllHosts == false){
         uninitSocket();
     }
-}
-
-void PseudoDNSServer::startQueriesForHost(const QString &hostName)
-{
-
 }
 
 void PseudoDNSServer::startQueriesForAllHosts()
 {
     runQueriesForAllHosts = true;
     initSocket();
-    queryTimer->start(250);
+    queryTimer->start(QUERY_INTERVAL);
 }
 
 bool PseudoDNSServer::isQueriesRunning()
 {
-    return runQueriesForAllHosts || runQueriesForHost;
+    return runQueriesForAllHosts;
 }
 
 void PseudoDNSServer::stopQueries()
 {
-    runQueriesForAllHosts = runQueriesForHost = false;
+    runQueriesForAllHosts = false;
+    dnsDiscoverdHosts.clear();
     queryTimer->stop();
-    if(runQueriesForAllHosts == false && runQueriesForHost == false && isRun == false){
+    if(isRun == false){
         uninitSocket();
     }
 }

@@ -17,7 +17,6 @@ public:
     Q_INVOKABLE bool isRunning();
     Q_INVOKABLE void stopRunning();
 
-    Q_INVOKABLE void startQueriesForHost(const QString & queryHostName);
     Q_INVOKABLE void startQueriesForAllHosts();
     Q_INVOKABLE bool isQueriesRunning();
     Q_INVOKABLE void stopQueries();
@@ -35,11 +34,11 @@ private:
     std::unique_ptr<QUdpSocket> udpSocket;
     QSet<QPair<QString, QString>> dnsDiscoverdHosts; //QString - hostName, QString - IP
     QMap<int, QNetworkAddressEntry> interfaceAdresses; // int - interface index, QNetworkAddressEntry - adresses at network interface
-    bool runQueriesForHost = false;
     bool runQueriesForAllHosts = false;
     bool isRun = false;
     bool socketInited = false;
     const quint16 PORT = 6353;
+    const int QUERY_INTERVAL = 250;
     void getAllBroadcastAdresses();
     void uninitSocket();
     void initSocket();

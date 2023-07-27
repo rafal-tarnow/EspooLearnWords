@@ -1,22 +1,52 @@
-# pragma once
+#pragma once
 
 #include <WiFiUdp.h>
 #include <ESP8266WiFi.h>
 #include <string>
+#include <functional>
+#include <set>
+#include <utility>
 
-class PseudoDNS{
-  public:
-  void begin();
-  void startServer(std::string name);
-  void stopServer();
+class PseudoDNS {
+  using CallbackFunction= std::function<void(const std::string &, const std::string &)>;
+  using CallbackMethod = std::function<void(const std::string &, const std::string &)>;
+public:
+
+  void run(const std::string &myHostName);
   bool isRunning();
+  void stopRunning();
+
+  void startQueriesForAllHosts();
+  bool isQueriesRunning();
+  void stopQueries();
+
   void update();
+
+  void onHostFound(CallbackFunction callback) {
+    callbackFunction = callback;
+  }
+
+  template<typename T>
+  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &)) {
+        callbackMethod = [=](const std::string & hostName, const std::string & hostIP) {
+      (obj->*method)(hostName, hostIP);
+    };
+  }
+
 private:
-  void sendSearchPackage();
+  void onQueryTime();
+  void onUdpDatagram(int packetSize);
   IPAddress softAPbroadcastIP();
-  private:
+private:
+  std::set<std::pair<std::string, std::string>> dnsDiscoverdHosts; // string - hostName, string - hostIP
+  CallbackMethod callbackMethod;
+  CallbackFunction callbackFunction;
   std::string mName;
   bool mRunning = false;
+  bool runQuery = false;
+  uint16_t PORT = 6353;
+  const unsigned long QUERY_INTERVAL = 250;
+  unsigned long lastQueryTime = 0;
   WiFiUDP Udp;
   unsigned long lastTime = 0;
   const unsigned long interval = 100;

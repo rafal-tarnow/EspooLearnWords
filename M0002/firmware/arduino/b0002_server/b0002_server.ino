@@ -73,7 +73,7 @@ void setup(){
   Serial.printf("\n----- START ASPOO SERVER -----");
 
 
-  server.begin("AspooServer");
+  server.begin("AspooServerĆŚąęĄĘ");
 
   tempRoom.setName("tempRoom");
   tempRoom.setAutoMeasure(true, 1000);
