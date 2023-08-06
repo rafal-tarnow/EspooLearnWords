@@ -6,91 +6,122 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Backend
 
-ScrollablePage {
+Page {
     id: page
+    property int controlsHeight: 40
 
-    function logConnected() {
-        logText("Connected to server", "green");
+    function convertToHex(input) {
+        var hexString = "";
+        for (var i = 0; i < input.length; i++) {
+            var charCode = input.charCodeAt(i).toString(16);
+            hexString += "0x" + charCode + " ";
+        }
+        return hexString.trim();
     }
 
-    function logDisconnected() {
-        logTextArea.text += "Disconnected from server\n"
-        logTextArea.cursorPosition = logTextArea.text.length
+    function logMessage(message){
+        logAsciMessage(message)
+        logHexMessage(convertToHex(message))
     }
 
-    function logPingResponseTime(responseTime) {
-        logTextArea.text += "Ping Response Time: " + responseTime + " us\n"
-        logTextArea.cursorPosition = logTextArea.text.length
+    function logMessageIndex(index, message){
+        logAsciMessage("[" + index + "] " + message)
+        logHexMessage("[" + index + "] " + convertToHex(message))
     }
 
-    function logText(message, color) {
-        logTextArea.text += "<font color='" + color + "'>" + message + "</font>\n";
-        logTextArea.cursorPosition = logTextArea.text.length;
+    function logHexMessage(message){
+        hexModel.append({ text: message})
+        //scroll messages to last one
+        swipeView.itemAt(1).children[0].children[0].currentIndex = hexModel.count - 1
+    }
+
+    function logAsciMessage(message){
+        asciModel.append({ text: message })
+        //scroll messages to last one
+        swipeView.itemAt(0).children[0].children[0].currentIndex = asciModel.count - 1
     }
 
 
 
-    Column {
+    ColumnLayout {
         spacing: 5
-        width: parent.width
+        anchors.fill: parent
+
+        ListModel {
+            id: asciModel
+        }
+
+        ListModel {
+            id: hexModel
+        }
 
         TcpTerminal{
             id: tcpTerminal
+            property int messageIndex: 0
             onConnected: {
-                logConnected();
+                logAsciMessage("[Connected]");
             }
             onDisconnected: {
-                logDisconnected();
+                logAsciMessage("[Disonnected]");
             }
             onPingRecived: {
-                logPingResponseTime(delay);
+                logAsciMessage("[Ping time = " + delay + "us]");
+            }
+            onDataReceived: {
+                logMessageIndex(messageIndex++, data)
+            }
+            onTcpError:{
+                logAsciMessage("[" + socketError + "]")
             }
         }
 
-
-        Label {
-            width: parent.width
-            wrapMode: Label.Wrap
-            horizontalAlignment: Qt.AlignHCenter
-            text: qsTr("Button presents a push-button that can be pushed or clicked by the user. "
-                       + "Buttons are normally used to perform an action, or to answer a question.")
-        }
 
         ColumnLayout {
-            width: parent.width
+            Layout.fillWidth: true
+            Layout.preferredHeight: page.controlsHeight
             spacing: 5
-            anchors.horizontalCenter: parent.horizontalCenter
 
-            Label {
-                Layout.fillWidth: true
-                wrapMode: Label.Wrap
-                horizontalAlignment: Qt.AlignHCenter
-                text: qsTr("IP address")
-            }
             TextField {
                 id: ipAddressField
                 Layout.fillWidth: true
-                placeholderText: qsTr("Enter IP Address")
+                Layout.preferredHeight: page.controlsHeight
+                placeholderText: qsTr("IP Address")
             }
-            TextField {
-                id: portField
+
+            RowLayout{
                 Layout.fillWidth: true
-                placeholderText: qsTr("Enter Port")
-            }
-            Button {
-                text: "Connect"
-                Layout.fillWidth: true
-                onClicked: {
-                    tcpTerminal.connectToServer(ipAddressField.text, portField.text)
+                Layout.topMargin: 10
+                Layout.preferredHeight: page.controlsHeight
+
+                TextField {
+                    id: portField
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: page.controlsHeight
+                    placeholderText: qsTr("Port")
                 }
-            }
-            Button {
-                text: "Disconnect"
-                Layout.fillWidth: true
-                onClicked: {
-                    tcpTerminal.disconnectFromServer()
+
+                Button {
+                    text: qsTr("Connect")
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: page.controlsHeight
+                    onClicked: {
+                        tcpTerminal.connectToServer(ipAddressField.text, portField.text)
+                    }
                 }
+                Button {
+                    text: qsTr("Disconnect")
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: page.controlsHeight
+                    onClicked: {
+                        tcpTerminal.disconnectFromServer()
+                    }
+                }
+
+
             }
+
+
+
             Button {
                 text: "Ping"
                 Layout.fillWidth: true
@@ -105,12 +136,50 @@ ScrollablePage {
                     logTextArea.clear()
                 }
             }
-            TextArea {
-                id: logTextArea
-                readOnly: true
-                wrapMode: TextEdit.Wrap
-                textFormat: TextEdit.PlainText
+        }
+
+        SwipeView {
+            id: swipeView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            currentIndex: tabBar.currentIndex
+            z: -1
+
+            Repeater {
+                model: 2
+
+                Pane {
+                    id: pane
+                    width: SwipeView.view.width
+                    height: SwipeView.view.height
+
+                    ListView {
+                        id: listView
+                        anchors.fill: parent
+
+                        delegate: Text {
+                            text: model.text
+                            wrapMode: TextEdit.Wrap
+                        }
+                        Component.onCompleted: {
+                            swipeView.itemAt(0).children[0].children[0].model = asciModel
+                            swipeView.itemAt(1).children[0].children[0].model = hexModel
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    footer: TabBar {
+        id: tabBar
+        currentIndex: swipeView.currentIndex
+
+        TabButton {
+            text: qsTr("ASCI")
+        }
+        TabButton {
+            text: qsTr("HEX")
         }
     }
 }

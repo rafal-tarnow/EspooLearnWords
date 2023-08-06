@@ -28,9 +28,7 @@ public:
 
   template<typename T>
   void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &)) {
-        callbackMethod = [=](const std::string & hostName, const std::string & hostIP) {
-      (obj->*method)(hostName, hostIP);
-    };
+    callbackMethod = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2);
   }
 
 private:
@@ -45,7 +43,7 @@ private:
   bool mRunning = false;
   bool runQuery = false;
   uint16_t PORT = 6353;
-  const unsigned long QUERY_INTERVAL = 250;
+  const unsigned long QUERY_INTERVAL = 2500;
   unsigned long lastQueryTime = 0;
   WiFiUDP Udp;
   unsigned long lastTime = 0;

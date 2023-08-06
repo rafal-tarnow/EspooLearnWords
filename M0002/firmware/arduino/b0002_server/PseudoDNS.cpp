@@ -1,16 +1,19 @@
 #include "PseudoDNS.h"
 
 void PseudoDNS::run(const std::string &myHostName) {
+  Serial.println("\n PseudoDNS::run()");
   mRunning = true;
   mName = myHostName;
   Udp.begin(PORT);
 }
 
 bool PseudoDNS::isRunning() {
+  Serial.println("\n PseudoDNS::isRunning()");
   return mRunning;
 }
 
 void PseudoDNS::stopRunning() {
+  Serial.println("\n PseudoDNS::stopRunning()");
   mRunning = false;
   if (runQuery == false) {
     Udp.stop();
@@ -18,15 +21,19 @@ void PseudoDNS::stopRunning() {
 }
 
 void PseudoDNS::startQueriesForAllHosts() {
+  Serial.println("\n PseudoDNS::startQueriesForAllHosts()");
   runQuery = true;
   Udp.begin(PORT);
+  onQueryTime(); //send first query immidietly
 }
 
 bool PseudoDNS::isQueriesRunning() {
+  Serial.println("\n PseudoDNS::isQueriesRunning()");
   return runQuery;
 }
 
 void PseudoDNS::stopQueries() {
+  Serial.println("\n PseudoDNS::stopQueries()");
   runQuery = false;
   dnsDiscoverdHosts.clear();
   if (mRunning == false) {
@@ -41,6 +48,7 @@ IPAddress PseudoDNS::softAPbroadcastIP() {
 }
 
 void PseudoDNS::onQueryTime() {
+  //Serial.println("\n PseudoDNS::onQueryTime()");
   IPAddress broadcast;
   if (WIFI_AP == WiFi.getMode()) {
     broadcast = softAPbroadcastIP();
@@ -54,6 +62,7 @@ void PseudoDNS::onQueryTime() {
 }
 
 void PseudoDNS::onUdpDatagram(int packetSize) {
+  //Serial.println("\n PseudoDNS::onUdpDatagram()");
   byte buffer[packetSize];
   int len = Udp.read(buffer, sizeof(buffer));
 
@@ -93,7 +102,7 @@ void PseudoDNS::onUdpDatagram(int packetSize) {
 }
 
 void PseudoDNS::update() {
-
+  //Serial.println("\n PseudoDNS::update()");
   if (mRunning || runQuery) {
     int packetSize = Udp.parsePacket();
     if (packetSize) {

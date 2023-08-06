@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QElapsedTimer>
+#include <QTcpSocket>
 #include <memory>
 
 class QTcpSocket;
@@ -21,10 +22,13 @@ signals:
     void connected();
     void disconnected();
     void pingRecived(qint64 delay);
+    void dataReceived(QString data);
+    void tcpError(QString socketError);
 
 private slots:
     void onConnected();
     void onDisconnected();
+    void onSocketError(QAbstractSocket::SocketError socketError);
     void onReadyRead();
 private:
     std::unique_ptr<QTcpSocket> m_tcpSocket;

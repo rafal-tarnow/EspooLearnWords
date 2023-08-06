@@ -8,6 +8,7 @@ import Backend
 
 Page {
     id: page
+    property int controlsHeight: 40
 
     ListModel {
         id: asciModel
@@ -57,19 +58,23 @@ Page {
             property int messageIndex: 0
             onDataReceived: {
                 logMessageIndex(messageIndex++, data)
+                lastDatagramLabel.text = qsTr("Data from: ") + formIp + ":" + fromPort
             }
         }
 
         RowLayout{
             Layout.fillWidth: true
             Layout.topMargin: 10
+            Layout.preferredHeight: page.controlsHeight
             TextField {
                 id: portField
                 Layout.fillWidth: true
+                Layout.preferredHeight: page.controlsHeight
                 placeholderText: qsTr("Enter Port")
             }
             Button {
                 id: bindButton
+                Layout.preferredHeight: page.controlsHeight
                 text: qsTr("Bind")
                 onClicked: {
                     udpTerminal.bind(portField.text)
@@ -79,6 +84,7 @@ Page {
             }
             Button {
                 text: qsTr("Close")
+                Layout.preferredHeight: page.controlsHeight
                 onClicked: {
                     bindButton.highlighted = false
                     udpTerminal.close()
@@ -113,6 +119,67 @@ Page {
                         Component.onCompleted: {
                             swipeView.itemAt(0).children[0].children[0].model = asciModel
                             swipeView.itemAt(1).children[0].children[0].model = hexModel
+                        }
+                    }
+                }
+            }
+        }
+
+        Label {
+            id: lastDatagramLabel
+            Layout.fillWidth: true
+            text: qsTr("Data from:")
+            font.pixelSize: 12
+            color: "gray"
+        }
+
+        RowLayout{
+            Layout.fillWidth: true
+            Layout.preferredHeight: page.controlsHeight
+            Switch {
+                id: broadcast
+                text: qsTr("Broadcast")
+            }
+            TextField {
+                id: ipToSend
+                Layout.fillWidth: true
+                Layout.preferredHeight: page.controlsHeight
+                placeholderText:qsTr("IP send address")
+                readOnly: broadcast.checked
+                color: broadcast.checked ? "gray" : "black"
+            }
+            TextField {
+                id: portToSend
+                Layout.fillWidth: true
+                Layout.preferredHeight: page.controlsHeight
+                placeholderText:qsTr("send port")
+            }
+
+        }
+
+        RowLayout{
+            Layout.fillWidth: true
+            Layout.bottomMargin: 5
+            TextField {
+                id: dataToSend
+                Layout.fillWidth: true
+                placeholderText:tabBar.currentIndex === 0 ? qsTr("ASCI data to send") : qsTr("HEX data to send");
+            }
+            Button {
+                id: sendButton
+                text: qsTr("Send")
+                onClicked: {
+                    if(tabBar.currentIndex === 0){
+                        if(broadcast.checked){
+                            udpTerminal.sendBroadcast(dataToSend.text, portToSend.text)
+                        }else{
+                            udpTerminal.send(dataToSend.text, ipToSend.text, portToSend.text)
+                        }
+                    }else if(tabBar.currentIndex === 1){
+                        if(broadcast.checked){
+                            udpTerminal.sendBroadcastHexString(dataToSend.text, portToSend.text)
+                        }else{
+                            udpTerminal.sendHexString(dataToSend.text, ipToSend.text, portToSend.text)
                         }
                     }
                 }

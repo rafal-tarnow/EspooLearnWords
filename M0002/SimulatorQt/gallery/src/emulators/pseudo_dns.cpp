@@ -3,7 +3,9 @@
 #include <QNetworkDatagram>
 #include <QtQml>
 
-static QDebug& operator<<(QDebug& debug, const QNetworkDatagram& datagram) {
+Q_LOGGING_CATEGORY(PseudoDNS, "PseudoDNSClass")
+
+static QDebug operator<<(QDebug debug, const QNetworkDatagram& datagram) {
     debug << "Source Address: " << datagram.senderAddress().toString()
           << ", Source Port: " << datagram.senderPort()
           << ", Destination Address: " << datagram.destinationAddress().toString()
@@ -16,7 +18,7 @@ static QDebug& operator<<(QDebug& debug, const QNetworkDatagram& datagram) {
 
 PseudoDNSServer::PseudoDNSServer(QObject *parent) : QObject(parent)
 {
-    qInfo() << "Create PseudoDNSServer";
+    qCDebug(PseudoDNS) << "Create PseudoDNSServer";
     queryTimer = std::make_unique<QTimer>(parent);
     udpSocket = std::make_unique<QUdpSocket>(parent);
 
@@ -25,7 +27,7 @@ PseudoDNSServer::PseudoDNSServer(QObject *parent) : QObject(parent)
 
 PseudoDNSServer::~PseudoDNSServer()
 {
-    qInfo() << "Delete PseudoDNSServer";
+    qCDebug(PseudoDNS) << "Delete PseudoDNSServer";
     uninitSocket();
 }
 
@@ -51,9 +53,11 @@ void PseudoDNSServer::stopRunning()
 
 void PseudoDNSServer::startQueriesForAllHosts()
 {
+    dnsDiscoverdHosts.clear();
     runQueriesForAllHosts = true;
     initSocket();
     queryTimer->start(QUERY_INTERVAL);
+    onRepeatTimer(); //to speed up query, send first frame ad startup
 }
 
 bool PseudoDNSServer::isQueriesRunning()
@@ -96,7 +100,7 @@ void PseudoDNSServer::sendQueryDatagrams()
         datagram.setDestination(adresses.broadcast(), PORT);
         datagram.setSender(adresses.ip(), PORT);
         datagram.setData(data);
-        qDebug() << "Send datagram = " << datagram;
+        qCDebug(PseudoDNS) << "DNS 0x01 command send";
         udpSocket->writeDatagram(datagram);
     }
 
@@ -120,21 +124,21 @@ void PseudoDNSServer::onRepeatTimer()
 
 void PseudoDNSServer::readPendingDatagrams()
 {
-    qDebug() << "--------- START READ---------------";
-    qDebug() << "PseudoDNSServer::readPendingDatagrams()";
+    qCDebug(PseudoDNS) << "--------- START READ---------------";
+    qCDebug(PseudoDNS) << "PseudoDNSServer::readPendingDatagrams()";
     while (udpSocket->hasPendingDatagrams())
     {
         QNetworkDatagram networkDatagram = udpSocket->receiveDatagram();
-        qDebug() << "Received datagram = " << networkDatagram;
+        //qCDebug(PseudoDNS) << "Received datagram = " << networkDatagram;
         if(isMyAddress(networkDatagram.senderAddress())){
-            qDebug() << "NOT PARSE DATAGRAM";
-            qDebug() << "--------- END READ---------------";
-            return;
+            qCDebug(PseudoDNS) << "NOT PARSE DATAGRAM";
+            qCDebug(PseudoDNS) << "--------- END READ---------------";
+            continue;
         }
-        qDebug() << "PARSE DATAGRAM";
+        qCDebug(PseudoDNS) << "PARSE DATAGRAM";
         parseDatagram(networkDatagram);
     }
-    qDebug() << "--------- END READ---------------";
+    qCDebug(PseudoDNS) << "--------- END READ---------------";
 }
 
 bool PseudoDNSServer::isMyAddress(const QHostAddress & address){
@@ -154,11 +158,11 @@ void PseudoDNSServer::parseDatagram(const QNetworkDatagram & receivedDatagram)
 
     switch (receivedDatagram.data().at(0)) {
     case 0x01:
-        qDebug() << "DNS 0x01 command received";
+        qCDebug(PseudoDNS) << "DNS 0x01 command received";
         parseQueryForAllHostsDatagram(receivedDatagram);
         break;
     case 0x02:
-        qDebug() << "DNS 0x02 command received";
+        qCDebug(PseudoDNS) << "DNS 0x02 command received";
         parseResponseWithHost(receivedDatagram);
         break;
     default:
@@ -170,20 +174,20 @@ void PseudoDNSServer::parseResponseWithHost(const QNetworkDatagram &datagram)
 {
     QString hostName = QString::fromUtf8(datagram.data().mid(1));
     QString IP = datagram.senderAddress().toString();
-    qDebug() << "FOUND hostName = " << hostName;
-    qDebug() << "FOUND IP = " << IP;
+    //qCDebug(PseudoDNS) << "FOUND hostName = " << hostName;
+    //qCDebug(PseudoDNS) << "FOUND IP = " << IP;
     QPair<QString, QString> hostNameAndIP(hostName, IP);
 
     if(!dnsDiscoverdHosts.contains(hostNameAndIP)){
         dnsDiscoverdHosts.insert(hostNameAndIP);
-        qDebug() << "EMIT " << hostNameAndIP;
+        //qCDebug(PseudoDNS) << "EMIT " << hostNameAndIP;
         emit hostFound(hostNameAndIP.first, hostNameAndIP.second);
 
     }
 }
 
 void PseudoDNSServer::parseQueryForAllHostsDatagram(const QNetworkDatagram & receivedDatagram){
-    qDebug() << "PseudoDNSServer::parseQueryForAllHostsDatagram()";
+    //qCDebug(PseudoDNS) << "PseudoDNSServer::parseQueryForAllHostsDatagram()";
     if(isRun){
         respondQueryForAllHostsDatagram(receivedDatagram);
     }
@@ -192,16 +196,16 @@ void PseudoDNSServer::parseQueryForAllHostsDatagram(const QNetworkDatagram & rec
 
 
 void PseudoDNSServer::respondQueryForAllHostsDatagram(const QNetworkDatagram & receivedDatagram){
-    qDebug() << "PseudoDNSServer::respondQueryForAllHostsDatagram()";
+    //qCDebug(PseudoDNS) << "PseudoDNSServer::respondQueryForAllHostsDatagram()";
     QByteArray data;
 
     data.append(0x02);
     data.append(myHostName.toUtf8());
 
     QNetworkDatagram datagram;
-    datagram.setDestination(receivedDatagram.senderAddress(), PORT);
+    datagram.setDestination(receivedDatagram.senderAddress(), receivedDatagram.senderPort());
     datagram.setData(data);
-    qDebug() << "SEND datagram = " << datagram;
+    //qCDebug(PseudoDNS) << "SEND datagram = " << datagram;
     udpSocket->writeDatagram(datagram);
 }
 
@@ -211,9 +215,9 @@ void PseudoDNSServer::getAllBroadcastAdresses()
     for (auto &interface : listOfInterfaces) {
         QList<QNetworkAddressEntry> listOfAddresEntries = interface.addressEntries();
         for (auto &addresEntry : listOfAddresEntries) {
-            qDebug() << "Find address entry: " << addresEntry;
+            //qCDebug(PseudoDNS) << "Find address entry: " << addresEntry;
             if (!addresEntry.broadcast().isNull() && !addresEntry.ip().isNull()) {
-                qDebug() << "Accepted address entry: index = " << interface.index() << " " << addresEntry;
+                //qCDebug(PseudoDNS) << "Accepted address entry: index = " << interface.index() << " " << addresEntry;
                 interfaceAdresses.insert(interface.index(), addresEntry);
             }
         }

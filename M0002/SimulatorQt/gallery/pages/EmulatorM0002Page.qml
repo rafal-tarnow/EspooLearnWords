@@ -18,6 +18,7 @@ Page {
 
         EmulatorM0002{
             id: emulatorM0002
+            temp: dial.value
         }
 
         ColumnLayout {

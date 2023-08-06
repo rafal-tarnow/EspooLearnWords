@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" datamodel="null" name="M0002StateMachine" qt:editorversion="10.0.2" initial="idle">
+    <qt:editorinfo initialGeometry="-200;-100;-20;-20;40;40"/>
+    <state id="idle">
+        <qt:editorinfo scenegeometry="-106.36;42.04;-166.36;-7.96;120;202.96" geometry="-106.36;42.04;-60;-50;120;202.96"/>
+        <transition type="internal" event="startEvent" target="search">
+            <qt:editorinfo endTargetFactors="16.54;48.74" startTargetFactors="92.38;25"/>
+        </transition>
+        <onentry>
+            <log label="INFO" expr="Enter idle state"/>
+        </onentry>
+        <onexit>
+            <log label="INFO" expr="Exit idle state"/>
+        </onexit>
+    </state>
+    <state id="run">
+        <qt:editorinfo scenegeometry="183.52;-0.78;85.02;-100.33;795.57;539.39" geometry="183.52;-0.78;-98.50;-99.55;795.57;539.39"/>
+        <state id="search">
+            <qt:editorinfo scenegeometry="191.20;42.53;105.02;-7.47;146.18;100" geometry="7.68;43.31;-86.18;-50;146.18;100"/>
+            <transition type="external" event="hostFoundEvent" target="connecting">
+                <qt:editorinfo movePoint="0.93;0"/>
+            </transition>
+            <onentry>
+                <log label="INFO" expr="Enter search state"/>
+            </onentry>
+            <onexit>
+                <log label="INFO" expr="Exit search state"/>
+            </onexit>
+        </state>
+        <transition type="external" event="stopEvent" target="idle">
+            <qt:editorinfo endTargetFactors="76.79;86.56"/>
+        </transition>
+        <state id="connecting">
+            <qt:editorinfo scenegeometry="469.93;39.83;409.93;-10.17;120;100" geometry="286.41;40.61;-60;-50;120;100"/>
+            <transition type="external" event="connectedEvent" target="connected">
+                <qt:editorinfo endTargetFactors="6.78;23.62"/>
+            </transition>
+            <transition type="external" event="connectingTimeoutEvent" target="search">
+                <qt:editorinfo movePoint="0.96;-19.13" localGeometry="0;53.23;-231.36;53.23" endTargetFactors="79.58;90.58" startTargetFactors="36.14;88.20"/>
+            </transition>
+            <onentry>
+                <log label="INFO" expr="Enter connecting state"/>
+            </onentry>
+            <onexit>
+                <log label="INFO" expr="Exit connecting state"/>
+            </onexit>
+            <transition type="external" event="tcpErrorEvent" target="search">
+                <qt:editorinfo localGeometry="0;79.94;-293.94;79.94" endTargetFactors="59.84;92.30" startTargetFactors="63.84;85.61"/>
+            </transition>
+        </state>
+        <state id="connected">
+            <qt:editorinfo scenegeometry="755.87;22.03;695.87;-27.97;152.56;295.39" geometry="572.35;22.81;-60;-50;152.56;295.39"/>
+            <transition type="external" event="disconnectedEvent" target="search">
+                <qt:editorinfo movePoint="9.57;5.74" localGeometry="-547.16;4.38" endTargetFactors="38.83;85.89" startTargetFactors="8.65;69.99"/>
+            </transition>
+            <onentry>
+                <log label="INFO" expr="Enter connected state"/>
+            </onentry>
+            <onexit>
+                <log label="INFO" expr="Exit connected state"/>
+            </onexit>
+            <transition type="external" event="tcpErrorEvent" target="search">
+                <qt:editorinfo localGeometry="-574.24;3.91" endTargetFactors="22.02;74.77" startTargetFactors="10.21;81.39"/>
+            </transition>
+        </state>
+    </state>
+</scxml>

@@ -7,10 +7,11 @@ TcpTerminal::TcpTerminal(QObject *parent)
     : QObject(parent)
 {
     qDebug() << "Create TcpTerminal";
-    m_tcpSocket = std::make_unique<QTcpSocket>();
+    m_tcpSocket = std::make_unique<QTcpSocket>(this);
     connect(m_tcpSocket.get(), &QTcpSocket::connected, this, &TcpTerminal::onConnected);
     connect(m_tcpSocket.get(), &QTcpSocket::disconnected, this, &TcpTerminal::onDisconnected);
     connect(m_tcpSocket.get(), &QTcpSocket::readyRead, this, &TcpTerminal::onReadyRead);
+    connect(m_tcpSocket.get(), QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::errorOccurred), this, &TcpTerminal::onSocketError);
 }
 
 TcpTerminal::~TcpTerminal(){
@@ -27,6 +28,11 @@ void TcpTerminal::connectToServer(const QString& ipAddress, const QString& port)
 void TcpTerminal::disconnectFromServer()
 {
     m_tcpSocket->disconnectFromHost();
+}
+
+void TcpTerminal::onSocketError(QAbstractSocket::SocketError socketError)
+{
+    emit tcpError(m_tcpSocket->errorString());
 }
 
 void TcpTerminal::sendPing()
@@ -52,6 +58,7 @@ void TcpTerminal::onReadyRead()
 {
     if (m_tcpSocket->state() == QAbstractSocket::ConnectedState && m_tcpSocket->bytesAvailable() > 0) {
         QByteArray responseData = m_tcpSocket->readAll();
+        emit dataReceived(QString::fromUtf8(responseData));
         if (responseData == QByteArray::fromHex("02")) { // Odbiór danej 0x02
             emit pingRecived(m_elapsedTimer.nsecsElapsed()/1000); // Zapisz czas reakcji
             // Możesz dodać kod obsługi, jeśli chcesz reagować na odbiór danych ping

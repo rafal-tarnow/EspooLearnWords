@@ -4,9 +4,12 @@
 #include <QSettings>
 #include <QQuickStyle>
 #include <QIcon>
+#include <QLoggingCategory>
 
 int main(int argc, char *argv[])
 {
+    QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
+
     QGuiApplication::setApplicationName("Gallery");
     QGuiApplication::setOrganizationName("QtProject");
 

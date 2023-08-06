@@ -1,41 +1,32 @@
 #pragma once
 
-#include "AspooClient.h"
+#include "Brick.h"
 #include <functional>
+#include <string>
 
-class B0002 : public AspooClient {
+class B0002 : public Brick {
+  using CallbackMeasureFunc = std::function<void(float)>;
+  using CallbackMeasureMeth = std::function<void(float)>;
 public:
-  void setAutoMeasure(bool autoMeasure, uint32_t interval);
-
-  using FunctionCallback = std::function<void(AspooClient*, float)>;
-  using CallbackMethod = std::function<void(AspooClient*, float)>;
-
-  void onMeasure(FunctionCallback callback) {
-    AspooClient client;
-    float temperature = 30.0f;
-    callback(&client, temperature);
+  B0002(std::string name);
+  void onMeasure(CallbackMeasureFunc callback) {
+    callbackMeasureFunction = callback;
   }
-
   template<typename T>
-  void onMeasure(T* obj, void (T::*method)(AspooClient*, float)) {
-    callbackMethod = [=](AspooClient* client, float temp) {
-      (obj->*method)(client, temp);
+  void onMeasure(T *obj, void (T::*method)(float temp)) {
+    callbackMeasureMethod = [=](float temp) {
+      (obj->*method)(temp);
     };
   }
+  void cmdSetMeasureInterval(bool measure, uint32_t interval_ms);
 
-  // void tick() {
-  // if (callbackMethod) {
-  //     if (temperature == 0.0) {
-  //         // Przykładowa wartość temperatury
-  //         temperature = 25.5;
-  //     }
-  //     callbackMethod(&sensor, temperature);
-  // }
+protected:
+  std::string getType() const override;
+  void onProtocolFrame(std::deque<uint8_t> &) override;
 
 private:
-  CallbackMethod callbackMethod;
-  struct {
-    bool mAutoMeasure = false;
-    uint32_t autoMeasureInterval = 1000;
-  } request;
+  void sapi_setTemp(float temp);
+  std::string TYPE;
+  CallbackMeasureFunc callbackMeasureFunction;
+  CallbackMeasureMeth callbackMeasureMethod;
 };

@@ -21,6 +21,7 @@ Page {
                 devicesModel.append({ text: hostName, ip: hostIp})
             }
             Component.onCompleted:{
+                console.log("QML dnsServer.startQueriesForAllHosts()")
                 dnsServer.startQueriesForAllHosts()
             }
         }

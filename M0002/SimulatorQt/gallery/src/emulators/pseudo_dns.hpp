@@ -5,6 +5,9 @@
 #include <QNetworkAddressEntry>
 #include <QMap>
 #include <QUdpSocket>
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(PseudoDNS)
 
 class PseudoDNSServer : public QObject
 {
@@ -38,7 +41,7 @@ private:
     bool isRun = false;
     bool socketInited = false;
     const quint16 PORT = 6353;
-    const int QUERY_INTERVAL = 250;
+    const int QUERY_INTERVAL = 2500;
     void getAllBroadcastAdresses();
     void uninitSocket();
     void initSocket();

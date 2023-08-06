@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" datamodel="null" name="PseudoDNSMachine" qt:editorversion="10.0.2" initial="idle">
+    <qt:editorinfo initialGeometry="-200;-100;-20;-20;40;40"/>
+    <state id="idle">
+        <qt:editorinfo scenegeometry="-106.36;42.04;-166.36;-7.96;120;202.96" geometry="-106.36;42.04;-60;-50;120;202.96"/>
+        <onentry>
+            <log label="INFO" expr="Enter idle state"/>
+        </onentry>
+        <onexit>
+            <log label="INFO" expr="Exit idle state"/>
+        </onexit>
+        <transition type="external" event="startEvent" target="run">
+            <qt:editorinfo endTargetFactors="2.12;36.25"/>
+        </transition>
+    </state>
+    <state id="run">
+        <qt:editorinfo scenegeometry="184.79;-0.78;66.79;-100.33;815.07;539.39" geometry="184.79;-0.78;-118;-99.55;815.07;539.39"/>
+        <transition type="external" event="stopEvent" target="idle">
+            <qt:editorinfo endTargetFactors="76.79;86.56"/>
+        </transition>
+        <transition type="external" event="Transition_2" target="search">
+            <qt:editorinfo startTargetFactors="1.66;24.04"/>
+        </transition>
+        <state id="search">
+            <qt:editorinfo scenegeometry="310.91;31.06;224.73;-18.94;146.18;100" geometry="126.12;31.84;-86.18;-50;146.18;100"/>
+            <onentry>
+                <log label="INFO" expr="Enter search state"/>
+            </onentry>
+            <onexit>
+                <log label="INFO" expr="Exit search state"/>
+            </onexit>
+        </state>
+    </state>
+</scxml>

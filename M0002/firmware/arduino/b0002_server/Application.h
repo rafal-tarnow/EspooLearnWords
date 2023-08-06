@@ -4,5 +4,7 @@
 
 class Application{
 public:
-  void onMeasureBoilerTemp(AspooClient * client, float temp);
+  void onConnectedTempBoiler();
+  void onDisconnectedTempBoiler();
+  void onnMeasureBoiler(float temp);
 };

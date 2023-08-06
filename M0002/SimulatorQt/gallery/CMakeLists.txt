@@ -3,7 +3,7 @@ project(Baboon_bricks LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Scxml Test)
 
 qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     gallery.cpp
@@ -15,6 +15,13 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/emulators/emulator_m0002.cpp
     src/emulators/pseudo_dns.hpp
     src/emulators/pseudo_dns.cpp
+    src/emulators/tcp_connection.hpp
+    src/emulators/tcp_connection.cpp
+    src/tests/PseudoDNSTest.cpp
+    src/emulators/protocol.h
+    src/emulators/protocol.cpp
+    src/emulators/ProtocolStd.h
+    src/emulators/ProtocolStd.cpp
 )
 
 qt_add_qml_module(Baboon_bricks
@@ -90,8 +97,15 @@ qt_add_qml_module(Baboon_bricks
     "images/qt-logo@2x.png"
     "images/qt-logo@3x.png"
     "images/qt-logo@4x.png"
+    "scxml/EmulatorM0002States.scxml"
+    "scxml/PseudoDNSStates.scxml"
     "qmldir"
     "qtquickcontrols2.conf"
+)
+
+qt6_add_statecharts(Baboon_bricks
+    "scxml/EmulatorM0002States.scxml"
+    "scxml/PseudoDNSStates.scxml"
 )
 
 target_link_libraries(Baboon_bricks PUBLIC
@@ -99,6 +113,8 @@ target_link_libraries(Baboon_bricks PUBLIC
     Qt::Gui
     Qt::Quick
     Qt::QuickControls2
+    Qt::Scxml
+    Qt6::Test
 )
 
 if(UNIX AND NOT APPLE AND CMAKE_CROSSCOMPILING)
