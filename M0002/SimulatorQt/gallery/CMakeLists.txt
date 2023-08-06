@@ -22,6 +22,8 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/emulators/protocol.cpp
     src/emulators/ProtocolStd.h
     src/emulators/ProtocolStd.cpp
+    src/controllers/local_m0002_controller.hpp
+    src/controllers/local_m0002_controller.cpp
 )
 
 qt_add_qml_module(Baboon_bricks
@@ -35,6 +37,7 @@ qt_add_qml_module(Baboon_bricks
     "pages/ButtonPage.qml"
     "pages/CheckBoxPage.qml"
     "pages/ComboBoxPage.qml"
+    "pages/ConfigM0002Page.qml"
     "pages/DelayButtonPage.qml"
     "pages/DelegatePage.qml"
     "pages/DevicesInNetworkPage.qml"

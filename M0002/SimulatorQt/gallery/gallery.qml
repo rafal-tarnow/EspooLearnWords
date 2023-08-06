@@ -139,6 +139,7 @@ ApplicationWindow {
 
             model: ListModel {
                 ListElement { title: qsTr("Devices in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
+                ListElement { title: qsTr("Config M0002"); source: "qrc:/pages/ConfigM0002Page.qml" }
                 ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
                 ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
                 ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }

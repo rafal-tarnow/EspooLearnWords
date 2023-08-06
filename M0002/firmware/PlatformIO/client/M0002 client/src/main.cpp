@@ -1,18 +1,31 @@
-#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
+#include "Brick.hpp"
 
-// put function declarations here:
-int myFunction(int, int);
+#define SSID "ESP-TEST"
+#define PASSWORD "12345678"
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+
+Brick brick;
+
+void setup()
+{
+  Serial.begin(115200);
+  delay(5000);
+
+  // create access point
+  while (!WiFi.softAP(SSID, PASSWORD, 6, false, 15))
+  {
+    delay(500);
+  }
+  
+  Serial.println(" Started WiFi AP ");
+  Serial.println(" IP = " + WiFi.softAPIP().toString());
+
+  brick.begin();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
+  
 }
