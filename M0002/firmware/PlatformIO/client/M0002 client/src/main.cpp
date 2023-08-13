@@ -1,31 +1,57 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
-#include "Brick.hpp"
+#include <OneButton.h>
+#include "led.h"
+#include "ApplicationB0002.h"
+#include <Arduino.h>
 
-#define SSID "ESP-TEST"
-#define PASSWORD "12345678"
+#define BUTTON_PIN 0
+#define LED_PIN 2
 
+OneButton button = OneButton(
+    BUTTON_PIN, // Input pin for the button
+    true,       // Button is active LOW
+    false       // Enable internal pull-up resistor
+);
 
-Brick brick;
+ApplicationB0002 application;
+
+void handleLongPress()
+{
+  application.handleButtonLongPress();
+}
+
+void handleClick()
+{
+  application.handleButtonClick();
+}
+
+void handleDoubleClick()
+{
+  application.handleButtonDoubleClick();
+}
 
 void setup()
 {
+  // Setup serial
   Serial.begin(115200);
-  delay(5000);
+  delay(100);
 
-  // create access point
-  while (!WiFi.softAP(SSID, PASSWORD, 6, false, 15))
-  {
-    delay(500);
-  }
-  
-  Serial.println(" Started WiFi AP ");
-  Serial.println(" IP = " + WiFi.softAPIP().toString());
+  // Setup led
+  LedInit(LED_PIN);
+  LedSetState(false);
 
-  brick.begin();
+  button.attachLongPressStart(handleLongPress);
+  button.attachClick(handleClick);
+  button.attachDoubleClick(handleDoubleClick);
+  button.setPressMs(7000);
+
+  application.begin();
 }
 
 void loop()
 {
-  
+  application.update();
+  button.tick();
+  LedTick();
 }

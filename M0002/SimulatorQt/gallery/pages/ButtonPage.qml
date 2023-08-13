@@ -8,6 +8,14 @@ import QtQuick.Controls
 ScrollablePage {
     id: page
 
+    Component.onCompleted: {
+        console.log("Button Page created")
+    }
+    Component.onDestruction: {
+        console.log("Button Page destroyed")
+    }
+
+
     Column {
         spacing: 40
         width: parent.width
@@ -38,6 +46,13 @@ ScrollablePage {
                 text: qsTr("Third")
                 enabled: false
                 Layout.fillWidth: true
+            }
+            Button {
+                text: qsTr("Push")
+                Layout.fillWidth: true
+                onClicked: {
+
+                }
             }
         }
     }

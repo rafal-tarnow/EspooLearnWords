@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QNetworkDatagram>
 #include <QtQml>
+#include "../global_config.hpp"
 
 Q_LOGGING_CATEGORY(PseudoDNS, "PseudoDNSClass")
 
@@ -56,7 +57,7 @@ void PseudoDNSServer::startQueriesForAllHosts()
     dnsDiscoverdHosts.clear();
     runQueriesForAllHosts = true;
     initSocket();
-    queryTimer->start(QUERY_INTERVAL);
+    queryTimer->start(DEFAULT_PSEUDO_DNS_QUERY_INTERVAL);
     onRepeatTimer(); //to speed up query, send first frame ad startup
 }
 
@@ -78,7 +79,7 @@ void PseudoDNSServer::stopQueries()
 void PseudoDNSServer::initSocket()
 {
     if(!socketInited){
-        udpSocket->bind(PORT, QUdpSocket::ShareAddress);
+        udpSocket->bind(DEFAULT_PSEUDO_DNS_PORT, QUdpSocket::ShareAddress);
         connect(udpSocket.get(), &QUdpSocket::readyRead, this, &PseudoDNSServer::readPendingDatagrams);
         socketInited = true;
     }
@@ -97,8 +98,8 @@ void PseudoDNSServer::sendQueryDatagrams()
 
         QNetworkDatagram datagram;
         //datagram.setInterfaceIndex(interfaceIndex);
-        datagram.setDestination(adresses.broadcast(), PORT);
-        datagram.setSender(adresses.ip(), PORT);
+        datagram.setDestination(adresses.broadcast(), DEFAULT_PSEUDO_DNS_PORT);
+        datagram.setSender(adresses.ip(), DEFAULT_PSEUDO_DNS_PORT);
         datagram.setData(data);
         qCDebug(PseudoDNS) << "DNS 0x01 command send";
         udpSocket->writeDatagram(datagram);

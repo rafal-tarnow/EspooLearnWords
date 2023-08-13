@@ -40,8 +40,6 @@ public:
     static void append(QByteArray& array, const QString& text);
     static uint8_t getUint8_t(QByteArray& array);
     static uint16_t getUint16_t(QByteArray& array);
-    static uint32_t getUint32_t(QByteArray& array);
-    static float getFloat(QByteArray& array);
     static QString getQString(QByteArray& array);
 #endif
     static bool getBool(std::deque<uint8_t>& frame);

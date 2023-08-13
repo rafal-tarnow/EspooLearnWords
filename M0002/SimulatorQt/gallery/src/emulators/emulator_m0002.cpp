@@ -1,4 +1,5 @@
 #include "emulator_m0002.hpp"
+#include "../global_config.hpp"
 #include <QtQml>
 
 EmulatorM0002::EmulatorM0002(QObject *parent) : QObject(parent), mModuleType("B0002")
@@ -97,7 +98,7 @@ void EmulatorM0002::exitSearchState()
 
 void EmulatorM0002::enterConnectingState()
 {
-    tcpConnection->connectToServer(mServerIP, PORT);
+    tcpConnection->connectToServer(mServerIP, DEFAULT_TCP_PORT, 60*1000);
 }
 
 void EmulatorM0002::onTcpConnectingTimeout(){
@@ -116,7 +117,7 @@ void EmulatorM0002::enterConnectedState()
 
 void EmulatorM0002::exitConnectedState()
 {
-    tcpConnection->disconnectFronServer();
+    tcpConnection->disconnectFromServer();
     measureTimer->stop();
 }
 

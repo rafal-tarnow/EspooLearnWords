@@ -10,6 +10,13 @@ Page {
     id: page
     property int controlsHeight: 40
 
+    Component.onCompleted: {
+        console.log("Page created:")
+    }
+    Component.onDestruction: {
+        console.log("Page destroyed:")
+    }
+
     ListModel {
         id: asciModel
     }
@@ -86,9 +93,10 @@ Page {
                 text: qsTr("Close")
                 Layout.preferredHeight: page.controlsHeight
                 onClicked: {
-                    bindButton.highlighted = false
-                    udpTerminal.close()
-                    logAsciMessage("[UDP socket closed]")
+                    //bindButton.highlighted = false
+                    //udpTerminal.close()
+                    //logAsciMessage("[UDP socket closed]")
+                    stackView.push("qrc:/pages/SliderPage.qml")
                 }
             }
         }

@@ -12,7 +12,7 @@ TcpConncetion::TcpConncetion(QObject *parent)
     connect(tcpSocket, &QTcpSocket::connected, this, &TcpConncetion::onSocketConnected);
     connect(tcpSocket, &QTcpSocket::disconnected, this, &TcpConncetion::onSocketDisconnected);
     connect(tcpSocket, &QTcpSocket::readyRead, this, &TcpConncetion::onTcpReadyRead);
-    connect(tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::errorOccurred), this, &TcpConncetion::onSocketError);
+    connect(tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred), this, &TcpConncetion::onSocketError);
 
     protocolStd.setOnFrameCallback(this, &TcpConncetion::onProtocolStdFrame);
 }
@@ -23,19 +23,21 @@ TcpConncetion::~TcpConncetion()
     delete tcpSocket;
 }
 
-void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort)
+void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort, int timeoutMs)
 {
     tcpSocket->connectToHost(serverIP, serverPort);
-    tcpConnectingTimeoutTimer->start(60*1000);
+    tcpConnectingTimeoutTimer->start(timeoutMs);
 }
 
-void TcpConncetion::disconnectFronServer()
+void TcpConncetion::disconnectFromServer()
 {
+    tcpConnectingTimeoutTimer->stop();
     tcpSocket->close();
 }
 
 void TcpConncetion::sendFrame(const QByteArray &frame)
 {
+    qDebug() << "TcpConncetion::sendFrame()";
     QByteArray protocolFrame;
     uint16_t frameSize = static_cast<uint16_t>(frame.size());
     ProtocolStd::append(protocolFrame,frameSize);
@@ -77,13 +79,12 @@ void TcpConncetion::onConnectingTimeoutTimer()
 void TcpConncetion::onSocketError(QAbstractSocket::SocketError socketError)
 {
     QString error = tcpSocket->errorString();
-    tcpConnectingTimeoutTimer->stop();
-    tcpSocket->close();
     emit onTcpError(error);
 }
 
 void TcpConncetion::onProtocolStdFrame(std::deque<uint8_t>& frame)
 {
+    qDebug() << "TcpConncetion::onProtocolStdFrame()";
     QByteArray byteArray;
     byteArray.reserve(frame.size());
     for (const auto& byte : frame) {

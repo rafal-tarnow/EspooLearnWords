@@ -12,8 +12,8 @@ class TcpConncetion : public QObject
 public:
     TcpConncetion(QObject *parent = nullptr);
     ~TcpConncetion();
-    void connectToServer(QString serverIP, quint16 serverPort);
-    void disconnectFronServer();
+    void connectToServer(QString serverIP, quint16 serverPort, int timeoutMs);
+    void disconnectFromServer();
     void sendFrame(const QByteArray & frame);
 
 signals:
@@ -21,7 +21,7 @@ signals:
     void onTcpConnectingTimeout();
     void onTcpDisconnected();
     void onTcpError(const QString & error);
-    void onTcpFrame(const QByteArray & frame);
+    void onTcpFrame(QByteArray & frame);
 
 private slots:
     void onSocketDisconnected();

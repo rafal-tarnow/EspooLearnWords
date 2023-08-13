@@ -11,7 +11,7 @@ TcpTerminal::TcpTerminal(QObject *parent)
     connect(m_tcpSocket.get(), &QTcpSocket::connected, this, &TcpTerminal::onConnected);
     connect(m_tcpSocket.get(), &QTcpSocket::disconnected, this, &TcpTerminal::onDisconnected);
     connect(m_tcpSocket.get(), &QTcpSocket::readyRead, this, &TcpTerminal::onReadyRead);
-    connect(m_tcpSocket.get(), QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::errorOccurred), this, &TcpTerminal::onSocketError);
+    connect(m_tcpSocket.get(), QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred), this, &TcpTerminal::onSocketError);
 }
 
 TcpTerminal::~TcpTerminal(){

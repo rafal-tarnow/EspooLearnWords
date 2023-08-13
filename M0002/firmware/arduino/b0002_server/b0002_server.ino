@@ -56,20 +56,20 @@ void setup(){
   tempBoiler.onDisconnected(&application, &Application::onDisconnectedTempBoiler);
   tempBoiler.onMeasure(&application, &Application::onnMeasureBoiler);
 
-  // 	// connects to access point
-	// WiFi.mode(WIFI_STA);
-	// WiFi.begin("TP-LINK_A1AE89", "Krzysiu1");
-	// while (WiFi.status() != WL_CONNECTED) {
-	// 	Serial.print('.');
-	// 	delay(500);
-	// }
-  // Serial.print("Connected! IP address: ");
-  // Serial.println(WiFi.localIP());
-
-  	// create access point
-	while (!WiFi.softAP(SSID, PASSWORD, 6, false, 15)) {
+  	// connects to access point
+	WiFi.mode(WIFI_STA);
+	WiFi.begin("TP-LINK_A1AE89", "Krzysiu1");
+	while (WiFi.status() != WL_CONNECTED) {
+		Serial.print('.');
 		delay(500);
 	}
+  Serial.print("Connected! IP address: ");
+  Serial.println(WiFi.localIP());
+
+  	// create access point
+	// while (!WiFi.softAP(SSID, PASSWORD, 6, false, 15)) {
+	// 	delay(500);
+	// }
 }
 
 void loop(){

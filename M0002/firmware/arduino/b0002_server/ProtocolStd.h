@@ -30,6 +30,7 @@ public:
     static void append(std::vector<uint8_t>& array, const uint16_t& data);
     static void append(std::vector<uint8_t>& array, const uint32_t& data);
     static void append(std::vector<uint8_t>& array, const float& data);
+    static void append(std::vector<uint8_t>& array, const std::string& data);
 #ifdef QT_CORE_LIB
     static void append(QByteArray& array, const uint8_t& data);
     static void append(QByteArray& array, const uint16_t&  data);

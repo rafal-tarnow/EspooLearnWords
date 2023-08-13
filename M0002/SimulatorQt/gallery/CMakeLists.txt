@@ -24,6 +24,10 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/emulators/ProtocolStd.cpp
     src/controllers/local_m0002_controller.hpp
     src/controllers/local_m0002_controller.cpp
+    src/global_config.hpp
+    src/controllers/MyBricksManager.hpp
+    src/controllers/MyBricksManager.cpp
+    src/wifi_info.hpp
 )
 
 qt_add_qml_module(Baboon_bricks
@@ -32,7 +36,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES
     "+Material/ToolBar.qml"
     "ToolBar.qml"
-    "gallery.qml"
+    "aspoo_main.qml"
     "pages/BusyIndicatorPage.qml"
     "pages/ButtonPage.qml"
     "pages/CheckBoxPage.qml"
@@ -46,6 +50,7 @@ qt_add_qml_module(Baboon_bricks
     "pages/EmulatorM0002Page.qml"
     "pages/FramePage.qml"
     "pages/GroupBoxPage.qml"
+    "pages/MyBricksPage.qml"
     "pages/PageIndicatorPage.qml"
     "pages/ProgressBarPage.qml"
     "pages/RadioButtonPage.qml"
@@ -96,6 +101,8 @@ qt_add_qml_module(Baboon_bricks
     "images/arrows@3x.png"
     "images/arrows@4x.png"
     "images/baboon.png"
+    "images/config.svg"
+    "images/forward.svg"
     "images/qt-logo.png"
     "images/qt-logo@2x.png"
     "images/qt-logo@3x.png"

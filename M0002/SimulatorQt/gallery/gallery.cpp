@@ -8,10 +8,11 @@
 
 int main(int argc, char *argv[])
 {
-    QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
+    //QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
 
-    QGuiApplication::setApplicationName("Gallery");
-    QGuiApplication::setOrganizationName("QtProject");
+    #warning "First app run doesent load material style, it can be chacked by changing app and organization name"
+    QGuiApplication::setApplicationName("Aspoo Bricks");
+    QGuiApplication::setOrganizationName("Aspoo Labs");
 
     QGuiApplication app(argc, argv);
 
@@ -42,7 +43,7 @@ int main(int argc, char *argv[])
 #endif
 
     engine.setInitialProperties({{ "builtInStyles", builtInStyles }});
-    engine.load(QUrl("qrc:/gallery.qml"));
+    engine.load(QUrl("qrc:/aspoo_main.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
 

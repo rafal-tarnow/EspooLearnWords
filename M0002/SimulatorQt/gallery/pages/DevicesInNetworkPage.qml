@@ -11,6 +11,17 @@ Page {
         id: devicesModel
     }
 
+    onFocusChanged: {
+        if(focus){
+            console.log("focus true")
+            devicesModel.clear()
+            dnsServer.startQueriesForAllHosts()
+        }else{
+            console.log("focus false")
+            dnsServer.stopQueries()
+        }
+    }
+
     ColumnLayout {
         spacing: 5
         anchors.fill: parent
@@ -19,10 +30,6 @@ Page {
             id: dnsServer
             onHostFound:  function (hostName, hostIp) {
                 devicesModel.append({ text: hostName, ip: hostIp})
-            }
-            Component.onCompleted:{
-                console.log("QML dnsServer.startQueriesForAllHosts()")
-                dnsServer.startQueriesForAllHosts()
             }
         }
 
@@ -45,6 +52,10 @@ Page {
                         spacing: 20
                         anchors.fill: parent
 
+                        ToolButton {
+                            action: deviceDetails
+                        }
+
                         Label {
                             text: model.text
                             font.bold: true
@@ -52,8 +63,9 @@ Page {
                             Layout.fillWidth: true
                         }
 
+
                         ToolButton {
-                            action: deviceDetails
+                            action: goToBrick
                         }
 
                     }
@@ -67,10 +79,11 @@ Page {
                         columnSpacing: 10
 
                         Label {
-                            text: qsTr("Module IP:")
+                            text: qsTr("Brick IP:")
                             Layout.leftMargin: 60
                         }
                         Label {
+                            id: ipLabel
                             text: model.ip
                             font.bold: true
                             elide: Text.ElideRight
@@ -85,6 +98,14 @@ Page {
                     icon.name: "show_details"
                     checkable: true
                     onTriggered: {
+                    }
+                }
+
+                Action {
+                    id: goToBrick
+                    icon.source: "qrc:/images/config.svg"
+                    onTriggered: {
+                            stackView.pushPage("qrc:/pages/ConfigM0002Page.qml", "Config Device",{ "ipAddress": ipLabel.text });
                     }
                 }
 

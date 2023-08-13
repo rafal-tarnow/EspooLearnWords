@@ -40,8 +40,6 @@ private:
     bool runQueriesForAllHosts = false;
     bool isRun = false;
     bool socketInited = false;
-    const quint16 PORT = 6353;
-    const int QUERY_INTERVAL = 2500;
     void getAllBroadcastAdresses();
     void uninitSocket();
     void initSocket();

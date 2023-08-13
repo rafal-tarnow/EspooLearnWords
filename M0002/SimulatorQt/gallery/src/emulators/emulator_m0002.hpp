@@ -54,7 +54,6 @@ private:
     void sapi_setNameAndType(QString &moduleName, QString &moduleType);
     void sapi_setTemp(float temp);
 private:
-    quint16 PORT = 2883;
     std::unique_ptr<PseudoDNSServer> pseudoDNSServer;
     std::unique_ptr<TcpConncetion> tcpConnection;
     std::unique_ptr<QTimer> measureTimer;

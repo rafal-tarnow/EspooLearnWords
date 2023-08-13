@@ -6,7 +6,7 @@ SOURCES += \
     gallery.cpp
 
 RESOURCES += \
-    gallery.qml \
+    aspoo_main.qml \
     pages/BusyIndicatorPage.qml \
     pages/ButtonPage.qml \
     pages/CheckBoxPage.qml \
