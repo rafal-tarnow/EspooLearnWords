@@ -1,16 +1,33 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Effects
+import Qt.labs.settings 1.0
+import "./my_bricks"
 import Backend
 
 Page {
     id: page
     property int controlsHeight: 40
 
+    ListModel {
+        id: devicesModel
+    }
+
+    PseudoDNSServer{
+        id: dnsServer
+        onHostFound:  function (hostName, hostIp) {
+            devicesModel.append({ text: hostName, ip: hostIp})
+        }
+        Component.onCompleted: {
+            dnsServer.startQueriesForAllHosts()
+        }
+    }
+
     MyListModel{
         id: myBricksModel
         onBrickAlreadyAdded: function(brickType, brickName){
-warningDialog.open()
+            warningDialog.open()
         }
     }
 
@@ -21,47 +38,104 @@ warningDialog.open()
         modal: true
 
         Label {
+            id: menuTitle
             padding: 10
             font.bold: true
             width: parent.width
             horizontalAlignment: Qt.AlignHCenter
             text: currentContact >= 0 ? contactView.model.get(currentContact).fullName : ""
         }
-        MenuItem {
-            text: qsTr("Edit...")
-            onTriggered: contactDialog.editContact(contactView.model.get(currentContact))
-        }
+        //        MenuItem {
+        //            text: qsTr("Edit...")
+        //            onTriggered: contactDialog.editContact(contactView.model.get(currentContact))
+        //        }
         MenuItem {
             text: qsTr("Remove")
-            onTriggered: contactView.model.remove(currentContact)
+            onTriggered: myBricksModel.remove(myBricksListView.currentBrick)
         }
     }
 
     ListView {
+        id: myBricksListView
+        model: myBricksModel
+
+        property int currentBrick: -1
+
         width: parent.width
         height: parent.height
 
-        model: myBricksModel
+        focus: true
+        boundsBehavior: Flickable.StopAtBounds
 
-        delegate: ItemDelegate {
+        //        section.property: "brickName"
+        //        section.criteria: ViewSection.FirstCharacter
+        //        section.delegate: SectionDelegate {
+        //            width: myBricksListView.width
+        //        }
+
+        delegate: BrickDelegate {
+            id: myBrickDelegate
             width: parent.width
-            height: 50
-            Row{
-
-            Text {
-                width: parent.width * 0.25
-                text: model.brickName
-            }
-            Text {
-                text: model.brickType
-            }
-            }
             onPressAndHold: {
                 console.log("Long press 11")
+                myBricksListView.currentBrick = index
+                menuTitle.text = model.brickName
                 contactMenu.open()
             }
+
+            LocalM0002Controller{
+                id: controller
+
+                Component.onCompleted: {
+                    dnsServer.onHostFound.connect(controller.onHostFoundHandler)
+
+                    var ipaddr = dnsServer.getIp(model.brickName)
+                    if(ipaddr !== "")
+                        connectToBrick(ipaddr)
+                }
+
+                function onHostFoundHandler(hostName, hostIp) {
+                    if (isBrickConnected() === false && myBrickDelegate.brickName === hostName) {
+                        connectToBrick(hostIp)
+                    }
+                }
+
+                onBrickConnected: {
+                    myBrickDelegate.brickConnected = true
+                }
+
+                onBrickTcpErrorOccurred: {
+                    console.log("Brick Tcp Error")
+                    if(isBrickConnected() === false){
+                        var ipaddr = dnsServer.getIp(model.brickName)
+                        if(ipaddr !== "")
+                            connectToBrick(ipaddr)
+                    }
+                }
+
+                onBrickDisconnected: {
+                    myBrickDelegate.brickConnected = false
+
+                    //if disctonnected, try reconnect
+                    var ipaddr = dnsServer.getIp(model.brickName)
+                    if(ipaddr !== "")
+                        connectToBrick(ipaddr)
+                }
+
+                onBrickMeasureTemp: function onTemp(temp){
+                    brickTempCelsius = temp
+                    brickTempFahrenheit = celsiusToFahrenheit(temp)
+                }
+
+                function celsiusToFahrenheit(celsius) {
+                    return (celsius * 9/5) + 32;
+                }
+            }
         }
+
+        ScrollBar.vertical: ScrollBar { }
     }
+
 
     RoundButton {
         text: qsTr("+")
@@ -127,7 +201,7 @@ warningDialog.open()
         onAccepted: {
             close()
             dialog.close()
-            myBricksModel.addBrick(confirmName.text,confirmType.text, confirmIP.text);
+            myBricksModel.addBrick(confirmType.text,confirmName.text, confirmIP.text);
         }
     }
 
@@ -144,23 +218,11 @@ warningDialog.open()
             close()
         }
         onClosed: {
-            devicesModel.clear()
-            dnsServer.stopQueries()
+
         }
 
         onOpened: {
-            dnsServer.startQueriesForAllHosts()
-        }
 
-        ListModel {
-            id: devicesModel
-        }
-
-        PseudoDNSServer{
-            id: dnsServer
-            onHostFound:  function (hostName, hostIp) {
-                devicesModel.append({ text: hostName, ip: hostIp})
-            }
         }
 
         ListView {

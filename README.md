@@ -25,6 +25,10 @@ wejść w Projekty -> Wersja -> CMake -> Current Configuration , zmienić zmienn
 Error: QtCreator Downloading Android SDK Tools from .. : TLS initialization failed
 This error occurs because QtCreator uses libssl version 1.1.1 while Ubuntu 22.04 defaults to version 3.0.0. The solution to this problem is to download the source code of the libssl library in version 1.1.1, compile it, and install the library. Then, run QtCreator using the following command: LD_PRELOAD=/usr/local/ssl/lib/libcrypto.so:/usr/local/ssl/lib/libssl.so ./qtcreator, where /usr/local/ssl/lib is the path to the installed libssl library in version 1.1.1.
 
+
+Bład: No target architecture defined in json file:
+check if project is not divided into library and executable, mayby yout try run library on phone? chlick button left down cornert above run button , end then check run configuration
+
 XCB error
 To fix the xcb error while running a project in Qt Creator, execute the following command: sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev.
 
@@ -93,7 +97,23 @@ emmake make
  "configure.bat -v -static -opensource -confirm-license -debug-and-release -platform win32-g++ -prefix $QtDir -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -openssl -I "C:\Qt\Tools\OpenSSL\src\include" -L "C:\Qt\Tools\OpenSSL\Win_x64\lib" OPENSSL_LIBS="-llibssl -llibcrypto" -make libs -nomake tools -nomake examples -nomake tests "
  
  
+ FLASK:
  
+ //install virtual enviroment
+ pip install virtualenv
+ cd flask_server
+ virtualenv aspoo_env //create virtual env
+ source aspoo_env/bin/activate //activate virtual env
+ 
+ //flask installation
+ pip install Flask
+ pip install Flask-SQLAlchemy
+ 
+ //run flask server
+ python3 main.py
+ 
+ //optional deactivate virtual enviroment
+ deactivate
  
 
                                                                   ~~~~~~~~~~~~^

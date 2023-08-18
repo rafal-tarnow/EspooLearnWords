@@ -24,6 +24,8 @@ public:
     Q_INVOKABLE bool isQueriesRunning();
     Q_INVOKABLE void stopQueries();
 
+    Q_INVOKABLE QString getIp(const QString& hostName);
+
 signals:
     void hostFound(QString hostName, QString hostIp);
 

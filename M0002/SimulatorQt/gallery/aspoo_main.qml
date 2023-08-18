@@ -16,6 +16,8 @@ ApplicationWindow {
     height: 520
     visible: true
     title: qsTr("Qt Quick Controls")
+    //color: "#f0eef0"
+    color: "green"
 
     //! [orientation]
     readonly property bool portraitMode: window.width < window.height
@@ -37,6 +39,15 @@ ApplicationWindow {
     Settings {
         id: settings
         property string style
+        property string temperatureScale //Celsius, Fahrenheit
+        signal sendMessage(string msg, int compId)
+        function setTemperatureScale(scale) {
+            //if (scale !== temperatureScale) {
+                //temperatureScale = scale;
+                //temperatureScaleChanged(scale);
+            //}
+        }
+
     }
 
     Shortcut {
@@ -196,8 +207,8 @@ ApplicationWindow {
     }
 
     StackView {
-        id: stackView
 
+        id: stackView
         anchors.fill: parent
         anchors.leftMargin: !window.portraitMode ? drawer.width : undefined
 
@@ -225,7 +236,7 @@ ApplicationWindow {
             }
 
             Label {
-                text: qsTr("Baboon App provides a set of functions that can be used to build complete IoT System.")
+                text: qsTr("Aspoo app provides a set of functions that can be used to build complete IoT System.")
                 anchors.margins: 20
                 anchors.top: logo.bottom
                 anchors.left: parent.left
@@ -258,6 +269,7 @@ ApplicationWindow {
         standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: {
             settings.style = styleBox.displayText
+            settings.temperatureScale = temperatureBox.displayText
             settingsDialog.close()
         }
         onRejected: {
@@ -284,6 +296,28 @@ ApplicationWindow {
                         styleIndex = find(settings.style, Qt.MatchFixedString)
                         if (styleIndex !== -1)
                         currentIndex = styleIndex
+                    }
+                    Layout.fillWidth: true
+                }
+            }
+            RowLayout {
+                spacing: 10
+
+                Label {
+                    text: qsTr("Temperature:")
+                }
+
+                ComboBox {
+                    id: temperatureBox
+                    property int tempIndex: -1
+                    model: ListModel {
+                        ListElement { text: qsTr("Celsius") }
+                        ListElement { text: qsTr("Fahrenheit") }
+                    }
+                    Component.onCompleted: {
+                        tempIndex = find(settings.temperatureScale, Qt.MatchFixedString)
+                        if (tempIndex !== -1)
+                        currentIndex = tempIndex
                     }
                     Layout.fillWidth: true
                 }
@@ -331,4 +365,5 @@ ApplicationWindow {
             }
         }
     }
+
 }

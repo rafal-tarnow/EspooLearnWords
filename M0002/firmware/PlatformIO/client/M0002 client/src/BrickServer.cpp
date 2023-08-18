@@ -37,11 +37,17 @@ void BrickServer::handleProtocolStdFrame(std::deque<uint8_t> &frame)
   if (!frame.empty())
   {
     uint8_t functionCode = ProtocolStd::getUint8_t(frame);
-    
-    if (functionCode == 0x02)
+    if (functionCode == 0x01) // ping command
+    {
+      std::vector<uint8_t> frame;
+      ProtocolStd::append(frame, uint8_t(0x01));
+      sendProtocolFrame(frame);
+    }
+    else if (functionCode == 0x02)
     {
       Serial.println("functionCode == 0x02");
-      if(callbackGetBrickName){
+      if (callbackGetBrickName)
+      {
         callbackGetBrickName();
       }
     }
@@ -99,7 +105,7 @@ void BrickServer::onHandleNewClient(void *arg, AsyncClient *client)
   }
 }
 
-void BrickServer::begin(const std::string& brickName)
+void BrickServer::begin(const std::string &brickName)
 {
   pseudoDNS.run(brickName);
 
@@ -125,7 +131,7 @@ void BrickServer::cmdSetBrickName(const std::string &brickName)
   sendProtocolFrame(frame);
 }
 
-void BrickServer::cmdSetNetworkSettings(const std::string& ssid, const std::string& pswd)
+void BrickServer::cmdSetNetworkSettings(const std::string &ssid, const std::string &pswd)
 {
   std::vector<uint8_t> frame;
   ProtocolStd::append(frame, uint8_t(0x03));

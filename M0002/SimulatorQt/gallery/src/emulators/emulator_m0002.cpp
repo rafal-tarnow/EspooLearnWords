@@ -10,7 +10,6 @@ EmulatorM0002::EmulatorM0002(QObject *parent) : QObject(parent), mModuleType("B0
 
     tcpConnection = std::make_unique<TcpConncetion>(this);
     connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &EmulatorM0002::onTcpConnected);
-    connect(tcpConnection.get(),&TcpConncetion::onTcpConnectingTimeout, this, &EmulatorM0002::onTcpConnectingTimeout);
     connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &EmulatorM0002::onTcpDisconnected);
     connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &EmulatorM0002::onTcpError);
     connect(tcpConnection.get(), &TcpConncetion::onTcpFrame, this, &EmulatorM0002::onTcpFrame);
@@ -98,7 +97,7 @@ void EmulatorM0002::exitSearchState()
 
 void EmulatorM0002::enterConnectingState()
 {
-    tcpConnection->connectToServer(mServerIP, DEFAULT_TCP_PORT, 60*1000);
+    tcpConnection->connectToServer(mServerIP, DEFAULT_TCP_PORT);
 }
 
 void EmulatorM0002::onTcpConnectingTimeout(){

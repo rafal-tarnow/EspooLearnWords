@@ -151,7 +151,7 @@ ScrollablePage {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 Label {
-                    text: controller.lastError
+                    text: controller.lastTcpError
                 }
             }
         }

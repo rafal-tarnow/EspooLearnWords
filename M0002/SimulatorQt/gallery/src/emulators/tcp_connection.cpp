@@ -5,9 +5,6 @@
 TcpConncetion::TcpConncetion(QObject *parent)
     : QObject()
 {
-    tcpConnectingTimeoutTimer = std::make_unique<QTimer>(this);
-    connect(tcpConnectingTimeoutTimer.get(), &QTimer::timeout, this, &TcpConncetion::onConnectingTimeoutTimer);
-
     tcpSocket = new QTcpSocket(this);
     connect(tcpSocket, &QTcpSocket::connected, this, &TcpConncetion::onSocketConnected);
     connect(tcpSocket, &QTcpSocket::disconnected, this, &TcpConncetion::onSocketDisconnected);
@@ -19,20 +16,29 @@ TcpConncetion::TcpConncetion(QObject *parent)
 
 TcpConncetion::~TcpConncetion()
 {
+    qDebug() << "      tcpSocket->close()";
     tcpSocket->close();
+    qDebug() << "      tcpSocket delete";
     delete tcpSocket;
 }
 
-void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort, int timeoutMs)
+void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort)
 {
+    qDebug() << "      tcpSocket->connectToHost()";
     tcpSocket->connectToHost(serverIP, serverPort);
-    tcpConnectingTimeoutTimer->start(timeoutMs);
 }
 
 void TcpConncetion::disconnectFromServer()
 {
-    tcpConnectingTimeoutTimer->stop();
+    qDebug() << "      tcpSocket->close()";
     tcpSocket->close();
+
+}
+
+void TcpConncetion::abord()
+{
+    qDebug() << "      tcpSocket->abort()";
+    tcpSocket->abort();
 }
 
 void TcpConncetion::sendFrame(const QByteArray &frame)
@@ -50,7 +56,6 @@ void TcpConncetion::sendFrame(const QByteArray &frame)
 
 void TcpConncetion::onSocketConnected()
 {
-    tcpConnectingTimeoutTimer->stop();
     protocolStd.reset();
     emit onTcpConnected();
 }
@@ -67,13 +72,6 @@ void TcpConncetion::onTcpReadyRead()
     QByteArray data = tcpSocket->readAll();
     std::vector<uint8_t> dataStdVector(data.begin(), data.end());
     protocolStd.addData(dataStdVector);
-}
-
-void TcpConncetion::onConnectingTimeoutTimer()
-{
-    tcpConnectingTimeoutTimer->stop();
-    tcpSocket->close();
-    emit onTcpConnectingTimeout();
 }
 
 void TcpConncetion::onSocketError(QAbstractSocket::SocketError socketError)

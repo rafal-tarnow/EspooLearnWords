@@ -10,20 +10,22 @@
 class LocalM0002Controller : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString lastError READ lastError WRITE setLastError NOTIFY lastErrorChanged)
+    Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
 
 public:
     explicit LocalM0002Controller(QObject *parent = nullptr);
     Q_INVOKABLE void connectToBrick(const QString &ip);
+    Q_INVOKABLE bool isBrickConnected();
     Q_INVOKABLE void disconnectFromBrick();
-    Q_INVOKABLE QString lastError() const;
+    Q_INVOKABLE QString lastTcpError() const;
     Q_INVOKABLE void cmdGetTypeAndName();
     Q_INVOKABLE void cmdGetNetworkConfig();
     Q_INVOKABLE void cmdSaveBrickName(const QString & brickName);
     Q_INVOKABLE void cmdSaveNetworkConfig(const QString & ssid, const QString & pwd);
 
 signals:
-    void lastErrorChanged();
+    void birckPingTimeoutErrorOccurred();
+    void brickTcpErrorOccurred();
     void brickConnected();
     void brickDisconnected();
     void brickTypeAndName(const QString & type, const QString & brickName);
@@ -38,9 +40,15 @@ private slots:
     void handleTcpConnectingTimeout();
 
 private:
-    void setLastError(const QString &newLastError);
+    void sendPingFrame();
+    void checkConnectionStatus();
 
 private:
     std::unique_ptr<TcpConncetion> tcpConnection;
-    QString m_lastError;
+    QString m_lastTcpError;
+    QString mIp;
+    bool mConnectionCheck = false;
+    bool mConnected = false;
+    bool mConnecting = false;
+    void pingFrameTimeout();
 };

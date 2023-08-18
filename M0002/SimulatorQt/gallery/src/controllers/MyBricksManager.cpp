@@ -65,6 +65,7 @@ QHash<int, QByteArray> MyListModel::roleNames() const {
 
 void MyListModel::addBrick(const QString &brickType, const QString &brickName, const QString &brickIp)
 {
+    qDebug() << "MyListModel::addBrick() " << "type=" << brickType << " name=" << brickName << " ip=" << brickIp;
     if (brickExists(brickType, brickName)) {
        emit brickAlreadyAdded(brickType, brickName);
         return;
@@ -72,6 +73,18 @@ void MyListModel::addBrick(const QString &brickType, const QString &brickName, c
 
     QVariantMap item = {{"brickName", brickName}, {"brickType", brickType}};
     addItem(item);
+}
+
+void MyListModel::remove(int row)
+{
+    qDebug() << "MyListModel::remove() row = " << row;
+    if (row < 0 || row >= m_items.count())
+        return;
+
+    beginRemoveRows(QModelIndex(), row, row);
+    m_items.removeAt(row);
+    saveToSettings();
+    endRemoveRows();
 }
 
 bool MyListModel::brickExists(const QString &brickType, const QString &brickName) const

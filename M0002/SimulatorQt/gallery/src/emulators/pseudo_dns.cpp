@@ -76,6 +76,15 @@ void PseudoDNSServer::stopQueries()
     }
 }
 
+QString PseudoDNSServer::getIp(const QString &hostName){
+    for (const QPair<QString, QString> &pair : dnsDiscoverdHosts) {
+        if (pair.first == hostName) {
+            return pair.second;
+        }
+    }
+    return "";
+}
+
 void PseudoDNSServer::initSocket()
 {
     if(!socketInited){

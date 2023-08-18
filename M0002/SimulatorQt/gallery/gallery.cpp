@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    //QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
+    QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
 
     #warning "First app run doesent load material style, it can be chacked by changing app and organization name"
     QGuiApplication::setApplicationName("Aspoo Bricks");
