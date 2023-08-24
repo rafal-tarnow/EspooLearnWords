@@ -12,17 +12,17 @@ void BrickServer::handleTcpData(void *arg, AsyncClient *client, void *data, size
   Serial.write((uint8_t *)data, len);
 
   std::vector<uint8_t> byteVector(static_cast<uint8_t *>(data), static_cast<uint8_t *>(data) + len);
-  protocolStd.addData(byteVector);
+  clients[client]->addData(byteVector);
 }
 
 void BrickServer::handleTcpDisconnect(void *arg, AsyncClient *client)
 {
   Serial.printf("\n client %s disconnected \n", client->remoteIP().toString().c_str());
-  if (client == mClient)
-  {
-    mClient = nullptr;
-    protocolStd.reset();
-  }
+
+  ProtocolStd * protocol = clients[client];
+  protocols.erase(protocol);
+  clients.erase(client);
+  delete protocol;
 }
 
 void BrickServer::handleTcpTimeOut(void *arg, AsyncClient *client, uint32_t time)
@@ -30,7 +30,7 @@ void BrickServer::handleTcpTimeOut(void *arg, AsyncClient *client, uint32_t time
   Serial.printf("\n client ACK timeout ip: %s \n", client->remoteIP().toString().c_str());
 }
 
-void BrickServer::handleProtocolStdFrame(std::deque<uint8_t> &frame)
+void BrickServer::handleProtocolStdFrame(ProtocolStd *, std::deque<uint8_t> &frame)
 {
   Serial.print("Brick::handleProtocolStdFrame() ");
 
@@ -85,24 +85,16 @@ void BrickServer::onHandleNewClient(void *arg, AsyncClient *client)
 {
   Serial.printf("\n Brick::onHandleNewClient() prv new client has been connected to server, ip: %s", client->remoteIP().toString().c_str());
 
-  if (mClient == nullptr)
-  {
-    // add to list
-    mClient = client;
-
     // register events
-    mClient->onData(std::bind(&BrickServer::handleTcpData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4), NULL);
-    mClient->onError(std::bind(&BrickServer::handleTcpError, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), NULL);
-    mClient->onDisconnect(std::bind(&BrickServer::handleTcpDisconnect, this, std::placeholders::_1, std::placeholders::_2), NULL);
-    mClient->onTimeout(std::bind(&BrickServer::handleTcpTimeOut, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), NULL);
+    client->onData(std::bind(&BrickServer::handleTcpData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4), NULL);
+    client->onError(std::bind(&BrickServer::handleTcpError, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), NULL);
+    client->onDisconnect(std::bind(&BrickServer::handleTcpDisconnect, this, std::placeholders::_1, std::placeholders::_2), NULL);
+    client->onTimeout(std::bind(&BrickServer::handleTcpTimeOut, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3), NULL);
 
-    protocolStd.reset();
-  }
-  else
-  {
-    client->close();
-    Serial.println("Arleady connected, ignore connection");
-  }
+    ProtocolStd * protocol = new ProtocolStd();
+    protocol->setOnFrameCallback(this, &BrickServer::handleProtocolStdFrame);
+    clients[client] = protocol;
+    protocols[protocol] = client;
 }
 
 void BrickServer::begin(const std::string &brickName)
@@ -113,7 +105,6 @@ void BrickServer::begin(const std::string &brickName)
   mServer->onClient(std::bind(&BrickServer::onHandleNewClient, this, std::placeholders::_1, std::placeholders::_2), mServer);
   mServer->begin();
 
-  protocolStd.setOnFrameCallback(this, &BrickServer::handleProtocolStdFrame);
 }
 
 void BrickServer::setBrickName(const std::string &brickName)
@@ -121,28 +112,28 @@ void BrickServer::setBrickName(const std::string &brickName)
   pseudoDNS.setHostName(brickName);
 }
 
-void BrickServer::cmdSetBrickName(const std::string &brickName)
+void BrickServer::cmdSetBrickName(AsyncClient * client, const std::string &brickName)
 {
 
   std::vector<uint8_t> frame;
   ProtocolStd::append(frame, uint8_t(0x02));
   ProtocolStd::append(frame, getBrickType());
   ProtocolStd::append(frame, brickName);
-  sendProtocolFrame(frame);
+  sendProtocolFrame(client, frame);
 }
 
-void BrickServer::cmdSetNetworkSettings(const std::string &ssid, const std::string &pswd)
+void BrickServer::cmdSetNetworkSettings(AsyncClient * client, const std::string &ssid, const std::string &pswd)
 {
   std::vector<uint8_t> frame;
   ProtocolStd::append(frame, uint8_t(0x03));
   ProtocolStd::append(frame, ssid);
   ProtocolStd::append(frame, pswd);
-  sendProtocolFrame(frame);
+  sendProtocolFrame(client, frame);
 }
 
 bool BrickServer::isSomeoneConnected()
 {
-  return mClient;
+  return clients.size() > 0;
 }
 
 void BrickServer::update()
@@ -155,7 +146,7 @@ BrickServer::~BrickServer()
   delete mServer;
 }
 
-void BrickServer::sendProtocolFrame(const std::vector<uint8_t> &frame)
+void BrickServer::sendProtocolFrame(AsyncClient *client, const std::vector<uint8_t> &frame)
 {
   Serial.println("Brick::sendProtocolFrame()");
   uint16_t size = frame.size();
@@ -165,8 +156,8 @@ void BrickServer::sendProtocolFrame(const std::vector<uint8_t> &frame)
 
   //  if ((mClient != nullptr) && mClient->space() > datagram.size() && mClient->canSend())
   //  {
-  mClient->add(reinterpret_cast<const char *>(datagram.data()), datagram.size());
+  client->add(reinterpret_cast<const char *>(datagram.data()), datagram.size());
   Serial.println("mClient->send()");
-  mClient->send();
+  client->send();
   // }
 }

@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <functional>
 #include <string>
+#include <utility>
+#include <map>
 #include "PseudoDNS.h"
 #include "ProtocolStd.h"
 
@@ -37,14 +39,14 @@ public:
         callbackSaveBrickName = std::bind(method, obj, std::placeholders::_1);
     }
     void setBrickName(const std::string& brickName);
-    void cmdSetBrickName(const std::string& brickName);
-    void cmdSetNetworkSettings(const std::string& ssid, const std::string& pswd);
+    void cmdSetBrickName(AsyncClient * client, const std::string& brickName);
+    void cmdSetNetworkSettings(AsyncClient * client, const std::string& ssid, const std::string& pswd);
     virtual std::string getBrickType() const = 0;
     bool isSomeoneConnected();
     void update();
 
 protected:
-    void sendProtocolFrame(const std::vector<uint8_t> &frame);
+    void sendProtocolFrame(AsyncClient *client, const std::vector<uint8_t> &frame);
 
 private:
     // server events
@@ -55,7 +57,7 @@ private:
     void handleTcpDisconnect(void *arg, AsyncClient *client);
     void handleTcpTimeOut(void *arg, AsyncClient *client, uint32_t time);
 
-    void handleProtocolStdFrame(std::deque<uint8_t> &frame);
+    void handleProtocolStdFrame(ProtocolStd *, std::deque<uint8_t> &frame);
 
 private:
     CallbackGet callbackGetNetworkSettings;
@@ -64,7 +66,7 @@ private:
     CallbackSaveBrickName callbackSaveBrickName;
     uint16_t PORT = 2883;
     AsyncServer *mServer;
-    AsyncClient *mClient = nullptr;
     PseudoDNS pseudoDNS;
-    ProtocolStd protocolStd;
+    std::map<AsyncClient*, ProtocolStd *> clients;
+    std::map<ProtocolStd*, AsyncClient *> protocols;
 };

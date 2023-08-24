@@ -24,7 +24,7 @@ void ApplicationB0002::update()
         Serial.println(" °C");
 
         if (mBrick.isSomeoneConnected()){
-            mBrick.cmdSetMeasureTemp(temperatureCelsius);
+            //mBrick.cmdSetMeasureTemp(temperatureCelsius);
         }
         sensors.requestTemperatures();
     }

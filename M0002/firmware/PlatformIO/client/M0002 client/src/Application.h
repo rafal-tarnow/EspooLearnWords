@@ -17,10 +17,10 @@ public:
     void handleButtonClick();
     void handleButtonDoubleClick();
 
-    void handleGetBrickName();
-    void handleBrickGetNetworkSettings();
-    void handleBrickSaveNetworkSettings(const std::string &ssid, const std::string &pwd);
-    void handleBrickSaveBrickName(const std::string &brickName);
+    void handleGetBrickName(AsyncClient * client);
+    void handleBrickGetNetworkSettings(AsyncClient * client);
+    void handleBrickSaveNetworkSettings(AsyncClient * client, const std::string &ssid, const std::string &pwd);
+    void handleBrickSaveBrickName(AsyncClient * client, const std::string &brickName);
 
     void handleWiFiStationModeConnected(const WiFiEventStationModeConnected &);
     void wifiConnectToConfigNetwork();

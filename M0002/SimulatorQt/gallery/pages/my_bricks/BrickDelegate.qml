@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Effects
 
 ItemDelegate {
     id: delegate
@@ -9,7 +10,34 @@ ItemDelegate {
     property string brickName: model.brickName
     property real brickTempCelsius: 0.0
     property real brickTempFahrenheit: 0.0
-    contentItem: ColumnLayout{
+
+    //        Rectangle {
+    //            id: backgroundRect
+    //            z: -1
+    //            width: delegate.width // Dopasuj szerokość do delegata
+    //            height: delegate.height // Dopasuj wysokość do delegata
+    //            color: "red" // Ustaw kolor na czerwony
+    //            radius: 10
+    //        }
+
+
+//    MultiEffect {
+//        source: delegate
+//        anchors.fill: delegate
+//        shadowEnabled: true
+//        shadowHorizontalOffset: 5
+//        shadowVerticalOffset: 5
+
+//    }
+
+
+    contentItem:
+
+
+
+
+
+        ColumnLayout{
         spacing: 10
 
         RowLayout{
@@ -37,8 +65,17 @@ ItemDelegate {
 
             ToolButton {
                 id: goToBrickButton
-                visible: false
+                visible: true
                 action: goToBrick
+                Image{
+                    anchors.horizontalCenter: goToBrickButton.horizontalCenter
+                    anchors.verticalCenter: goToBrickButton.verticalCenter
+                    width:goToBrickButton.width*0.5
+                    height: goToBrickButton.height*0.5
+                    fillMode: Image.PreserveAspectFit
+                    sourceSize: Qt.size(width,height)
+                    source: "qrc:/images/go-forward2.svg"
+                }
             }
 
         }
@@ -77,9 +114,11 @@ ItemDelegate {
         }
     }
 
+
+
     Action {
         id: goToBrick
-        icon.source: "qrc:/images/go-forward2.svg"
+        //icon.source: "qrc:/images/go-forward2.svg"
         onTriggered: {
             //stackView.pushPage("qrc:/pages/ConfigM0002Page.qml", "Config Device",{ "ipAddress": ipLabel.text });
         }

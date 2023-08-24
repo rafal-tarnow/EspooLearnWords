@@ -4,6 +4,6 @@
 class B0002 : public BrickServer
 {
 public:
-    void cmdSetMeasureTemp(float temp);
+    void cmdSetMeasureTemp(AsyncClient * client, float temp);
         std::string getBrickType() const override;
 };

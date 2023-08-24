@@ -49,12 +49,12 @@ void Application::handleButtonDoubleClick()
     }
 }
 
-void Application::handleGetBrickName()
+void Application::handleGetBrickName(AsyncClient * client)
 {
     Serial.println("Application::handleGetBrickName() ");
     string brickName;
     configReadBrickName(brickName);
-    brick->cmdSetBrickName(brickName);
+    brick->cmdSetBrickName(client, brickName);
 
 }
 
