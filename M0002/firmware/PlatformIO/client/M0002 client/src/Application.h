@@ -1,7 +1,8 @@
 #pragma once
 #include <led.h>
-#include "BrickServer.hpp"
 #include <Preferences.h>
+#include "BrickServer.hpp"
+#include "BrickClient.hpp"
 
 class Application
 {
@@ -12,15 +13,20 @@ class Application
     };
 
 public:
-    void begin(BrickServer *brick);
+    void begin();
     void handleButtonLongPress();
     void handleButtonClick();
     void handleButtonDoubleClick();
 
-    void handleGetBrickName(AsyncClient * client);
-    void handleBrickGetNetworkSettings(AsyncClient * client);
-    void handleBrickSaveNetworkSettings(AsyncClient * client, const std::string &ssid, const std::string &pwd);
-    void handleBrickSaveBrickName(AsyncClient * client, const std::string &brickName);
+    // brick server events
+    BrickClient *handleBrickClientCreate(AsyncClient *);
+    void handleBrickClientDelete(BrickClient *);
+
+    // brick client events
+    void handleGetBrickName(BrickClient *client);
+    void handleBrickGetNetworkSettings(BrickClient *client);
+    void handleBrickSaveNetworkSettings(BrickClient *client, const std::string &ssid, const std::string &pwd);
+    void handleBrickSaveBrickName(BrickClient *client, const std::string &brickName);
 
     void handleWiFiStationModeConnected(const WiFiEventStationModeConnected &);
     void wifiConnectToConfigNetwork();
@@ -36,13 +42,19 @@ public:
     void configSaveNetworkSettings(const std::string &ssid, const std::string &pwd);
     void configSaveBrickName(const std::string &brickName);
 
+    virtual BrickClient* createBrickClient(AsyncClient * tcpClient) = 0;
+    virtual void deleteBrickClient(BrickClient * tcpClient) = 0;
+    virtual std::string getBrickType() const = 0;
     virtual void update();
+
+protected:
+    BrickServer brickServer;
 
 private:
 #define AP_CONFIG_SSID "Aspoo Brick Config Network"
 #define AP_CONFIG_PASSWORD "12345678"
     AppState appState = RUN_STATE;
-    BrickServer *brick;
+
     Preferences prefs;
     WiFiEventHandler networkConnectedHandler;
 };

@@ -4,15 +4,19 @@
 #include <DallasTemperature.h>
 #include "B0002.hpp"
 
-class ApplicationB0002 : public Application{
+class ApplicationB0002 : public Application
+{
 public:
-ApplicationB0002();
-void begin();
- void update() override;
+  ApplicationB0002();
+  void begin();
+  void update() override;
+  std::string getBrickType() const override;
+  BrickClient *createBrickClient(AsyncClient *) override;
+  void deleteBrickClient(BrickClient *) override;
 
 private:
-const int oneWirePin = 4;
-B0002 mBrick;
-OneWire oneWire;
-DallasTemperature sensors;
+std::set<B0002*> clients;
+  const int oneWirePin = 4;
+  OneWire oneWire;
+  DallasTemperature sensors;
 };

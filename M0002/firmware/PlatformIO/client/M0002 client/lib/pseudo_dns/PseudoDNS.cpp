@@ -7,7 +7,7 @@ void PseudoDNS::setHostName(const std::string &hostName)
 
 void PseudoDNS::run(const std::string &myHostName)
 {
-    Serial.println("\n PseudoDNS::run()");
+    Serial.printf("\n PseudoDNS::run() hostName = %s", myHostName.c_str());
     mRunning = true;
     mName = myHostName;
     Udp.begin(PORT);

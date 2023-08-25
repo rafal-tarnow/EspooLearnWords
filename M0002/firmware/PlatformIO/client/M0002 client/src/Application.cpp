@@ -3,18 +3,15 @@
 
 using namespace std;
 
-void Application::begin(BrickServer *brck)
+void Application::begin()
 {
     networkConnectedHandler = WiFi.onStationModeConnected(std::bind(&Application::handleWiFiStationModeConnected, this, std::placeholders::_1));
 
     wifiConnectToConfigNetwork();
 
-    brick = brck;
-    brick->begin(configReadBrickName());
-    brick->onGetNetworkSetting(this, &Application::handleBrickGetNetworkSettings);
-    brick->onSaveNetworkSetting(this, &Application::handleBrickSaveNetworkSettings);
-    brick->onSaveBrickName(this, &Application::handleBrickSaveBrickName);
-    brick->onGetBrickName(this, &Application::handleGetBrickName);
+    brickServer.onBrickClientCreate(this, &Application::handleBrickClientCreate);
+    brickServer.onBrickClientDelete(this, &Application::handleBrickClientDelete);
+    brickServer.begin(configReadBrickName());
 }
 
 void Application::handleButtonLongPress()
@@ -49,25 +46,39 @@ void Application::handleButtonDoubleClick()
     }
 }
 
-void Application::handleGetBrickName(AsyncClient * client)
+BrickClient *Application::handleBrickClientCreate(AsyncClient *tcpClient)
+{
+    BrickClient *brickClient = createBrickClient(tcpClient);
+    brickClient->onGetNetworkSetting(this, &Application::handleBrickGetNetworkSettings);
+    brickClient->onSaveNetworkSetting(this, &Application::handleBrickSaveNetworkSettings);
+    brickClient->onSaveBrickName(this, &Application::handleBrickSaveBrickName);
+    brickClient->onGetBrickName(this, &Application::handleGetBrickName);
+    return brickClient;
+}
+
+void Application::handleBrickClientDelete(BrickClient *brickClient)
+{
+    deleteBrickClient(brickClient);
+}
+
+void Application::handleGetBrickName(BrickClient *client)
 {
     Serial.println("Application::handleGetBrickName() ");
     string brickName;
     configReadBrickName(brickName);
-    brick->cmdSetBrickName(client, brickName);
-
+    client->cmdSetBrickNameAndType(brickName, getBrickType());
 }
 
-void Application::handleBrickGetNetworkSettings()
+void Application::handleBrickGetNetworkSettings(BrickClient *client)
 {
     Serial.println("Application::handleBrickGetNetworkSettings()");
     string ssid;
     string pwd;
     configReadNetworkSettings(ssid, pwd);
-    brick->cmdSetNetworkSettings(ssid, pwd);
+    client->cmdSetNetworkSettings(ssid, pwd);
 }
 
-void Application::handleBrickSaveNetworkSettings(const std::string &ssid, const std::string &pwd)
+void Application::handleBrickSaveNetworkSettings(BrickClient *client, const std::string &ssid, const std::string &pwd)
 {
     Serial.println("Application::handleBrickSaveNetworkSettings()");
     configSaveNetworkSettings(ssid, pwd);
@@ -79,10 +90,10 @@ void Application::handleBrickSaveNetworkSettings(const std::string &ssid, const 
     }
 }
 
-void Application::handleBrickSaveBrickName(const std::string &brickName)
+void Application::handleBrickSaveBrickName(BrickClient *client, const std::string &brickName)
 {
     Serial.println("Application::handleBrickSaveNetworkSettings()");
-    brick->setBrickName(brickName);
+    brickServer.setBrickName(brickName);
     configSaveBrickName(brickName);
 }
 
@@ -115,7 +126,7 @@ void Application::wifiCreateAccesPoint(const std::string &ssid, const std::strin
 {
     if (pwd == "") // create accespoint without password
     {
-        while (!WiFi.softAP(string("Aspoo " + brick->getBrickType() + " Config Network").c_str(), nullptr, 6, false, 15))
+        while (!WiFi.softAP(string("Aspoo " + getBrickType() + " Config Network").c_str(), nullptr, 6, false, 15))
         {
             delay(500);
         }
@@ -151,7 +162,7 @@ void Application::wifiDisconnectAll()
 std::string Application::configReadBrickName()
 {
     prefs.begin("ASPOO_BRICK");
-    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + brick->getBrickType()).c_str()).c_str();// + brick->getBrickType()).c_str();
+    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getBrickType()).c_str()).c_str(); // + brick->getBrickType()).c_str();
     prefs.end();
     return brickName;
 }
@@ -159,7 +170,7 @@ std::string Application::configReadBrickName()
 void Application::configReadBrickName(std::string &brickName)
 {
     prefs.begin("ASPOO_BRICK");
-    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + brick->getBrickType()).c_str()).c_str();// + brick->getBrickType()).c_str();
+    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getBrickType()).c_str()).c_str(); // + brick->getBrickType()).c_str();
     prefs.end();
     Serial.println((string("Application::configReadBrickName() brickName = ") + brickName).c_str());
 }
@@ -192,5 +203,5 @@ void Application::configSaveBrickName(const std::string &brickName)
 void Application::update()
 {
     // Serial.println("Application::update()");
-    brick->update();
+    brickServer.update();
 }

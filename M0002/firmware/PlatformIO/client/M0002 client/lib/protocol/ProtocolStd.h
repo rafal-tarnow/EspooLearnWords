@@ -12,15 +12,15 @@
 
 class ProtocolStd {
 public:
-    using FrameCallback= std::function<void(ProtocolStd *, std::deque<uint8_t>& )>;
+    using FrameCallback= std::function<void(std::deque<uint8_t>& )>;
 
     void addData(const std::vector<uint8_t>& data);
 
 
     void setOnFrameCallback(FrameCallback callback);
     template<typename T>
-    void setOnFrameCallback(T *obj,void (T::*method)(ProtocolStd *, std::deque<uint8_t>&)) {
-        onFrameMethodCallback = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2);
+    void setOnFrameCallback(T *obj,void (T::*method)(std::deque<uint8_t>&)) {
+        onFrameMethodCallback = std::bind(method, obj, std::placeholders::_1);
     }
     void reset();
 

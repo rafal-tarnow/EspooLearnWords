@@ -34,10 +34,10 @@ void ProtocolStd::addData(const std::vector<uint8_t>& data) {
                 currentState = WaitForDataSizeMSB;
 
                 if (onFrameCallback) {
-                    onFrameCallback(this, frame);
+                    onFrameCallback(frame);
                 }
                 if (onFrameMethodCallback) {
-                    onFrameMethodCallback(this, frame);
+                    onFrameMethodCallback(frame);
                 }
             } else {
                 return;
