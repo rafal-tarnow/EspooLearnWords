@@ -65,8 +65,11 @@ void Application::handleGetBrickName(BrickClient *client)
 {
     Serial.println("Application::handleGetBrickName() ");
     string brickName;
+    Serial.println("string brickName ");
     configReadBrickName(brickName);
+    Serial.println("configReadBrickName(brickName); ");
     client->cmdSetBrickNameAndType(brickName, getBrickType());
+    Serial.println("client->cmdSetBrickNameAndType(brickName, getBrickType()); ");
 }
 
 void Application::handleBrickGetNetworkSettings(BrickClient *client)
@@ -169,8 +172,11 @@ std::string Application::configReadBrickName()
 
 void Application::configReadBrickName(std::string &brickName)
 {
+    Serial.printf("\nApplication::configReadBrickName()");
     prefs.begin("ASPOO_BRICK");
+    Serial.printf("\nprefs.begin(\"ASPOO_BRICK\");");
     brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getBrickType()).c_str()).c_str(); // + brick->getBrickType()).c_str();
+    Serial.printf("\npbrickName = prefs.getString");
     prefs.end();
     Serial.println((string("Application::configReadBrickName() brickName = ") + brickName).c_str());
 }

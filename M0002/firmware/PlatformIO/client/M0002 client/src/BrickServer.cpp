@@ -25,7 +25,9 @@ if(callbackBrickDelete){
   Serial.printf("\n delete");
   callbackBrickDelete(brickClient);
   Serial.printf("\after delete");
+  
 }
+delete asyncClient;
 }
 
 void BrickServer::handleTcpTimeOut(void *arg, AsyncClient *client, uint32_t time)

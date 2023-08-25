@@ -15,7 +15,7 @@ public:
   void deleteBrickClient(BrickClient *) override;
 
 private:
-std::set<B0002*> clients;
+  std::set<B0002 *> clients;
   const int oneWirePin = 4;
   OneWire oneWire;
   DallasTemperature sensors;

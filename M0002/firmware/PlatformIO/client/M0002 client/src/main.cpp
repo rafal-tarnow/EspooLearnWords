@@ -4,8 +4,11 @@
 #include <OneButton.h>
 #include "led.h"
 #include "ApplicationB0002.h"
+#include "ApplicationT0002.h"
 #include <Arduino.h>
 #include <ArduinoOTA.h>
+#include "config.h"
+#include "Debug.hpp"
 
 #define BUTTON_PIN 0
 #define LED_PIN 2
@@ -16,7 +19,12 @@ OneButton button = OneButton(
     false       // Enable internal pull-up resistor
 );
 
+#ifdef __BRICK_B0002__
 ApplicationB0002 application;
+#elif defined(__BRICK_T0002__)
+ApplicationT0002 application;
+#endif
+
 
 void setupOTA();
 
@@ -61,6 +69,7 @@ void loop()
   button.tick();
   LedTick();
   ArduinoOTA.handle();
+  ObjectCounter::printArduino();
 }
 
 void setupOTA()

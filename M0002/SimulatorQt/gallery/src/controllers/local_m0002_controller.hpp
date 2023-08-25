@@ -7,13 +7,13 @@
 #include <memory>
 #include "../emulators/tcp_connection.hpp"
 
-class LocalM0002Controller : public QObject
+class M0002LocalClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
 
 public:
-    explicit LocalM0002Controller(QObject *parent = nullptr);
+    explicit M0002LocalClient(QObject *parent = nullptr);
     Q_INVOKABLE void connectToBrick(const QString &ip);
     Q_INVOKABLE bool isBrickConnected();
     Q_INVOKABLE void disconnectFromBrick();

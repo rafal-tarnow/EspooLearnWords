@@ -3,17 +3,17 @@
 #include <QTcpSocket>
 #include "../global_config.hpp"
 
-LocalM0002Controller::LocalM0002Controller(QObject *parent)
+M0002LocalClient::M0002LocalClient(QObject *parent)
     : QObject(parent)
 {
     tcpConnection = std::make_unique<TcpConncetion>(this);
-    connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &LocalM0002Controller::handleTcpConnected);
-    connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &LocalM0002Controller::handleTcpDisconnected);
-    connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &LocalM0002Controller::handleTcpError);
-    connect(tcpConnection.get(), &TcpConncetion::onTcpFrame, this, &LocalM0002Controller::handleTcpFrame);
+    connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &M0002LocalClient::handleTcpConnected);
+    connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &M0002LocalClient::handleTcpDisconnected);
+    connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &M0002LocalClient::handleTcpError);
+    connect(tcpConnection.get(), &TcpConncetion::onTcpFrame, this, &M0002LocalClient::handleTcpFrame);
 }
 
-void LocalM0002Controller::connectToBrick(const QString &ip)
+void M0002LocalClient::connectToBrick(const QString &ip)
 {
     qDebug() << "LocalM0002Controller::connectToBrick() Connecting to" << ip << "on port " << DEFAULT_TCP_PORT << "...";
     if(mConnected == false && mConnecting == false){
@@ -24,18 +24,18 @@ void LocalM0002Controller::connectToBrick(const QString &ip)
     }
 }
 
-bool LocalM0002Controller::isBrickConnected()
+bool M0002LocalClient::isBrickConnected()
 {
     return mConnected;
 }
 
-void LocalM0002Controller::disconnectFromBrick()
+void M0002LocalClient::disconnectFromBrick()
 {
     qDebug() << "LocalM0002Controller::disconnectFromBrick()";
     tcpConnection->disconnectFromServer();
 }
 
-void LocalM0002Controller::handleTcpConnected()
+void M0002LocalClient::handleTcpConnected()
 {
     qDebug() << "LocalM0002Controller::handleTcpConnected()";
     // Tutaj można dodać kod obsługi połączenia
@@ -45,7 +45,7 @@ void LocalM0002Controller::handleTcpConnected()
     emit brickConnected();
 }
 
-void LocalM0002Controller::handleTcpDisconnected()
+void M0002LocalClient::handleTcpDisconnected()
 {
     qDebug() << "Disconnected from server";
     // Tutaj można dodać kod obsługi rozłączenia
@@ -53,7 +53,7 @@ void LocalM0002Controller::handleTcpDisconnected()
     emit brickDisconnected();
 }
 
-void LocalM0002Controller::handleTcpError(const QString & error)
+void M0002LocalClient::handleTcpError(const QString & error)
 {
     qDebug() << "Error: " << error;
     tcpConnection->abord();
@@ -62,7 +62,7 @@ void LocalM0002Controller::handleTcpError(const QString & error)
     emit brickTcpErrorOccurred();
 }
 
-void LocalM0002Controller::handleTcpFrame(QByteArray &frame)
+void M0002LocalClient::handleTcpFrame(QByteArray &frame)
 {
     qDebug() << "LocalM0002Controller::handleTcpFrame()" << frame;
     uint8_t functionCode = ProtocolStd::getUint8_t(frame);
@@ -84,45 +84,40 @@ void LocalM0002Controller::handleTcpFrame(QByteArray &frame)
     }
 }
 
-void LocalM0002Controller::handleTcpConnectingTimeout()
+void M0002LocalClient::handleTcpConnectingTimeout()
 {
 
 }
 
-void LocalM0002Controller::sendPingFrame()
+void M0002LocalClient::sendPingFrame()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x01));
     tcpConnection->sendFrame(frame);
 }
 
-static void registerLocalM0002ControllerTypes()
-{
-    qmlRegisterType<LocalM0002Controller>("Backend", 1, 0, "LocalM0002Controller");
-}
 
-Q_COREAPP_STARTUP_FUNCTION(registerLocalM0002ControllerTypes)
 
-QString LocalM0002Controller::lastTcpError() const
+QString M0002LocalClient::lastTcpError() const
 {
     return m_lastTcpError;
 }
 
-void LocalM0002Controller::cmdGetTypeAndName()
+void M0002LocalClient::cmdGetTypeAndName()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x02));
     tcpConnection->sendFrame(frame);
 }
 
-void LocalM0002Controller::cmdGetNetworkConfig()
+void M0002LocalClient::cmdGetNetworkConfig()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x03));
     tcpConnection->sendFrame(frame);
 }
 
-void LocalM0002Controller::cmdSaveBrickName(const QString &brickName)
+void M0002LocalClient::cmdSaveBrickName(const QString &brickName)
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x04));
@@ -130,7 +125,7 @@ void LocalM0002Controller::cmdSaveBrickName(const QString &brickName)
     tcpConnection->sendFrame(frame);
 }
 
-void LocalM0002Controller::cmdSaveNetworkConfig(const QString &ssid, const QString &pwd)
+void M0002LocalClient::cmdSaveNetworkConfig(const QString &ssid, const QString &pwd)
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x05));
@@ -139,16 +134,16 @@ void LocalM0002Controller::cmdSaveNetworkConfig(const QString &ssid, const QStri
     tcpConnection->sendFrame(frame);
 }
 
-void LocalM0002Controller::checkConnectionStatus()
+void M0002LocalClient::checkConnectionStatus()
 {
     if(mConnected){
         mConnectionCheck = false;
         sendPingFrame();
-        QTimer::singleShot(5000, this, &LocalM0002Controller::pingFrameTimeout);
+        QTimer::singleShot(5000, this, &M0002LocalClient::pingFrameTimeout);
     }
 }
 
-void LocalM0002Controller::pingFrameTimeout()
+void M0002LocalClient::pingFrameTimeout()
 {
     if(mConnected){
         if(mConnectionCheck == false){
@@ -159,3 +154,10 @@ void LocalM0002Controller::pingFrameTimeout()
         }
     }
 }
+
+static void registerM0002LocalClientTypes()
+{
+    qmlRegisterType<M0002LocalClient>("Backend", 1, 0, "M0002LocalClient");
+}
+
+Q_COREAPP_STARTUP_FUNCTION(registerM0002LocalClientTypes)

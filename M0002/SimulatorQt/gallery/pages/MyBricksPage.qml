@@ -83,7 +83,7 @@ Page {
                 contactMenu.open()
             }
 
-            LocalM0002Controller{
+            M0002LocalClient{
                 id: controller
 
                 Component.onCompleted: {
@@ -100,8 +100,16 @@ Page {
                     }
                 }
 
+                onBrickTypeAndName: function onTypeAndName(type, name){
+                    if(model.brickName === name  && model.brickType === type){
+                        myBrickDelegate.brickConnected = true
+                    }else{
+                        controller.disconnectFromBrick()
+                    }
+                }
+
                 onBrickConnected: {
-                    myBrickDelegate.brickConnected = true
+                    controller.cmdGetTypeAndName();
                 }
 
                 onBrickTcpErrorOccurred: {
@@ -117,6 +125,7 @@ Page {
                     myBrickDelegate.brickConnected = false
 
                     //if disctonnected, try reconnect
+                    console.log("TRRRRRRRRRRRRRRRRYYYYYYYYYYY REEEEEEEEEEEECONNECT !!!!")
                     var ipaddr = dnsServer.getIp(model.brickName)
                     if(ipaddr !== "")
                         connectToBrick(ipaddr)
@@ -236,7 +245,7 @@ Page {
                 width: parent.width
                 checkable: true
 
-                LocalM0002Controller{
+                M0002LocalClient{
                     id: controller
                     onBrickConnected: {
                         console.log("Brick connected")
