@@ -1,20 +1,34 @@
 #include "Application.h"
 #include <ESP8266WiFi.h>
+#include "T0002.hpp"
+
+template class Application<T0002>;
 
 using namespace std;
 
-void Application::begin()
+template <typename T>
+void Application<T>::begin()
 {
     networkConnectedHandler = WiFi.onStationModeConnected(std::bind(&Application::handleWiFiStationModeConnected, this, std::placeholders::_1));
+    stationModeGotIpHandler = WiFi.onStationModeGotIP(std::bind(&Application::handleWiFiStationModeGotIp, this, std::placeholders::_1));
 
     wifiConnectToConfigNetwork();
 
-    brickServer.onBrickClientCreate(this, &Application::handleBrickClientCreate);
-    brickServer.onBrickClientDelete(this, &Application::handleBrickClientDelete);
-    brickServer.begin(configReadBrickName());
+    string brickName = configReadBrickName();
+
+    pseudoDNS.run(brickName);
+
+    asyncServer = new AsyncServer(2883);
+    asyncServer->onClient(std::bind(&Application::handleNewTcpClient, this, std::placeholders::_1, std::placeholders::_2), asyncServer);
+    asyncServer->begin();
+
+    // tcpServer = new TcpServer();
+    // tcpServer->onNewConnection(this, &Application::handleTcpServerNewConnection);
+    // tcpServer->listen(2883);
 }
 
-void Application::handleButtonLongPress()
+template <typename T>
+void Application<T>::handleButtonLongPress()
 {
     if (appState != CONFIG_STATE)
     {
@@ -26,7 +40,8 @@ void Application::handleButtonLongPress()
     }
 }
 
-void Application::handleButtonClick()
+template <typename T>
+void Application<T>::handleButtonClick()
 {
     if (appState == CONFIG_STATE)
     {
@@ -36,7 +51,8 @@ void Application::handleButtonClick()
     }
 }
 
-void Application::handleButtonDoubleClick()
+template <typename T>
+void Application<T>::handleButtonDoubleClick()
 {
     if (appState == CONFIG_STATE)
     {
@@ -46,33 +62,69 @@ void Application::handleButtonDoubleClick()
     }
 }
 
-BrickClient *Application::handleBrickClientCreate(AsyncClient *tcpClient)
+template <typename T>
+void Application<T>::setupNewBrickClientCallbacks(BrickClient *brickClient)
 {
-    BrickClient *brickClient = createBrickClient(tcpClient);
     brickClient->onGetNetworkSetting(this, &Application::handleBrickGetNetworkSettings);
     brickClient->onSaveNetworkSetting(this, &Application::handleBrickSaveNetworkSettings);
     brickClient->onSaveBrickName(this, &Application::handleBrickSaveBrickName);
     brickClient->onGetBrickName(this, &Application::handleGetBrickName);
-    return brickClient;
+    brickClient->onTcpDisconnected(this, &Application::handleDisconnectedClient);
 }
 
-void Application::handleBrickClientDelete(BrickClient *brickClient)
+template <typename T>
+void Application<T>::handleDisconnectedClient(BrickClient *brickClient)
 {
-    deleteBrickClient(brickClient);
+    Serial.printf("\n%lu Application::handleDisconnectedClient()", dtime());
+    disconnections++;
+    clientsToDelete.insert(reinterpret_cast<T *>(brickClient));
 }
 
-void Application::handleGetBrickName(BrickClient *client)
+template <typename T>
+void Application<T>::cleanup()
 {
-    Serial.println("Application::handleGetBrickName() ");
+    for (auto it = clientsToDelete.begin(); it != clientsToDelete.end(); ++it)
+    {
+        T *client = *it;
+        clients.erase(client);
+        delete client;
+        client = nullptr;
+    }
+    clientsToDelete.clear();
+}
+
+template <typename T>
+void Application<T>::handleNewTcpClient(void *arg, AsyncClient *tcpClient)
+{
+    // Serial.printf("\n%lu Application::handleNewTcpClient()", dtime());
+    connections++;
+    T *newClient = new T(tcpClient);
+    setupNewBrickClientCallbacks(newClient);
+    clients.insert(newClient);
+}
+
+template <typename T>
+void Application<T>::handleNewTcpSocket(TcpSocket *socket)
+{
+    Serial.printf("\n%lu ApplicationT0002::handleNewTcpSocket()", dtime());
+    T *newClient = new T(socket);
+    setupNewBrickClientCallbacks(newClient);
+    clients.insert(newClient);
+}
+
+template <typename T>
+void Application<T>::handleGetBrickName(BrickClient *client)
+{
+    // Serial.printf("\n%lu Application::handleGetBrickName() ", dtime());
     string brickName;
-    Serial.println("string brickName ");
+    // Serial.printf("\n%lu string brickName %s", dtime(), brickName.c_str());
     configReadBrickName(brickName);
-    Serial.println("configReadBrickName(brickName); ");
-    client->cmdSetBrickNameAndType(brickName, getBrickType());
-    Serial.println("client->cmdSetBrickNameAndType(brickName, getBrickType()); ");
+    client->cmdSetBrickNameAndType(brickName, T::type());
+    // Serial.printf("\n%lu client->cmdSetBrickNameAndType(brickName, T::type()); ", dtime());
 }
 
-void Application::handleBrickGetNetworkSettings(BrickClient *client)
+template <typename T>
+void Application<T>::handleBrickGetNetworkSettings(BrickClient *client)
 {
     Serial.println("Application::handleBrickGetNetworkSettings()");
     string ssid;
@@ -81,7 +133,8 @@ void Application::handleBrickGetNetworkSettings(BrickClient *client)
     client->cmdSetNetworkSettings(ssid, pwd);
 }
 
-void Application::handleBrickSaveNetworkSettings(BrickClient *client, const std::string &ssid, const std::string &pwd)
+template <typename T>
+void Application<T>::handleBrickSaveNetworkSettings(BrickClient *client, const std::string &ssid, const std::string &pwd)
 {
     Serial.println("Application::handleBrickSaveNetworkSettings()");
     configSaveNetworkSettings(ssid, pwd);
@@ -93,20 +146,31 @@ void Application::handleBrickSaveNetworkSettings(BrickClient *client, const std:
     }
 }
 
-void Application::handleBrickSaveBrickName(BrickClient *client, const std::string &brickName)
+template <typename T>
+void Application<T>::handleBrickSaveBrickName(BrickClient *client, const std::string &brickName)
 {
     Serial.println("Application::handleBrickSaveNetworkSettings()");
-    brickServer.setBrickName(brickName);
+    pseudoDNS.setHostName(brickName);
     configSaveBrickName(brickName);
 }
 
-void Application::handleWiFiStationModeConnected(const WiFiEventStationModeConnected &)
+template <typename T>
+void Application<T>::handleWiFiStationModeConnected(const WiFiEventStationModeConnected &)
 {
-    Serial.println("Application::handleWiFiStationModeConnected()");
+    Serial.printf("\n%lu Application::handleWiFiStationModeConnected()", dtime());
+}
+
+template <typename T>
+void Application<T>::handleWiFiStationModeGotIp(const WiFiEventStationModeGotIP &)
+{
+    Serial.printf("\n%lu Application::handleWiFiStationModeGotIp()", dtime());
+    Serial.printf("\n%lu Adres IP urządzenia: ", dtime());
+    Serial.printf("\n%lu %s", dtime(), WiFi.localIP().toString().c_str());
     LedSetState(true);
 }
 
-void Application::wifiConnectToConfigNetwork()
+template <typename T>
+void Application<T>::wifiConnectToConfigNetwork()
 {
     string ssid;
     string pwd;
@@ -118,18 +182,20 @@ void Application::wifiConnectToConfigNetwork()
     LedBlink(1000);
 }
 
-void Application::wifiConnectToNetwork(const std::string &ssid, const std::string &pwd)
+template <typename T>
+void Application<T>::wifiConnectToNetwork(const std::string &ssid, const std::string &pwd)
 {
     // connects to access point
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid.c_str(), pwd.c_str());
 }
 
-void Application::wifiCreateAccesPoint(const std::string &ssid, const std::string &pwd)
+template <typename T>
+void Application<T>::wifiCreateAccesPoint(const std::string &ssid, const std::string &pwd)
 {
     if (pwd == "") // create accespoint without password
     {
-        while (!WiFi.softAP(string("Aspoo " + getBrickType() + " Config Network").c_str(), nullptr, 6, false, 15))
+        while (!WiFi.softAP(string("Aspoo " + T::type() + " Config Network").c_str(), nullptr, 6, false, 15))
         {
             delay(500);
         }
@@ -145,43 +211,49 @@ void Application::wifiCreateAccesPoint(const std::string &ssid, const std::strin
     Serial.println(" IP = " + WiFi.softAPIP().toString());
 }
 
-void Application::wifiDisconnectFromNetwork()
+template <typename T>
+void Application<T>::wifiDisconnectFromNetwork()
 {
     WiFi.disconnect();
 }
 
-void Application::wifiDisconnectAccesPoint()
+template <typename T>
+void Application<T>::wifiDisconnectAccesPoint()
 {
 
     WiFi.softAPdisconnect();
 }
 
-void Application::wifiDisconnectAll()
+template <typename T>
+void Application<T>::wifiDisconnectAll()
 {
     wifiDisconnectFromNetwork();
     wifiDisconnectAccesPoint();
 }
 
-std::string Application::configReadBrickName()
+template <typename T>
+std::string Application<T>::configReadBrickName()
 {
     prefs.begin("ASPOO_BRICK");
-    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getBrickType()).c_str()).c_str(); // + brick->getBrickType()).c_str();
+    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + T::type()).c_str()).c_str(); // + T::type()).c_str();
     prefs.end();
     return brickName;
 }
 
-void Application::configReadBrickName(std::string &brickName)
+template <typename T>
+void Application<T>::configReadBrickName(std::string &brickName)
 {
-    Serial.printf("\nApplication::configReadBrickName()");
+    Serial.printf("\n%lu Application::configReadBrickName()", dtime());
     prefs.begin("ASPOO_BRICK");
-    Serial.printf("\nprefs.begin(\"ASPOO_BRICK\");");
-    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getBrickType()).c_str()).c_str(); // + brick->getBrickType()).c_str();
-    Serial.printf("\npbrickName = prefs.getString");
+    // Serial.printf("\nprefs.begin(\"ASPOO_BRICK\");");
+    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + T::type()).c_str()).c_str(); // + T::type()).c_str();
+    // Serial.printf("\npbrickName = prefs.getString");
     prefs.end();
-    Serial.println((string("Application::configReadBrickName() brickName = ") + brickName).c_str());
+    Serial.printf("\n%lu END Application::configReadBrickName()", dtime());
 }
 
-void Application::configReadNetworkSettings(std::string &ssid, std::string &pwd)
+template <typename T>
+void Application<T>::configReadNetworkSettings(std::string &ssid, std::string &pwd)
 {
     prefs.begin("ASPOO_BRICK");
     ssid = prefs.getString("SSID", "DefaultSSID").c_str();
@@ -189,7 +261,8 @@ void Application::configReadNetworkSettings(std::string &ssid, std::string &pwd)
     prefs.end();
 }
 
-void Application::configSaveNetworkSettings(const std::string &ssid, const std::string &pwd)
+template <typename T>
+void Application<T>::configSaveNetworkSettings(const std::string &ssid, const std::string &pwd)
 {
     Serial.println("Application::configSaveNetworkSettings()");
     prefs.begin("ASPOO_BRICK");
@@ -198,7 +271,8 @@ void Application::configSaveNetworkSettings(const std::string &ssid, const std::
     prefs.end();
 }
 
-void Application::configSaveBrickName(const std::string &brickName)
+template <typename T>
+void Application<T>::configSaveBrickName(const std::string &brickName)
 {
     Serial.println("Application::configSaveBrickName()");
     prefs.begin("ASPOO_BRICK");
@@ -206,8 +280,31 @@ void Application::configSaveBrickName(const std::string &brickName)
     prefs.end();
 }
 
-void Application::update()
+template <typename T>
+void Application<T>::handleTcpServerNewConnection()
 {
-    // Serial.println("Application::update()");
-    brickServer.update();
+    while (tcpServer->hasPendingConnections())
+    {
+        handleNewTcpSocket(tcpServer->nextPendingConnection());
+    }
+}
+
+template <typename T>
+void Application<T>::update()
+{
+    // Serial.printf("\n%lu --->>> Application::update()", dtime());
+
+    pseudoDNS.update();
+    cleanup();
+
+    if (BrickClient::isAnyWaiting())
+    {
+        Serial.printf("\n%lu A", dtime());
+        BrickClient::tryFlushBuffers();
+    }
+
+  if (!BrickClient::isAnyWaiting()){
+        loop();
+  }
+    
 }

@@ -25,7 +25,7 @@ ScrollablePage {
         spacing: 10
         width: parent.width
 
-        LocalM0002Controller{
+        M0002LocalClient{
             id: controller
             onBrickConnected: {
                 console.log("Brick connected")

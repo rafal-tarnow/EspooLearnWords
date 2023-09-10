@@ -1,5 +1,5 @@
 #pragma once
-#include "BrickServer.hpp"
+#include "BrickClient.hpp"
 #include "Debug.hpp"
 
 class B0002 : public BrickClient
