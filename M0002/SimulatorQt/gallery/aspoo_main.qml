@@ -7,8 +7,12 @@ import QtCore
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Effects
 
 import "." as App
+import "./pages/my_bricks"
+import "./pages/list_view"
+import "./pages/grid_view"
 
 ApplicationWindow {
     id: window
@@ -16,8 +20,6 @@ ApplicationWindow {
     height: 520
     visible: true
     title: qsTr("Qt Quick Controls")
-    //color: "#f0eef0"
-    color: "green"
 
     //! [orientation]
     readonly property bool portraitMode: window.width < window.height
@@ -43,8 +45,8 @@ ApplicationWindow {
         signal sendMessage(string msg, int compId)
         function setTemperatureScale(scale) {
             //if (scale !== temperatureScale) {
-                //temperatureScale = scale;
-                //temperatureScaleChanged(scale);
+            //temperatureScale = scale;
+            //temperatureScaleChanged(scale);
             //}
         }
 
@@ -131,6 +133,8 @@ ApplicationWindow {
         }
     }
 
+
+
     Drawer {
         id: drawer
 
@@ -149,12 +153,15 @@ ApplicationWindow {
             anchors.fill: parent
 
             model: ListModel {
-                ListElement { title: qsTr("My Bricks"); source: "qrc:/pages/MyBricksPage.qml" }
+                ListElement { title: qsTr("My Bricks"); source: "qrc:/pages/my_bricks/MyBricksPage.qml" }
                 ListElement { title: qsTr("Bricks in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
                 ListElement { title: qsTr("Config M0002"); source: "qrc:/pages/ConfigM0002Page.qml" }
                 ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
                 ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
                 ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }
+                ListElement { title: qsTr("List View"); source: "qrc:/pages/list_view/ListViewPage.qml" }
+                ListElement { title: qsTr("Grid"); source: "qrc:/pages/grid/GridPage.qml" }
+                ListElement { title: qsTr("Grid View"); source: "qrc:/pages/grid_view/GridViewPage.qml" }
                 ListElement { title: qsTr("BusyIndicator"); source: "qrc:/pages/BusyIndicatorPage.qml" }
                 ListElement { title: qsTr("Button"); source: "qrc:/pages/ButtonPage.qml" }
                 ListElement { title: qsTr("CheckBox"); source: "qrc:/pages/CheckBoxPage.qml" }
@@ -224,7 +231,7 @@ ApplicationWindow {
 
         initialItem: Pane {
             id: pane
-
+            background: Qt.transparent
             Image {
                 id: logo
                 width: pane.availableWidth / 2

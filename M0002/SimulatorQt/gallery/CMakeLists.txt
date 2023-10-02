@@ -22,12 +22,16 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/emulators/protocol.cpp
     src/emulators/ProtocolStd.h
     src/emulators/ProtocolStd.cpp
-    src/controllers/local_m0002_controller.hpp
-    src/controllers/local_m0002_controller.cpp
+    src/controllers/M0002Controller.hpp
+    src/controllers/M0002Controller.cpp
     src/global_config.hpp
     src/controllers/MyBricksManager.hpp
     src/controllers/MyBricksManager.cpp
     src/wifi_info.hpp
+    src/emulators/BrickIpFinder.hpp
+    src/emulators/BrickIpFinder.cpp
+    src/ObjectCounter.hpp
+    src/ObjectCounter.cpp
 )
 
 qt_add_qml_module(Baboon_bricks
@@ -50,7 +54,6 @@ qt_add_qml_module(Baboon_bricks
     "pages/EmulatorM0002Page.qml"
     "pages/FramePage.qml"
     "pages/GroupBoxPage.qml"
-    "pages/MyBricksPage.qml"
     "pages/PageIndicatorPage.qml"
     "pages/ProgressBarPage.qml"
     "pages/RadioButtonPage.qml"
@@ -70,8 +73,19 @@ qt_add_qml_module(Baboon_bricks
     "pages/ToolTipPage.qml"
     "pages/TumblerPage.qml"
     "pages/UDPTerminalPage.qml"
+    "pages/my_bricks/MyBricksPage.qml"
     "pages/my_bricks/BrickDelegate.qml"
     "pages/my_bricks/SectionDelegate.qml"
+    "pages/grid/GridPage.qml"
+    "pages/grid/RecipesModel.qml"
+    "pages/grid_view/GridViewPage.qml"
+    "pages/grid_view/RecipesModel.qml"
+    "pages/list_view/ListViewPage.qml"
+    "pages/list_view/RecipesModel.qml"
+    "pages/list_view/DetailsB0002.qml"
+    "pages/list_view/DetailsT0002.qml"
+    "pages/list_view/BrickDelegate.qml"
+
     RESOURCES
     "icons/gallery/20x20/back.png"
     "icons/gallery/20x20/drawer.png"
@@ -117,6 +131,10 @@ qt_add_qml_module(Baboon_bricks
     "scxml/PseudoDNSStates.scxml"
     "qmldir"
     "qtquickcontrols2.conf"
+    SOURCES src/controllers/Controller.hpp
+    SOURCES src/controllers/Controller.cpp
+    SOURCES src/controllers/T0002Controller.hpp
+    SOURCES src/controllers/T0002Controller.cpp
 )
 
 qt6_add_statecharts(Baboon_bricks

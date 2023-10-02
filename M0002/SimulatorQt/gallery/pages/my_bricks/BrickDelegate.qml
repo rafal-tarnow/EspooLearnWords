@@ -7,7 +7,8 @@ ItemDelegate {
     id: delegate
     checkable: true
     property bool brickConnected: false
-    property string brickName: model.brickName
+    property string brickName: model.name
+    property string brickId: model.id
     property real brickTempCelsius: 0.0
     property real brickTempFahrenheit: 0.0
 
@@ -50,7 +51,7 @@ ItemDelegate {
             }
 
             Label {
-                text: model.brickName
+                text: model.name
                 font.bold: true
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -94,7 +95,19 @@ ItemDelegate {
             }
 
             Label {
-                text: model.brickType
+                text: model.type
+                font.bold: true
+                elide: Text.ElideRight
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: qsTr("Brick id:")
+                Layout.leftMargin: 60
+            }
+
+            Label {
+                text: model.id
                 font.bold: true
                 elide: Text.ElideRight
                 Layout.fillWidth: true

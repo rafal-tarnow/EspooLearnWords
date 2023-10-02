@@ -25,29 +25,47 @@ ScrollablePage {
         spacing: 10
         width: parent.width
 
-        M0002LocalClient{
+        Controller{
             id: controller
             onBrickConnected: {
-                console.log("Brick connected")
-                connectingDialog.close()
-                controller.cmdGetTypeAndName();
+                console.log("Brick connected");
+                connectingDialog.close();
+                controller.cmdGetInfo();
+                controller.cmdGetId();
+                controller.cmdGetType();
+                controller.cmdGetName();
                 controller.cmdGetNetworkConfig();
             }
             onBrickDisconnected:{
 
             }
-            onBrickTypeAndName: function(brickType, brickName) {
+            onBrickInfo: function(id, type, name, ssid, pswd){
+                console.log("QQQQQQQQQ" + " onBrickInfo()");
+                console.log(id)
+                console.log(type)
+                console.log(name)
+                console.log(ssid)
+                console.log(pswd)
+            }
+            onBrickId: function(id){
+                console.log("QQQQQQQQQ" + " onBrickId()");
+                console.log(id)
+            }
+
+            onBrickType: function(brickType) {
                 brickTypeLabel.text = qsTr("Brick Type: ") + brickType
+                console.log("QQQQQQQQQ" + " onBrickType()");
+                console.log(brickType)
+            }
+            onBrickName: function(brickName) {
                 deviceName.text = brickName
+                console.log("QQQQQQQQQ" + " onBrickName()");
+                console.log(brickName)
             }
             onBrickNetworkSettings: function(ssid, psswd) {
                 wifiNetworkName.text = ssid
                 wifiPassword.text = psswd
             }
-            onBrickMeasureTemp: function(temp){
-                console.log(" temp = " + temp)
-            }
-
             Component.onCompleted: {
                 connectToBrick(ipAddress)
             }

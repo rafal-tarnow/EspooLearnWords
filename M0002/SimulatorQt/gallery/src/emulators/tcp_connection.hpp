@@ -21,7 +21,7 @@ signals:
     void onTcpConnected();
     void onTcpDisconnected();
     void onTcpError(const QString & error);
-    void onTcpFrame(QByteArray & frame);
+    void onProtocolFrame(QByteArray & frame);
 
 private slots:
     void onSocketDisconnected();

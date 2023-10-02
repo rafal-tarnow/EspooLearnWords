@@ -76,10 +76,20 @@ void PseudoDNSServer::stopQueries()
     }
 }
 
-QString PseudoDNSServer::getIp(const QString &hostName){
-    for (const QPair<QString, QString> &pair : dnsDiscoverdHosts) {
-        if (pair.first == hostName) {
-            return pair.second;
+QString PseudoDNSServer::getIpById(const QString &id)
+{
+    for (const Host& host : dnsDiscoverdHosts) {
+        if (host.id == id) {
+            return host.ip;
+        }
+    }
+    return "";
+}
+
+QString PseudoDNSServer::getIpByName(const QString &hostName){
+    for (const Host& host : dnsDiscoverdHosts) {
+        if (host.name == hostName) {
+            return host.ip;
         }
     }
     return "";
@@ -182,16 +192,20 @@ void PseudoDNSServer::parseDatagram(const QNetworkDatagram & receivedDatagram)
 
 void PseudoDNSServer::parseResponseWithHost(const QNetworkDatagram &datagram)
 {
-    QString hostName = QString::fromUtf8(datagram.data().mid(1));
-    QString IP = datagram.senderAddress().toString();
-    //qCDebug(PseudoDNS) << "FOUND hostName = " << hostName;
-    //qCDebug(PseudoDNS) << "FOUND IP = " << IP;
-    QPair<QString, QString> hostNameAndIP(hostName, IP);
+    QByteArray data = datagram.data();
+    uint8_t functionCode = ProtocolStd::getUint8_t(data);
+    Host host;
 
-    if(!dnsDiscoverdHosts.contains(hostNameAndIP)){
-        dnsDiscoverdHosts.insert(hostNameAndIP);
-        //qCDebug(PseudoDNS) << "EMIT " << hostNameAndIP;
-        emit hostFound(hostNameAndIP.first, hostNameAndIP.second);
+    host.id = ProtocolStd::getQString(data);
+    host.type = ProtocolStd::getQString(data);
+    host.name = ProtocolStd::getQString(data);
+    host.ip = datagram.senderAddress().toString();
+
+
+    if(!dnsDiscoverdHosts.contains(host)){
+        dnsDiscoverdHosts.push_back(host);
+         qDebug() << "DNS FOUND" << functionCode << " " << host.id << " " << host.type << " " << host.name << " " << host.ip;
+        emit hostFound(host.id ,host.type, host.name, host.ip);
 
     }
 }

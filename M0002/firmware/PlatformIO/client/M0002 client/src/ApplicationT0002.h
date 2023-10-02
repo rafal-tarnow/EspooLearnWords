@@ -9,6 +9,7 @@
 class ApplicationT0002 : public Application<T0002>
 {
 public:
+    void setup() override;
     void loop() override;
 
 private:

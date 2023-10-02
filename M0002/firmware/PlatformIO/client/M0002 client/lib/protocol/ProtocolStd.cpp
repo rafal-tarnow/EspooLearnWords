@@ -188,17 +188,14 @@ uint8_t ProtocolStd::getUint8_t(QByteArray &array)
 
 uint16_t ProtocolStd::getUint16_t(QByteArray &array)
 {
-    qDebug() << "ProtocolStd::getUint16_t() = " << array;
     if (array.size() < 2)
     {
         return 0;
     }
 
     uint8_t msb = static_cast<uint8_t>(array.at(0));
-    qDebug() << "msb = " << msb;
     array.remove(0, 1);
     uint8_t lsb = static_cast<uint8_t>(array.at(0));
-    qDebug() << "lsb = " << msb;
     array.remove(0, 1);
 
     uint16_t value = (static_cast<uint16_t>(msb) << 8) | lsb;
@@ -207,7 +204,7 @@ uint16_t ProtocolStd::getUint16_t(QByteArray &array)
 
 uint32_t ProtocolStd::getUint32_t(QByteArray &array)
 {
-    if (array.size() < 4) {
+    if (array.size() < sizeof(uint32_t)) {
         return 0;
     }
 
@@ -222,6 +219,29 @@ uint32_t ProtocolStd::getUint32_t(QByteArray &array)
     return value;
 }
 
+uint64_t ProtocolStd::getUint64_t(QByteArray &array)
+{
+    if (array.size() < sizeof(uint64_t)) {
+        return 0;
+    }
+
+    uint8_t msb1 = static_cast<uint8_t>(array.at(0));
+    uint8_t msb2 = static_cast<uint8_t>(array.at(1));
+    uint8_t msb3 = static_cast<uint8_t>(array.at(2));
+    uint8_t msb4 = static_cast<uint8_t>(array.at(3));
+
+    uint8_t msb5 = static_cast<uint8_t>(array.at(4));
+    uint8_t msb6 = static_cast<uint8_t>(array.at(5));
+    uint8_t msb7 = static_cast<uint8_t>(array.at(6));
+    uint8_t lsb = static_cast<uint8_t>(array.at(7));
+
+    array.remove(0, 8); // Usuń 4 bajty z początku QByteArray
+
+    uint64_t value = (static_cast<uint64_t>(msb1) << 56) | (static_cast<uint64_t>(msb2) << 48) | (static_cast<uint64_t>(msb3) << 40) | (static_cast<uint64_t>(msb4) << 32)
+                     | (static_cast<uint64_t>(msb5) << 24) | (static_cast<uint64_t>(msb6) << 16) | (static_cast<uint64_t>(msb7) << 8) | lsb;
+    return value;
+}
+
 float ProtocolStd::getFloat(QByteArray &array)
 {
     static_assert(sizeof(float) == sizeof(uint32_t), "Size of float must be equal to size of uint32_t");
@@ -232,9 +252,7 @@ float ProtocolStd::getFloat(QByteArray &array)
 
 QString ProtocolStd::getQString(QByteArray &array)
 {
-    qDebug() << "ProtocolStd::getQString() = " << array;
     uint16_t stringSize = getUint16_t(array);
-    qDebug() << "stringSize = " << stringSize;
     if (array.size() < stringSize)
     {
         return QString();
@@ -339,7 +357,7 @@ uint64_t ProtocolStd::getUint64_t(std::deque<uint8_t> &frame)
     frame.pop_front();
 
     uint64_t value = (static_cast<uint64_t>(msb1) << 56) | (static_cast<uint64_t>(msb2) << 48) | (static_cast<uint64_t>(msb3) << 40) | (static_cast<uint64_t>(msb4) << 32)
-    | (static_cast<uint64_t>(msb5) << 24) | (static_cast<uint64_t>(msb6) << 16) | (static_cast<uint64_t>(msb7) << 8) | lsb;
+                     | (static_cast<uint64_t>(msb5) << 24) | (static_cast<uint64_t>(msb6) << 16) | (static_cast<uint64_t>(msb7) << 8) | lsb;
     return value;
 }
 

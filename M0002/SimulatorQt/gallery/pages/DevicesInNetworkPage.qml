@@ -28,7 +28,7 @@ Page {
 
         PseudoDNSServer{
             id: dnsServer
-            onHostFound:  function (hostName, hostIp) {
+            onHostFound:  function (hostId, hostType, hostName, hostIp) {
                 devicesModel.append({ text: hostName, ip: hostIp})
             }
         }

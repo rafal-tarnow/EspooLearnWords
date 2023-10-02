@@ -7,14 +7,17 @@
 #include <set>
 #include <utility>
 
-class PseudoDNS {
-  using CallbackFunction= std::function<void(const std::string &, const std::string &)>;
+#include "ProtocolStd.h"
+
+class PseudoDNS
+{
+  using CallbackFunction = std::function<void(const std::string &, const std::string &)>;
   using CallbackMethod = std::function<void(const std::string &, const std::string &)>;
+
 public:
+  void setHostName(const std::string &hostName);
 
-  void setHostName(const std::string& hostName);
-
-  void run(const std::string &myHostName);
+  void run(const std::string &brickId, const std::string &brickType, const std::string &brickName);
   bool isRunning();
   void stopRunning();
 
@@ -24,12 +27,14 @@ public:
 
   void update();
 
-  void onHostFound(CallbackFunction callback) {
+  void onHostFound(CallbackFunction callback)
+  {
     callbackFunction = callback;
   }
 
-  template<typename T>
-  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &)) {
+  template <typename T>
+  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &))
+  {
     callbackMethod = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2);
   }
 
@@ -37,10 +42,13 @@ private:
   void onQueryTime();
   void onUdpDatagram(int packetSize);
   IPAddress softAPbroadcastIP();
+
 private:
   std::set<std::pair<std::string, std::string>> dnsDiscoverdHosts; // string - hostName, string - hostIP
   CallbackMethod callbackMethod;
   CallbackFunction callbackFunction;
+  std::string mId;
+  std::string mType;
   std::string mName;
   bool mRunning = false;
   bool runQuery = false;
@@ -50,4 +58,5 @@ private:
   WiFiUDP Udp;
   unsigned long lastTime = 0;
   const unsigned long interval = 100;
+  ProtocolStd protocolStd;
 };

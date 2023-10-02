@@ -12,7 +12,7 @@ EmulatorM0002::EmulatorM0002(QObject *parent) : QObject(parent), mModuleType("B0
     connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &EmulatorM0002::onTcpConnected);
     connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &EmulatorM0002::onTcpDisconnected);
     connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &EmulatorM0002::onTcpError);
-    connect(tcpConnection.get(), &TcpConncetion::onTcpFrame, this, &EmulatorM0002::onTcpFrame);
+    connect(tcpConnection.get(), &TcpConncetion::onProtocolFrame, this, &EmulatorM0002::onTcpFrame);
 
     measureTimer = std::make_unique<QTimer>(this);
     connect(measureTimer.get(), &QTimer::timeout, this, &EmulatorM0002::onMeasureTimer);

@@ -4,29 +4,40 @@
 #include <QList>
 #include <QVariantMap>
 
-class MyListModel : public QAbstractListModel {
+class MyBricksList : public QAbstractListModel {
     Q_OBJECT
 
 public:
-    explicit MyListModel(QObject *parent = nullptr);
-    enum Roles {
-        BrickTypeRole = Qt::UserRole + 1,
-        BrickNameRole
+    enum BrickRole {
+        IdRole = Qt::UserRole,
+        TypeRole,
+        NameRole
     };
+    Q_ENUM(BrickRole)
+
+    explicit MyBricksList(QObject *parent = nullptr);
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
-     Q_INVOKABLE void addBrick(const QString &brickType, const QString &brickName, const QString &brickIp);
-    Q_INVOKABLE void remove(int row);
-    void addItem(const QVariantMap &item);
 
- signals:
-     void brickAlreadyAdded(const QString &brickType, const QString &brickName);
+    Q_INVOKABLE void append(const QString & id, const QString &brickType, const QString &brickName);
+    Q_INVOKABLE void set(int row, const QString &id, const QString &brickType, const QString  &brickName);
+    Q_INVOKABLE void remove(int row);
+
+signals:
+    void brickAlreadyAdded(const QString &brickType, const QString &brickName);
 
 private:
-     const QString SETTNGS_KEY = "MY_BRICKS_LIST";
-    QList<QVariantMap> m_items;
-    bool brickExists(const QString &brickType, const QString &brickName) const;
+    struct Brick {
+        QString id;
+        QString type;
+        QString name;
+    };
+
+    const QString SETTNGS_KEY = "MY_BRICKS_LIST";
+    QList<Brick> m_items;
+    bool brickExists(const QString &brickId) const;
     void loadFromSettings();
     void saveToSettings();
 };

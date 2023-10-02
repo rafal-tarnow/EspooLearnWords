@@ -1,83 +1,93 @@
 #include "MyBricksManager.hpp"
 #include <QtQml>
 
-MyListModel::MyListModel(QObject *parent) : QAbstractListModel(parent) {
-   loadFromSettings();
+MyBricksList::MyBricksList(QObject *parent) : QAbstractListModel(parent) {
+    loadFromSettings();
 }
 
-void MyListModel::loadFromSettings()
+void MyBricksList::loadFromSettings()
 {
     QSettings settings;
     int size = settings.beginReadArray(SETTNGS_KEY);
     for (int i = 0; i < size; ++i) {
         settings.setArrayIndex(i);
-        QVariantMap item;
-        item["brickName"] = settings.value("brickName").toString();
-        item["brickType"] = settings.value("brickType").toString();
-        addItem(item);
+        append(settings.value("brickId").toString(), settings.value("brickType").toString(), settings.value("brickName").toString());
     }
     settings.endArray();
 }
 
-void MyListModel::saveToSettings()
+void MyBricksList::saveToSettings()
 {
     QSettings settings;
     settings.beginWriteArray(SETTNGS_KEY);
     for (int i = 0; i < m_items.size(); ++i) {
         settings.setArrayIndex(i);
-        settings.setValue("brickName", m_items[i]["brickName"]);
-        settings.setValue("brickType", m_items[i]["brickType"]);
+        settings.setValue("brickId", m_items.at(i).id);
+        settings.setValue("brickType", m_items.at(i).type);
+        settings.setValue("brickName", m_items.at(i).name);
     }
     settings.endArray();
 }
 
-int MyListModel::rowCount(const QModelIndex &parent) const {
+int MyBricksList::rowCount(const QModelIndex &parent) const {
     if (parent.isValid())
         return 0;
 
-    return m_items.size();
+    return m_items.count();
 }
 
-QVariant MyListModel::data(const QModelIndex &index, int role) const {
+QVariant MyBricksList::data(const QModelIndex &index, int role) const {
     qDebug() << "MyListModel::data()";
-    if (!index.isValid())
-        return QVariant();
 
-    if (index.row() < 0 || index.row() >= m_items.size())
-        return QVariant();
-
-    const QVariantMap &item = m_items.at(index.row());
-
-    if (role == BrickNameRole)
-        return item.value("brickName");
-    else if (role == BrickTypeRole)
-        return item.value("brickType");
-
+    if (index.row() < rowCount())
+        switch (role) {
+        case IdRole: return m_items.at(index.row()).id;
+        case TypeRole: return m_items.at(index.row()).type;
+        case NameRole: return m_items.at(index.row()).name;
+        default: return QVariant();
+        }
     return QVariant();
 }
 
-QHash<int, QByteArray> MyListModel::roleNames() const {
-    QHash<int, QByteArray> roles;
-    roles[BrickNameRole] = "brickName";
-    roles[BrickTypeRole] = "brickType";
+QHash<int, QByteArray> MyBricksList::roleNames() const {
+    static const QHash<int, QByteArray> roles {
+        { IdRole, "brickId" },
+        { TypeRole, "brickType" },
+        { NameRole, "brickName" },
+    };
     return roles;
 }
 
-void MyListModel::addBrick(const QString &brickType, const QString &brickName, const QString &brickIp)
+void MyBricksList::append(const QString & id, const QString &brickType, const QString &brickName)
 {
-    qDebug() << "MyListModel::addBrick() " << "type=" << brickType << " name=" << brickName << " ip=" << brickIp;
-    if (brickExists(brickType, brickName)) {
-       emit brickAlreadyAdded(brickType, brickName);
+    //qDebug() << "MyListModel::addBrick() " << "id=" << id << " type=" << brickType << " name=" << brickName << " ip=" << brickIp;
+    if (brickExists(id)) {
+        emit brickAlreadyAdded(brickType, brickName);
         return;
     }
 
-    QVariantMap item = {{"brickName", brickName}, {"brickType", brickType}};
-    addItem(item);
+    int row = 0;
+    while (row < m_items.count() && brickName > m_items.at(row).name)
+        ++row;
+    beginInsertRows(QModelIndex(), row, row);
+    m_items.insert(row, {id, brickType, brickName});
+    saveToSettings();
+    endInsertRows();
 }
 
-void MyListModel::remove(int row)
+void MyBricksList::set(int row, const QString &id, const QString &brickType, const QString &brickName)
 {
-    qDebug() << "MyListModel::remove() row = " << row;
+    qDebug() << "MyBricksList::set() " << row << " " << id << " " << brickType << " " << brickName;
+    if (row < 0 || row >= m_items.count())
+        return;
+
+    m_items.replace(row, { id, brickType, brickName });
+    saveToSettings();
+    dataChanged(index(row, 0), index(row, 0), { IdRole, TypeRole, NameRole});
+}
+
+void MyBricksList::remove(int row)
+{
     if (row < 0 || row >= m_items.count())
         return;
 
@@ -87,27 +97,19 @@ void MyListModel::remove(int row)
     endRemoveRows();
 }
 
-bool MyListModel::brickExists(const QString &brickType, const QString &brickName) const
+bool MyBricksList::brickExists(const QString &brickId) const
 {
-    for (const QVariantMap &existingItem : m_items) {
-        if (existingItem.value("brickName") == brickName && existingItem.value("brickType") == brickType) {
+    for (const Brick &brick : m_items) {
+        if (brick.id == brickId) {
             return true;
         }
     }
     return false;
 }
 
-void MyListModel::addItem(const QVariantMap &item) {
-    qDebug() << "MyListModel::addItem()";
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_items.append(item);
-    saveToSettings();
-    endInsertRows();
+static void registerMyBricksListTypes() {
+    qmlRegisterType<MyBricksList>("Backend", 1, 0, "MyBricksList");
 }
 
-static void registerMyBricksManagerTypes() {
-    qmlRegisterType<MyListModel>("Backend", 1, 0, "MyListModel");
-}
-
-Q_COREAPP_STARTUP_FUNCTION(registerMyBricksManagerTypes)
+Q_COREAPP_STARTUP_FUNCTION(registerMyBricksListTypes)
 

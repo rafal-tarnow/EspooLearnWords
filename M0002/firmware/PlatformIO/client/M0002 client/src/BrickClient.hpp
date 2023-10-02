@@ -26,6 +26,31 @@ public:
     ~BrickClient();
 
     template <typename T>
+    void onGetInfo(T *obj, void (T::*method)(BrickClient *))
+    {
+        callbackGetInfo = [obj, method](BrickClient *client)
+        {
+            (obj->*method)(client);
+        };
+    }
+
+    template <typename T>
+    void onGetId(T *obj, void (T::*method)(BrickClient *))
+    {
+        callbackGetId = [obj, method](BrickClient *client)
+        {
+            (obj->*method)(client);
+        };
+    }
+    template <typename T>
+    void onGetType(T *obj, void (T::*method)(BrickClient *))
+    {
+        callbackGetType = [obj, method](BrickClient *client)
+        {
+            (obj->*method)(client);
+        };
+    }
+    template <typename T>
     void onGetNetworkSetting(T *obj, void (T::*method)(BrickClient *))
     {
         callbackGetNetworkSettings = std::bind(method, obj, std::placeholders::_1);
@@ -35,6 +60,7 @@ public:
     {
         callbackGetBrickName = std::bind(method, obj, std::placeholders::_1);
     }
+
     template <typename T>
     void onSaveNetworkSetting(T *obj, void (T::*method)(BrickClient *, const std::string &ssid, const std::string &pwd))
     {
@@ -55,7 +81,10 @@ public:
         };
     }
 
-    void cmdSetBrickNameAndType(const std::string &brickName, const std::string &brickType);
+    void cmdSetInfo(const std::string &id, const std::string &brickType, const std::string &brickName, const std::string &ssid, const std::string &pswd);
+    void cmdSetId(const std::string &id);
+    void cmdSetType(const std::string &brickType);
+    void cmdSetName(const std::string &brickName);
     void cmdSetNetworkSettings(const std::string &ssid, const std::string &pswd);
 
     static void printDbg();
@@ -91,8 +120,11 @@ private:
     static uint32_t timeouts;
     static uint64_t bytesRx;
     static std::vector<std::string> errors;
-    CallbackGet callbackGetNetworkSettings;
+    CallbackGet callbackGetInfo;
+    CallbackGet callbackGetId;
+    CallbackGet callbackGetType;
     CallbackGet callbackGetBrickName;
+    CallbackGet callbackGetNetworkSettings;
     CallbackSaveNetworkSettings callbackSaveNetworkSettings;
     CallbackSaveBrickName callbackSaveBrickName;
     CallbackGet callbackTcpDisconnected;

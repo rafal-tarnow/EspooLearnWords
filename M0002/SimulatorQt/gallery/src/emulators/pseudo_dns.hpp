@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QUdpSocket>
 #include <QLoggingCategory>
+#include "ProtocolStd.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PseudoDNS)
 
@@ -24,20 +25,35 @@ public:
     Q_INVOKABLE bool isQueriesRunning();
     Q_INVOKABLE void stopQueries();
 
-    Q_INVOKABLE QString getIp(const QString& hostName);
+    Q_INVOKABLE QString getIpById(const QString & id);
+    Q_INVOKABLE QString getIpByName(const QString& hostName);
 
 signals:
-    void hostFound(QString hostName, QString hostIp);
+    void hostFound(QString hostId, QString hostType, QString hostName, QString hostIp);
 
 private slots:
     void onRepeatTimer();
     void readPendingDatagrams();
 
 private:
+    class Host
+    {
+    public:
+        QString id;
+        QString type;
+        QString name;
+        QString ip;
+
+        bool operator==(const Host &other) const
+        {
+            return id == other.id;
+        }
+    };
+
     QString myHostName;
     std::unique_ptr<QTimer> queryTimer;
     std::unique_ptr<QUdpSocket> udpSocket;
-    QSet<QPair<QString, QString>> dnsDiscoverdHosts; //QString - hostName, QString - IP
+    QVector<Host> dnsDiscoverdHosts; //QString - hostName, QString - IP
     QMap<int, QNetworkAddressEntry> interfaceAdresses; // int - interface index, QNetworkAddressEntry - adresses at network interface
     bool runQueriesForAllHosts = false;
     bool isRun = false;

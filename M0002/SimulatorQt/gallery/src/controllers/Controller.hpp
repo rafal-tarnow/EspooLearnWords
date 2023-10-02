@@ -5,38 +5,50 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <memory>
+#include "../ObjectCounter.hpp"
 #include "../emulators/tcp_connection.hpp"
 
-class M0002LocalClient : public QObject
+class Controller : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
-
+    Q_PROPERTY(bool connected READ isBrickConnected NOTIFY brickConnectedChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
 public:
-    explicit M0002LocalClient(QObject *parent = nullptr);
+    explicit Controller(QObject *parent = nullptr);
     Q_INVOKABLE void connectToBrick(const QString &ip);
     Q_INVOKABLE bool isBrickConnected();
     Q_INVOKABLE void disconnectFromBrick();
     Q_INVOKABLE QString lastTcpError() const;
-    Q_INVOKABLE void cmdGetTypeAndName();
+    Q_INVOKABLE void cmdGetInfo();
+    Q_INVOKABLE void cmdGetId();
+    Q_INVOKABLE void cmdGetType();
+    Q_INVOKABLE void cmdGetName();
     Q_INVOKABLE void cmdGetNetworkConfig();
     Q_INVOKABLE void cmdSaveBrickName(const QString & brickName);
     Q_INVOKABLE void cmdSaveNetworkConfig(const QString & ssid, const QString & pwd);
+    Q_INVOKABLE QString name() const;
 
 signals:
     void birckPingTimeoutErrorOccurred();
     void brickTcpErrorOccurred();
     void brickConnected();
+    void brickConnectedChanged();
     void brickDisconnected();
-    void brickTypeAndName(const QString & type, const QString & brickName);
+    void brickInfo(const QString & id, const QString & type, const QString & name, const QString & ssid, const QString & psswd);
+    void brickId(const QString & id);
+    void brickType(const QString & type);
+    void brickName(const QString & brickName);
     void brickNetworkSettings(const QString & ssid, const QString & psswd);
-    void brickMeasureTemp(float temp);
+    void nameChanged();
+
+protected:
+    virtual uint8_t handleProtocolFrame( QByteArray & frame);
 
 private slots:
     void handleTcpConnected();
     void handleTcpDisconnected();
     void handleTcpError(const QString & error);
-    void handleTcpFrame( QByteArray & frame);
     void handleTcpConnectingTimeout();
 
 private:
@@ -45,10 +57,12 @@ private:
 
 private:
     std::unique_ptr<TcpConncetion> tcpConnection;
-    QString m_lastTcpError;
+    QString mLastTcpError;
     QString mIp;
     bool mConnectionCheck = false;
     bool mConnected = false;
     bool mConnecting = false;
+    QString mName;
     void pingFrameTimeout();
+    DBG_COUNT("Controller");
 };

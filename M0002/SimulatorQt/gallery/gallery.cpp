@@ -5,6 +5,8 @@
 #include <QQuickStyle>
 #include <QIcon>
 #include <QLoggingCategory>
+#include <QTimer>
+#include "./src/ObjectCounter.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +48,17 @@ int main(int argc, char *argv[])
     engine.load(QUrl("qrc:/aspoo_main.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
+
+
+    QTimer timer;
+    QObject::connect(&timer, &QTimer::timeout, [&]() {
+        // Tutaj możesz umieścić kod, który zostanie wykonany po upływie czasu
+        qDebug() << "Timer timeout!";
+        ObjectCounter::printQt();
+
+
+    });
+    timer.start(1000);
 
     return app.exec();
 }

@@ -16,41 +16,34 @@ TcpConncetion::TcpConncetion(QObject *parent)
 
 TcpConncetion::~TcpConncetion()
 {
-    qDebug() << "      tcpSocket->close()";
     tcpSocket->close();
-    qDebug() << "      tcpSocket delete";
     delete tcpSocket;
 }
 
 void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort)
 {
-    qDebug() << "      tcpSocket->connectToHost()";
     tcpSocket->connectToHost(serverIP, serverPort);
 }
 
 void TcpConncetion::disconnectFromServer()
 {
-    qDebug() << "      tcpSocket->close()";
     tcpSocket->close();
-
 }
 
 void TcpConncetion::abord()
 {
-    qDebug() << "      tcpSocket->abort()";
     tcpSocket->abort();
 }
 
 void TcpConncetion::sendFrame(const QByteArray &frame)
 {
-    qDebug() << "TcpConncetion::sendFrame()";
     QByteArray protocolFrame;
     uint16_t frameSize = static_cast<uint16_t>(frame.size());
     ProtocolStd::append(protocolFrame,frameSize);
     protocolFrame.append(frame);
 
     if (tcpSocket->state() == QAbstractSocket::ConnectedState) {
-        tcpSocket->write(protocolFrame); // Wysłanie danej 0x01
+        tcpSocket->write(protocolFrame);
     }
 }
 
@@ -68,7 +61,6 @@ void TcpConncetion::onSocketDisconnected()
 
 void TcpConncetion::onTcpReadyRead()
 {
-    qDebug() << "TcpConncetion::onTcpReadyRead()";
     QByteArray data = tcpSocket->readAll();
     std::vector<uint8_t> dataStdVector(data.begin(), data.end());
     protocolStd.addData(dataStdVector);
@@ -82,12 +74,11 @@ void TcpConncetion::onSocketError(QAbstractSocket::SocketError socketError)
 
 void TcpConncetion::onProtocolStdFrame(std::deque<uint8_t>& frame)
 {
-    qDebug() << "TcpConncetion::onProtocolStdFrame()";
     QByteArray byteArray;
     byteArray.reserve(frame.size());
     for (const auto& byte : frame) {
         byteArray.append(byte);
     }
-    emit onTcpFrame(byteArray);
+    emit onProtocolFrame(byteArray);
 }
 

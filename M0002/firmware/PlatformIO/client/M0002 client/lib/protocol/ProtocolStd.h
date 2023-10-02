@@ -4,7 +4,6 @@
 #include <string>
 #include <cstdint>
 #include <functional>
-#include <Arduino.h>
 #ifdef QT_CORE_LIB // this file is also used in Qt app
 #include <QByteArray>
 #include <QString>
@@ -49,6 +48,7 @@ public:
     static uint8_t getUint8_t(QByteArray &array);
     static uint16_t getUint16_t(QByteArray &array);
     static uint32_t getUint32_t(QByteArray &array);
+        static uint64_t getUint64_t(QByteArray &array);
     static float getFloat(QByteArray &array);
     static QString getQString(QByteArray &array);
 #endif

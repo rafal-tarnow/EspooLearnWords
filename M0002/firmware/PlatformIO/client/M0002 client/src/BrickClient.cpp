@@ -123,7 +123,7 @@ size_t BrickClient::space()
 
 bool BrickClient::isAnyWaiting()
 {
-  Serial.printf("\n waitingClients = %d", waitingClients.size());
+  //Serial.printf("\n waitingClients = %d", waitingClients.size());
   return waitingClients.size() > 0 ? true : false;
 }
 
@@ -134,14 +134,16 @@ void BrickClient::tryFlushBuffers()
   for (BrickClient *client : waitingClients)
   {
     Serial.printf("\nBrickClient::FLUSH() 2");
-    if(client->tryFlushBuffer()){
+    if (client->tryFlushBuffer())
+    {
       flushedClients.insert(client);
     }
     Serial.printf("\nBrickClient::FLUSH() 3");
   }
   Serial.printf("\nBrickClient::FLUSH() 4");
 
-  for(BrickClient * client: flushedClients){
+  for (BrickClient *client : flushedClients)
+  {
     waitingClients.erase(client);
   }
 }
@@ -163,32 +165,50 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x02)
     {
-      // Serial.println("functionCode == 0x02");
+      Serial.printf("function code = 0x02 getInfo()");
+      if (callbackGetInfo)
+      {
+        callbackGetInfo(this);
+      }
+    }
+    else if (functionCode == 0x03)
+    {
+      if (callbackGetId)
+      {
+        callbackGetId(this);
+      }
+    }
+    else if (functionCode == 0x04)
+    {
+      if (callbackGetType)
+      {
+        callbackGetType(this);
+      }
+    }
+    else if (functionCode == 0x05)
+    {
       if (callbackGetBrickName)
       {
         callbackGetBrickName(this);
       }
     }
-    else if (functionCode == 0x03)
+    else if (functionCode == 0x06)
     {
-      // Serial.println("\nfunctionCode == 0x03");
       if (callbackGetNetworkSettings)
       {
         callbackGetNetworkSettings(this);
       }
     }
-    else if (functionCode == 0x04)
+    else if (functionCode == 0x07)
     {
-      // Serial.println("\nfunctionCode == 0x04");
       std::string brickName = ProtocolStd::getString(frame);
       if (callbackSaveBrickName)
       {
         callbackSaveBrickName(this, brickName);
       }
     }
-    else if (functionCode == 0x05)
+    else if (functionCode == 0x08)
     {
-      // Serial.println("functionCode == 0x05");
       std::string ssid = ProtocolStd::getString(frame);
       std::string pwd = ProtocolStd::getString(frame);
       if (callbackSaveNetworkSettings)
@@ -215,20 +235,47 @@ bool BrickClient::tryFlushBuffer()
       size_t addedSize = asyncClient->add(reinterpret_cast<const char *>(bufferToSend.data()), bufferToSend.size());
       asyncClient->send();
 
-    bufferToSend.clear();
-    return true;
+      bufferToSend.clear();
+      return true;
     }
-
   }
   Serial.printf("\nBrickClient::tryFlushBuffer() 7");
   return false;
 }
 
-void BrickClient::cmdSetBrickNameAndType(const std::string &brickName, const std::string &brickType)
+void BrickClient::cmdSetInfo(const std::string& id, const std::string &brickType, const std::string &brickName, const std::string &ssid, const std::string &pswd)
 {
   std::vector<uint8_t> frame;
   ProtocolStd::append(frame, uint8_t(0x02));
+  ProtocolStd::append(frame, id);
   ProtocolStd::append(frame, brickType);
+  ProtocolStd::append(frame, brickName);
+  ProtocolStd::append(frame, ssid);
+  ProtocolStd::append(frame, pswd);
+
+  sendProtocolFrame(frame);
+}
+
+void BrickClient::cmdSetId(const std::string& id)
+{
+  std::vector<uint8_t> frame;
+  ProtocolStd::append(frame, uint8_t(0x03));
+  ProtocolStd::append(frame, id);
+  sendProtocolFrame(frame);
+}
+
+void BrickClient::cmdSetType(const std::string &brickType)
+{
+  std::vector<uint8_t> frame;
+  ProtocolStd::append(frame, uint8_t(0x04));
+  ProtocolStd::append(frame, brickType);
+  sendProtocolFrame(frame);
+}
+
+void BrickClient::cmdSetName(const std::string &brickName)
+{
+  std::vector<uint8_t> frame;
+  ProtocolStd::append(frame, uint8_t(0x05));
   ProtocolStd::append(frame, brickName);
   sendProtocolFrame(frame);
 }
@@ -236,7 +283,7 @@ void BrickClient::cmdSetBrickNameAndType(const std::string &brickName, const std
 void BrickClient::cmdSetNetworkSettings(const std::string &ssid, const std::string &pswd)
 {
   std::vector<uint8_t> frame;
-  ProtocolStd::append(frame, uint8_t(0x03));
+  ProtocolStd::append(frame, uint8_t(0x06));
   ProtocolStd::append(frame, ssid);
   ProtocolStd::append(frame, pswd);
   sendProtocolFrame(frame);
@@ -290,10 +337,7 @@ void BrickClient::sendProtocolFrame(const std::vector<uint8_t> &frame)
   //   Serial.printf("\n%lu mClient->send() %d bytes", dtime(), addedSize);
   //   Serial.printf("\n datagram.size() = %d ", datagram.size());
   // tutaj reszte z danych z datagrama ktor sie nie zmienściły w add chce dodata do bufferToSend, jak to zrobić??
-  // tu mi chcacie gtp zaimplementuj to
-  //   if (addedSize < datagram.size())
-  //   {
-  //     Serial.printf("\n%lu 2", dtime());
+  // tu mi chcacie gtp zaimplementuj tovoid brickTypeAndName(const QString & type, const QString & brickName);
   //     bufferToSend.insert(bufferToSend.end(), datagram.begin() + addedSize, datagram.end());
   //     Serial.printf("\n%lu 3", dtime());
   //     waitingClients.insert(this);

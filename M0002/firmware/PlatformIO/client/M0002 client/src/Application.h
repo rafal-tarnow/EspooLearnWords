@@ -23,6 +23,9 @@ public:
     void handleButtonDoubleClick();
 
     // brick client events
+    void hangleGetBrickInfo(BrickClient *client);
+    void handleGetBrickId(BrickClient *client);
+    void handleGetBrickType(BrickClient *client);
     void handleGetBrickName(BrickClient *client);
     void handleBrickGetNetworkSettings(BrickClient *client);
     void handleBrickSaveNetworkSettings(BrickClient *client, const std::string &ssid, const std::string &pwd);
@@ -46,6 +49,7 @@ public:
     // TcpServer events
     void handleTcpServerNewConnection();
     void update();
+    virtual void setup() = 0;
     virtual void loop() = 0;
 
 protected:
@@ -56,13 +60,17 @@ protected:
 private:
     // tcp AsyncServer events
     void handleNewTcpClient(void *arg, AsyncClient *client);
-    void handleDisconnectedClient(BrickClient *client);   
+    void handleDisconnectedClient(BrickClient *client);
 
     void handleNewTcpSocket(TcpSocket *socket);
     void setupNewBrickClientCallbacks(BrickClient *);
 
-
     void cleanup();
+    std::string getId();
+    std::string getType();
+    std::string getName();
+    std::string getSsid();
+    std::string getPswd();
 
 private:
 #define AP_CONFIG_SSID "Aspoo Brick Config Network"

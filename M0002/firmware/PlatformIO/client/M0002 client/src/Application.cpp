@@ -1,8 +1,11 @@
 #include "Application.h"
 #include <ESP8266WiFi.h>
+#include <sstream>
 #include "T0002.hpp"
+#include "B0002.hpp"
 
 template class Application<T0002>;
+template class Application<B0002>;
 
 using namespace std;
 
@@ -16,7 +19,7 @@ void Application<T>::begin()
 
     string brickName = configReadBrickName();
 
-    pseudoDNS.run(brickName);
+    pseudoDNS.run(getId(), getType(), brickName);
 
     asyncServer = new AsyncServer(2883);
     asyncServer->onClient(std::bind(&Application::handleNewTcpClient, this, std::placeholders::_1, std::placeholders::_2), asyncServer);
@@ -25,6 +28,7 @@ void Application<T>::begin()
     // tcpServer = new TcpServer();
     // tcpServer->onNewConnection(this, &Application::handleTcpServerNewConnection);
     // tcpServer->listen(2883);
+    setup();
 }
 
 template <typename T>
@@ -65,10 +69,14 @@ void Application<T>::handleButtonDoubleClick()
 template <typename T>
 void Application<T>::setupNewBrickClientCallbacks(BrickClient *brickClient)
 {
+    brickClient->onGetInfo(this, &Application::hangleGetBrickInfo);
+    brickClient->onGetId(this, &Application::handleGetBrickId);
+    brickClient->onGetType(this, &Application::handleGetBrickType);
+    brickClient->onGetBrickName(this, &Application::handleGetBrickName);
     brickClient->onGetNetworkSetting(this, &Application::handleBrickGetNetworkSettings);
     brickClient->onSaveNetworkSetting(this, &Application::handleBrickSaveNetworkSettings);
     brickClient->onSaveBrickName(this, &Application::handleBrickSaveBrickName);
-    brickClient->onGetBrickName(this, &Application::handleGetBrickName);
+
     brickClient->onTcpDisconnected(this, &Application::handleDisconnectedClient);
 }
 
@@ -94,6 +102,52 @@ void Application<T>::cleanup()
 }
 
 template <typename T>
+std::string Application<T>::getId()
+{
+    uint32_t eid = ESP.getChipId();
+
+    std::ostringstream oss;
+    oss << eid;
+    std::string result = getType() + oss.str();
+
+    return result;
+}
+
+template <typename T>
+std::string Application<T>::getType()
+{
+    return T::type();
+}
+
+template <typename T>
+std::string Application<T>::getName()
+{
+    // Serial.printf("\n%lu Application::handleGetBrickName() ", dtime());
+    string brickName;
+    // Serial.printf("\n%lu string brickName %s", dtime(), brickName.c_str());
+    configReadBrickName(brickName);
+    return brickName;
+}
+
+template <typename T>
+std::string Application<T>::getSsid()
+{
+    string ssid;
+    string pwd;
+    configReadNetworkSettings(ssid, pwd);
+    return ssid;
+}
+
+template <typename T>
+std::string Application<T>::getPswd()
+{
+    string ssid;
+    string pwd;
+    configReadNetworkSettings(ssid, pwd);
+    return pwd;
+}
+
+template <typename T>
 void Application<T>::handleNewTcpClient(void *arg, AsyncClient *tcpClient)
 {
     // Serial.printf("\n%lu Application::handleNewTcpClient()", dtime());
@@ -113,13 +167,28 @@ void Application<T>::handleNewTcpSocket(TcpSocket *socket)
 }
 
 template <typename T>
+void Application<T>::hangleGetBrickInfo(BrickClient *client)
+{
+    Serial.printf("\nApplication<T>::hangleGetBrickInfo()");
+    client->cmdSetInfo(getId(), getType(), getName(), getSsid(), getPswd());
+}
+
+template <typename T>
+void Application<T>::handleGetBrickId(BrickClient *client)
+{
+    client->cmdSetId(getId());
+}
+
+template <typename T>
+void Application<T>::handleGetBrickType(BrickClient *client)
+{
+    client->cmdSetType(getType());
+}
+
+template <typename T>
 void Application<T>::handleGetBrickName(BrickClient *client)
 {
-    // Serial.printf("\n%lu Application::handleGetBrickName() ", dtime());
-    string brickName;
-    // Serial.printf("\n%lu string brickName %s", dtime(), brickName.c_str());
-    configReadBrickName(brickName);
-    client->cmdSetBrickNameAndType(brickName, T::type());
+    client->cmdSetName(getName());
     // Serial.printf("\n%lu client->cmdSetBrickNameAndType(brickName, T::type()); ", dtime());
 }
 
@@ -127,10 +196,7 @@ template <typename T>
 void Application<T>::handleBrickGetNetworkSettings(BrickClient *client)
 {
     Serial.println("Application::handleBrickGetNetworkSettings()");
-    string ssid;
-    string pwd;
-    configReadNetworkSettings(ssid, pwd);
-    client->cmdSetNetworkSettings(ssid, pwd);
+    client->cmdSetNetworkSettings(getSsid(), getPswd());
 }
 
 template <typename T>
@@ -195,7 +261,7 @@ void Application<T>::wifiCreateAccesPoint(const std::string &ssid, const std::st
 {
     if (pwd == "") // create accespoint without password
     {
-        while (!WiFi.softAP(string("Aspoo " + T::type() + " Config Network").c_str(), nullptr, 6, false, 15))
+        while (!WiFi.softAP(string("Aspoo " + getType() + " Config Network").c_str(), nullptr, 6, false, 15))
         {
             delay(500);
         }
@@ -235,7 +301,7 @@ template <typename T>
 std::string Application<T>::configReadBrickName()
 {
     prefs.begin("ASPOO_BRICK");
-    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + T::type()).c_str()).c_str(); // + T::type()).c_str();
+    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getType()).c_str()).c_str(); // + T::type()).c_str();
     prefs.end();
     return brickName;
 }
@@ -246,7 +312,7 @@ void Application<T>::configReadBrickName(std::string &brickName)
     Serial.printf("\n%lu Application::configReadBrickName()", dtime());
     prefs.begin("ASPOO_BRICK");
     // Serial.printf("\nprefs.begin(\"ASPOO_BRICK\");");
-    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + T::type()).c_str()).c_str(); // + T::type()).c_str();
+    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getType()).c_str()).c_str(); // + T::type()).c_str();
     // Serial.printf("\npbrickName = prefs.getString");
     prefs.end();
     Serial.printf("\n%lu END Application::configReadBrickName()", dtime());
@@ -299,12 +365,12 @@ void Application<T>::update()
 
     if (BrickClient::isAnyWaiting())
     {
-        Serial.printf("\n%lu A", dtime());
+        //Serial.printf("\n%lu A", dtime());
         BrickClient::tryFlushBuffers();
     }
 
-  if (!BrickClient::isAnyWaiting()){
+    if (!BrickClient::isAnyWaiting())
+    {
         loop();
-  }
-    
+    }
 }

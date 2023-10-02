@@ -5,100 +5,127 @@ void PseudoDNS::setHostName(const std::string &hostName)
   mName = hostName;
 }
 
-void PseudoDNS::run(const std::string &myHostName)
+void PseudoDNS::run(const std::string &brickId, const std::string &brickType, const std::string &brickName)
 {
-    Serial.printf("\n PseudoDNS::run() hostName = %s", myHostName.c_str());
-    mRunning = true;
-    mName = myHostName;
-    Udp.begin(PORT);
+  Serial.printf("\n PseudoDNS::run() hostName = %s", brickName.c_str());
+  mRunning = true;
+  mId = brickId;
+  mType = brickType;
+  mName = brickName;
+  Udp.begin(PORT);
 }
 
-bool PseudoDNS::isRunning() {
+bool PseudoDNS::isRunning()
+{
   Serial.println("\n PseudoDNS::isRunning()");
   return mRunning;
 }
 
-void PseudoDNS::stopRunning() {
+void PseudoDNS::stopRunning()
+{
   Serial.println("\n PseudoDNS::stopRunning()");
   mRunning = false;
-  if (runQuery == false) {
+  if (runQuery == false)
+  {
     Udp.stop();
   }
 }
 
-void PseudoDNS::startQueriesForAllHosts() {
+void PseudoDNS::startQueriesForAllHosts()
+{
   Serial.println("\n PseudoDNS::startQueriesForAllHosts()");
   runQuery = true;
   Udp.begin(PORT);
-  onQueryTime(); //send first query immidietly
+  onQueryTime(); // send first query immidietly
 }
 
-bool PseudoDNS::isQueriesRunning() {
+bool PseudoDNS::isQueriesRunning()
+{
   Serial.println("\n PseudoDNS::isQueriesRunning()");
   return runQuery;
 }
 
-void PseudoDNS::stopQueries() {
+void PseudoDNS::stopQueries()
+{
   Serial.println("\n PseudoDNS::stopQueries()");
   runQuery = false;
   dnsDiscoverdHosts.clear();
-  if (mRunning == false) {
+  if (mRunning == false)
+  {
     Udp.stop();
   }
 }
 
-IPAddress PseudoDNS::softAPbroadcastIP() {
+IPAddress PseudoDNS::softAPbroadcastIP()
+{
   struct ip_info ip;
   wifi_get_ip_info(SOFTAP_IF, &ip);
   return IPAddress(ip.ip.addr | ~(ip.netmask.addr));
 }
 
-void PseudoDNS::onQueryTime() {
-  //Serial.println("\n PseudoDNS::onQueryTime()");
+void PseudoDNS::onQueryTime()
+{
+  // Serial.println("\n PseudoDNS::onQueryTime()");
   IPAddress broadcast;
-  if (WIFI_AP == WiFi.getMode()) {
+  if (WIFI_AP == WiFi.getMode())
+  {
     broadcast = softAPbroadcastIP();
-  } else {
+  }
+  else
+  {
     broadcast = WiFi.broadcastIP();
   }
   Udp.beginPacket(broadcast, PORT);
   Udp.write(0x01);
   Udp.endPacket();
-  //Serial.println("\n--->Send Query DNS package");
+  // Serial.println("\n--->Send Query DNS package");
 }
 
-void PseudoDNS::onUdpDatagram(int packetSize) {
-  //Serial.println("\n PseudoDNS::onUdpDatagram()");
+void PseudoDNS::onUdpDatagram(int packetSize)
+{
+  // Serial.println("\n PseudoDNS::onUdpDatagram()");
   byte buffer[packetSize];
   int len = Udp.read(buffer, sizeof(buffer));
 
-  if (len > 0) {
+  if (len > 0)
+  {
     buffer[len] = 0;
-    //Serial.println("<----Received packet from: " + Udp.remoteIP().toString() + " port: " + String(Udp.remotePort()) + " size: " + String(len) + " with data: " + String((char*)buffer));
+    // Serial.println("<----Received packet from: " + Udp.remoteIP().toString() + " port: " + String(Udp.remotePort()) + " size: " + String(len) + " with data: " + String((char*)buffer));
 
-    if (buffer[0] == 0x01) {
-      if (mRunning) {
-        byte responseBuffer[] = { 0x02 };
+    if (buffer[0] == 0x01)
+    {
+      if (mRunning)
+      {
+        std::vector<uint8_t> frame;
+        ProtocolStd::append(frame, uint8_t(0x02));
+        ProtocolStd::append(frame, mId);
+        ProtocolStd::append(frame, mType);
+        ProtocolStd::append(frame, mName);
         Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-        Udp.write(responseBuffer, sizeof(responseBuffer));
-        Udp.write(mName.c_str(), mName.size());
+        Udp.write(frame.data(), frame.size());
         Udp.endPacket();
-        //Serial.println("\n--->Send response package");
+        // Serial.println("\n--->Send response package");
       }
-    } else if (buffer[0] == 0x02) {
-      if (mRunning) {
+    }
+    else if (buffer[0] == 0x02)
+    {
+      if (mRunning)
+      {
 
         std::string hostName = (char *)&buffer[1];
         std::string hostIP = Udp.remoteIP().toString().c_str();
 
         std::pair<std::string, std::string> hostNameAndIP(hostName, hostIP);
 
-        if (dnsDiscoverdHosts.find(hostNameAndIP) == dnsDiscoverdHosts.end()) {
+        if (dnsDiscoverdHosts.find(hostNameAndIP) == dnsDiscoverdHosts.end())
+        {
           dnsDiscoverdHosts.insert(hostNameAndIP);
-          if (callbackFunction) {
+          if (callbackFunction)
+          {
             callbackFunction(hostName, hostIP);
           }
-          if (callbackMethod) {
+          if (callbackMethod)
+          {
             callbackMethod(hostName, hostIP);
           }
         }
@@ -107,20 +134,25 @@ void PseudoDNS::onUdpDatagram(int packetSize) {
   }
 }
 
-void PseudoDNS::update() {
-  //Serial.println("\n PseudoDNS::update()");
-  if (mRunning || runQuery) {
+void PseudoDNS::update()
+{
+  // Serial.println("\n PseudoDNS::update()");
+  if (mRunning || runQuery)
+  {
     int packetSize = Udp.parsePacket();
-    if (packetSize) {
+    if (packetSize)
+    {
       onUdpDatagram(packetSize);
     }
   }
 
   //
-  if (runQuery) {
-    //Serial.print("PseudoDNS::update() 1");
+  if (runQuery)
+  {
+    // Serial.print("PseudoDNS::update() 1");
     unsigned long currentTime = millis();
-    if (currentTime - lastQueryTime >= QUERY_INTERVAL) {
+    if (currentTime - lastQueryTime >= QUERY_INTERVAL)
+    {
       onQueryTime();
       lastQueryTime = currentTime;
     }
