@@ -83,6 +83,7 @@ qt_add_qml_module(Baboon_bricks
     "pages/list_view/ListViewPage.qml"
     "pages/list_view/RecipesModel.qml"
     "pages/list_view/DetailsB0002.qml"
+    "pages/list_view/M0002/M0002Swipe.qml"
     "pages/list_view/DetailsT0002.qml"
     "pages/list_view/BrickDelegate.qml"
 
@@ -120,6 +121,8 @@ qt_add_qml_module(Baboon_bricks
     "images/config.svg"
     "images/connected_icon.svg"
     "images/disconnected_icon.svg"
+    "images/temp_connected.svg"
+    "images/temp_disconnected.svg"
     "images/forward.svg"
     "images/go-forward.svg"
     "images/go-forward2.svg"
@@ -135,6 +138,7 @@ qt_add_qml_module(Baboon_bricks
     SOURCES src/controllers/Controller.cpp
     SOURCES src/controllers/T0002Controller.hpp
     SOURCES src/controllers/T0002Controller.cpp
+
 )
 
 qt6_add_statecharts(Baboon_bricks

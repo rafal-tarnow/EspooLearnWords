@@ -27,7 +27,7 @@ void ApplicationB0002::loop()
         for (auto it = clients.begin(); it != clients.end(); ++it)
         {
             B0002 *ptr = *it;
-            ptr->cmdSetMeasureTemp(temp_index + temperatureCelsius);
+            ptr->cmdSetMeasureTemp(temperatureCelsius);
         }
         sensors.requestTemperatures();
     }

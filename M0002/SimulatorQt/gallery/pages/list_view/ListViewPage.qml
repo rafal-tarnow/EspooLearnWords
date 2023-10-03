@@ -8,7 +8,8 @@ import "."
 Page {
     id: page
     background: Rectangle{
-        color: "yellow"
+        //color: "yellow"
+        color: "#fafafa"
     }
 
     PseudoDNSServer{
@@ -27,11 +28,15 @@ Page {
 
     ListView {
         id: listView
+        anchors.margins: 5
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
+        clip:true
 
-        width: parent.width > 700 ? 700 : parent.width
+        spacing: 5
+
+        width: parent.width > 700 ? 700 : parent.width - 2*5
 
         model:     MyBricksList{
             id: myBricksModel
@@ -39,6 +44,13 @@ Page {
         delegate: BrickDelegate{
 
         }
+
+//        Rectangle {
+//            id: background
+//            anchors.fill: parent
+//            color: "red"
+//            border.color: "blue"
+//        }
 
         //columnCount: 3
 

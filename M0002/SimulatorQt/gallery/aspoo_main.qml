@@ -145,6 +145,7 @@ ApplicationWindow {
         position: window.portraitMode ? 0 : 1
         visible: !window.portraitMode
 
+
         ListView {
             id: listView
 

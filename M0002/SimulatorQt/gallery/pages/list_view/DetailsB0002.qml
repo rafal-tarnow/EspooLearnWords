@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Effects
 import Backend
+import "./M0002"
 
 
 Item{
@@ -58,11 +59,29 @@ Item{
     }
 
     Column{
+        id: data
+
+        opacity: !recipe.detailsOpacity
+        enabled: !recipe.detailsEnabled
+
         anchors.top: parent.top
 
         Text {
             text: qsTr("Temperature: ") + brickController.temperature + qsTr("'C")
-            font.pointSize: 12; font.bold: true
+            font.pointSize: 12;
+            //font.bold: true
+            color: "#7a7b7a"
         }
+    }
+
+    M0002Swipe{
+        opacity: recipe.detailsOpacity
+        enabled: recipe.detailsEnabled
+
+        anchors.top: data.bottom
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        clip: true
     }
 }
