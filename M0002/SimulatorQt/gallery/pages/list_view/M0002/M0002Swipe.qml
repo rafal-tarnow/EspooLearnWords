@@ -5,8 +5,8 @@ Pane {
     id: pane
 
     SwipeView {
-        id: view
-        currentIndex: 0
+        id: detailsSwipeView
+        currentIndex: recipe.swipePageIndex
         anchors.fill: parent
 
 
@@ -28,14 +28,14 @@ Pane {
                 font.pointSize: 96
             }
 
-//            Rectangle{
-//                z: -1
-//                anchors.fill: tempLabel
-//                color: "red"
+            Rectangle{
+                z: -1
+                anchors.fill: tempLabel
+                color: "red"
 
-//                border.color: "blue"
-//                border.width: 1
-//            }
+                border.color: "blue"
+                border.width: 1
+            }
         }
         Item {
             id: secondPage
@@ -50,8 +50,8 @@ Pane {
     }
 
     PageIndicator {
-        count: view.count
-        currentIndex: view.currentIndex
+        count: detailsSwipeView.count
+        currentIndex: detailsSwipeView.currentIndex
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
     }

@@ -66,11 +66,23 @@ Item{
 
         anchors.top: parent.top
 
-        Text {
-            text: qsTr("Temperature: ") + brickController.temperature + qsTr("'C")
-            font.pointSize: 12;
-            //font.bold: true
-            color: "#7a7b7a"
+        Row{
+            Image {
+                width: 20
+                height: 20
+
+                fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(width,height)
+                source: "qrc:/images/temperature.svg"
+            }
+
+
+            Text {
+                text: qsTr("Temperature: ") + brickController.temperature + qsTr("'C")
+                font.pointSize: 16;
+                //font.bold: true
+                color: "#7a7b7a"
+            }
         }
     }
 

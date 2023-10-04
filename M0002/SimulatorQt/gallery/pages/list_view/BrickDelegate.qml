@@ -11,6 +11,7 @@ ItemDelegate {
     property real detailsOpacity : 0
     property bool detailsEnabled: false
     property bool connected: false
+    property int swipePageIndex: 0
 
     width: listView.width
 
@@ -27,57 +28,109 @@ ItemDelegate {
         onClicked: recipe.state = 'Details';
     }
 
-    Row {
-        id: topLayout
 
-        //                    x: 0;
-        //                    y: 0;
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.left: parent.left
-        anchors.topMargin: 10
+    Image {
+        id: connectionImage
+
+        x:10
+        y:10
+        width: 50
+        height: 50
+
+        fillMode: Image.PreserveAspectFit
+        sourceSize: Qt.size(width,height)
+        source: recipe.connected ? "qrc:/images/temp_connected.svg" : "qrc:/images/temp_disconnected.svg"
+    }
+
+    Text {
+        id: brickNameTitle
+       anchors.verticalCenter: connectionImage.verticalCenter
         anchors.leftMargin: 10
+        anchors.left: connectionImage.right
+        anchors.right: controlToolButton.left
         anchors.rightMargin: 10
-        height: connectionImage.height;
-        //width: parent.width
+        text: model.brickName
 
-        spacing: 10
+        //font.bold: true;
+        font.pointSize: 24
+        clip: true
+    }
 
-        Image {
-            id: connectionImage
+    ToolButton {
+        id: controlToolButton
+        width:0
+        height: 50
+        anchors.right: configToolButton.left
+        anchors.verticalCenter: connectionImage.verticalCenter
 
-            width: 50;
-            height: 50
+        opacity: recipe.detailsOpacity
+        enabled: recipe.detailsEnabled
 
-            fillMode: Image.PreserveAspectFit
-            sourceSize: Qt.size(width,height)
-            source: recipe.connected ? "qrc:/images/temp_connected.svg" : "qrc:/images/temp_disconnected.svg"
-        }
-
-        Text {
-            width: topLayout.width - 2*10 - connectionImage.width - 10 - closeButton.width
-            text: model.brickName
-            font.bold: true; font.pointSize: 16
-            clip: true
-        }
-
-
-        Button {
-            id: closeButton
-            //   y: 10
-            width: 0
-            //                        anchors { right: background.right; rightMargin: 10 }
-            opacity: recipe.detailsOpacity
-            text: "Close"
-            enabled: recipe.detailsEnabled
-            onClicked: recipe.state = '';
+        action: controlAction
+        Action {
+            id: controlAction
+            icon.source: "qrc:/images/dashboard.svg"
+            onTriggered: {
+                swipePageIndex = 1;
+                swipePageIndex = 0;
+            }
         }
     }
 
+    ToolButton {
+        id: configToolButton
+        width:0
+        height: 50
+        anchors.right: closeToolButton.left
+        anchors.verticalCenter: connectionImage.verticalCenter
+
+        opacity: recipe.detailsOpacity
+        enabled: recipe.detailsEnabled
+
+        action: configAction
+        Action {
+            id: configAction
+            icon.source: "qrc:/images/config.svg"
+            onTriggered: {
+                swipePageIndex = 0;
+                swipePageIndex = 1;
+            }
+        }
+    }
+
+    ToolButton {
+        id: closeToolButton
+
+        width:0
+        height: 50
+        anchors.right: parent.right
+        anchors.verticalCenter: connectionImage.verticalCenter
+
+        opacity: recipe.detailsOpacity
+        enabled: recipe.detailsEnabled
+
+        action: closeAction
+        Action {
+            id: closeAction
+            icon.source: "qrc:/images/close.svg"
+            onTriggered: {
+                recipe.state = '';
+            }
+        }
+    }
+
+
+
+    //    }
+
     Loader {
-        x: 10; width: parent.width - 20
-        anchors { top: topLayout.bottom; topMargin: 10; bottom: parent.bottom; bottomMargin: 10 }
-        //opacity: recipe.detailsOpacity
+        anchors.top: closeToolButton.bottom
+        anchors.topMargin: 5
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        anchors.bottom: parent.bottom
 
         source: {
             if (model.brickType === "T0002") {
@@ -97,11 +150,24 @@ ItemDelegate {
             background.color: "white"
             connectionImage {
                 // Make picture bigger
-                width: 25
-                height: 25
+                width: 35
+                height: 35
             }
-            closeButton{
-                width: 100
+
+            brickNameTitle{
+                anchors.rightMargin: 0
+            }
+
+            controlToolButton{
+                width: 50
+            }
+
+            configToolButton{
+                width:50
+            }
+
+            closeToolButton{
+                width:50
             }
 
             recipe {
@@ -134,7 +200,7 @@ ItemDelegate {
     transitions: Transition {
         // Make the state changes smooth
         ParallelAnimation {
-            ColorAnimation { property: "color"; duration: 500 }
+            ColorAnimation { property: "color"; duration: 200 }
             NumberAnimation { duration: 300; properties: "detailsOpacity,x,z,contentY,height,width" }
         }
     }

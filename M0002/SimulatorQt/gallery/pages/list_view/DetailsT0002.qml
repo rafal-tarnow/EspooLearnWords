@@ -60,20 +60,42 @@ Item{
     Column{
         anchors.top: parent.top
 
-        Text {
-            text: qsTr("Temperature: 25.2'C")
-            font.pointSize: 12; font.bold: true
-                        color: "#7a7b7a"
+        Row{
+            Image {
+                width: 20
+                height: 20
+
+                fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(width,height)
+                source: "qrc:/images/temperature.svg"
+            }
+
+            Text {
+                text: qsTr("Temperature: 25.2'C")
+                font.pointSize: 12; font.bold: true
+                color: "#7a7b7a"
+            }
         }
-        Text {
-            text: qsTr("Humidity: 75%")
-            font.pointSize: 12; font.bold: true
-                        color: "#7a7b7a"
+
+        Row{
+            Image {
+                width: 20
+                height: 20
+
+                fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(width,height)
+                source: "qrc:/images/humidity.svg"
+            }
+            Text {
+                text: qsTr("Humidity: 75%")
+                font.pointSize: 12; font.bold: true
+                color: "#7a7b7a"
+            }
         }
         Text {
             text: qsTr("Pressure: 1015hPa")
             font.pointSize: 12; font.bold: true
-                        color: "#7a7b7a"
+            color: "#7a7b7a"
         }
     }
 }
