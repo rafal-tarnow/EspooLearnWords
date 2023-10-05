@@ -1,58 +1,35 @@
 import QtQuick
 import QtQuick.Controls
 
-Pane {
-    id: pane
 
     SwipeView {
         id: detailsSwipeView
         currentIndex: recipe.swipePageIndex
         anchors.fill: parent
 
-
+        Loader {
+            source: {
+                if (model.brickType === "T0002") {
+                    recipe.height = 140
+                    return "T0002MainPage.qml"
+                } else if (model.brickType === "B0002") {
+                    recipe.height = 100
+                    return "M0002MainPage.qml"
+                }
+            }
+        }
 
         Item {
-            id: firstPage
-            Label {
-                id: tempLabel
-                width: parent.width
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                //text aligment
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-
-                text: qsTr("24°C")
-                //font.bold: true;
-                font.pointSize: 96
-            }
-
+            id: secondPage
             Rectangle{
-                z: -1
-                anchors.fill: tempLabel
-                color: "red"
+                anchors.fill: secondPage
+                color: "yellow"
 
-                border.color: "blue"
+                border.color: "orange"
                 border.width: 1
             }
         }
-        Item {
-            id: secondPage
-//            Rectangle{
-//                anchors.fill: secondPage
-//                color: "yellow"
 
-//                border.color: "orange"
-//                border.width: 1
-//            }
-        }
+
     }
 
-    PageIndicator {
-        count: detailsSwipeView.count
-        currentIndex: detailsSwipeView.currentIndex
-        anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-}

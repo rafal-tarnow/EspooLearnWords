@@ -19,7 +19,8 @@ ItemDelegate {
         id: background
         anchors.fill: parent
         color: "#ffffff"
-        border.color: "#e0e0e0"
+        //border.color: "#e0e0e0"
+        border.color: "green"
         radius: 5
     }
 
@@ -127,10 +128,11 @@ ItemDelegate {
         anchors.top: closeToolButton.bottom
         anchors.topMargin: 5
         anchors.left: parent.left
-        anchors.leftMargin: 10
+        anchors.leftMargin: 5
         anchors.right: parent.right
-        anchors.rightMargin: 10
+        anchors.rightMargin: 5
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
 
         source: {
             if (model.brickType === "T0002") {

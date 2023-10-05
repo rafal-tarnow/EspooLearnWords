@@ -130,6 +130,7 @@ qt_add_qml_module(Baboon_bricks
     "images/go-forward.svg"
     "images/go-forward2.svg"
     "images/humidity.svg"
+    "images/pressure.svg"
     "images/qt-logo.png"
     "images/qt-logo@2x.png"
     "images/qt-logo@3x.png"
@@ -142,6 +143,9 @@ qt_add_qml_module(Baboon_bricks
     SOURCES src/controllers/Controller.cpp
     SOURCES src/controllers/T0002Controller.hpp
     SOURCES src/controllers/T0002Controller.cpp
+    QML_FILES pages/list_view/M0002/M0002MainPage.qml
+    QML_FILES pages/list_view/M0002/T0002MainPage.qml
+    QML_FILES pages/list_view/M0002/M0002ControllerExt.qml
 
 )
 
