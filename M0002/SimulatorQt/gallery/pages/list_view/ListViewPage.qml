@@ -45,12 +45,12 @@ Page {
 
         }
 
-        Rectangle {
-            z: -1
-            anchors.fill: parent
-            color: "yellow"
-            border.color: "blue"
-        }
+//        Rectangle {
+//            z: -1
+//            anchors.fill: parent
+//            color: "yellow"
+//            border.color: "blue"
+//        }
 
         //columnCount: 3
 

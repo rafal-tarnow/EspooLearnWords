@@ -2,59 +2,73 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
+    id: mainPage
+    property bool details: recipe.detailsEnabled
 
-    Column{
-        id: data
 
-        //opacity: !recipe.detailsOpacity
-        //enabled: !recipe.detailsEnabled
+    Image {
+        id: tempImage
+        x: 0
+        y: 0
+        width: 20
+        height: 20
 
-        anchors.top: parent.top
+        fillMode: Image.PreserveAspectFit
+        sourceSize: Qt.size(width,height)
+        source: "qrc:/images/temperature.svg"
+    }
 
-        Row{
-            Image {
-                width: 20
-                height: 20
+    Text {
+        id: tempLabel
+        x:20
+        y:0
+        text: qsTr("Temperature: ")
+        font.pointSize: 16;
+        //font.bold: true
+        color: "#7a7b7a"
+    }
 
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(width,height)
-                source: "qrc:/images/temperature.svg"
+    Text {
+        id: temp
+        x:tempLabel.x + tempLabel.width + 10
+        y: 0
+        text: brickController.temperature.toFixed(1) + qsTr("°C")
+        font.pointSize: 16
+        //font.bold: true
+        color: "#7a7b7a"
+    }
+
+    states:  State {
+        name: "Details"
+        when: mainPage.details
+
+        PropertyChanges {
+            tempImage{
+                y: mainPage.parent.height/2
+                width:50
+                height: 50
+            }
+            temp{
+                color: "#000000"
+                x: 60
+                y: mainPage.height/2
+                font.pointSize: 48
             }
 
-
-            Text {
-                text: qsTr("Temperature: ") + brickController.temperature + qsTr("'C")
-                font.pointSize: 16;
-                //font.bold: true
-                color: "#7a7b7a"
+            tempLabel{
+                opacity: 0
+                enabled: false
             }
+
         }
     }
 
 
-
-    Label {
-        id: tempLabel
-        width: parent.width
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        //text aligment
-        horizontalAlignment: Qt.AlignHCenter
-        verticalAlignment: Qt.AlignVCenter
-
-        text: qsTr("19°C") + (brickController.connected ? qsTr("+") : qsTr("-"))
-        //font.bold: true;
-        font.pointSize: 96
-
-    }
-
-    Rectangle{
-        z: -1
-        anchors.fill: parent
-        color: "red"
-
-        border.color: "blue"
-        border.width: 1
+    transitions: Transition {
+        // Make the state changes smooth
+        ParallelAnimation {
+            ColorAnimation { property: "color"; duration: 200 }
+            NumberAnimation { duration:200; properties: "detailsOpacity,x,z,y,contentY,height,width,opacity, font.pointSize" }
+        }
     }
 }

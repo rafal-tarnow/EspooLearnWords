@@ -146,6 +146,8 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES pages/list_view/M0002/M0002MainPage.qml
     QML_FILES pages/list_view/M0002/T0002MainPage.qml
     QML_FILES pages/list_view/M0002/M0002ControllerExt.qml
+    QML_FILES pages/list_view/M0002/T0002ControllerExt.qml
+    QML_FILES pages/list_view/common/BrickTitle.qml
 
 )
 

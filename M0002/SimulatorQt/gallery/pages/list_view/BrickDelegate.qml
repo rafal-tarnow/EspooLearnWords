@@ -4,9 +4,50 @@ import QtQuick.Controls
 import QtQuick.Effects
 import Backend
 import "."
+import "./M0002"
+import "./common"
 
 ItemDelegate {
     id: recipe
+
+
+
+    property var comp;
+    property var brickController : M0002ControllerExt{
+
+    }
+
+//    function createSpriteObjects() {
+//        comp = Qt.createComponent("M0002ControllerExt.qml");
+//        if (comp.status === Component.Ready)
+//            finishCreation();
+//        else
+//            comp.statusChanged.connect(finishCreation);
+//    }
+
+//    function finishCreation() {
+//        if (comp.status === Component.Ready) {
+//            brickController = comp.createObject(recipe);
+//            if (brickController === null) {
+//                // Error Handling
+//                console.log("Error creating object brickController");
+//            }
+//        } else if (comp.status === Component.Error) {
+//            // Error Handling
+//            console.log("Error loading component:", comp.errorString());
+//        }
+//    }
+
+     Component.onCompleted: {
+               // createSpriteObjects();
+         console.log("TYYYYYYYYYYYYYYYYYYYPE" + typeof brickController);
+            }
+
+//        M0002ControllerExt{
+//            id:brickController
+//        }
+
+
 
     property real detailsOpacity : 0
     property bool detailsEnabled: false
@@ -15,12 +56,12 @@ ItemDelegate {
 
     width: listView.width
 
+
     Rectangle {
         id: background
         anchors.fill: parent
         color: "#ffffff"
-        //border.color: "#e0e0e0"
-        border.color: "green"
+        border.color: "#e0e0e0"
         radius: 5
     }
 
@@ -29,103 +70,108 @@ ItemDelegate {
         onClicked: recipe.state = 'Details';
     }
 
-
-    Image {
-        id: connectionImage
-
+    Item{
+        id: title
         x:10
         y:10
-        width: 50
+        width: parent.width
         height: 50
 
-        fillMode: Image.PreserveAspectFit
-        sourceSize: Qt.size(width,height)
-        source: recipe.connected ? "qrc:/images/temp_connected.svg" : "qrc:/images/temp_disconnected.svg"
-    }
+        Image {
+            id: connectionImage
 
-    Text {
-        id: brickNameTitle
-       anchors.verticalCenter: connectionImage.verticalCenter
-        anchors.leftMargin: 10
-        anchors.left: connectionImage.right
-        anchors.right: controlToolButton.left
-        anchors.rightMargin: 10
-        text: model.brickName
+            x: 0
+            y: 0
+            width: 50
+            height: 50
 
-        //font.bold: true;
-        font.pointSize: 24
-        clip: true
-    }
+            fillMode: Image.PreserveAspectFit
+            sourceSize: Qt.size(width,height)
+            source: recipe.connected ? "qrc:/images/temp_connected.svg" : "qrc:/images/temp_disconnected.svg"
+        }
 
-    ToolButton {
-        id: controlToolButton
-        width:0
-        height: 50
-        anchors.right: configToolButton.left
-        anchors.verticalCenter: connectionImage.verticalCenter
+        Text {
+            id: brickNameTitle
+            anchors.verticalCenter: connectionImage.verticalCenter
+            anchors.leftMargin: 10
+            anchors.left: connectionImage.right
+            anchors.right: controlToolButton.left
+            anchors.rightMargin: 10
+            text: model.brickName
 
-        opacity: recipe.detailsOpacity
-        enabled: recipe.detailsEnabled
+            //font.bold: true;
+            font.pointSize: 24
+            clip: true
+        }
 
-        action: controlAction
-        Action {
-            id: controlAction
-            icon.source: "qrc:/images/dashboard.svg"
-            onTriggered: {
-                swipePageIndex = 1;
-                swipePageIndex = 0;
+        ToolButton {
+            id: controlToolButton
+            width:0
+            height: 50
+            anchors.right: configToolButton.left
+            anchors.verticalCenter: connectionImage.verticalCenter
+
+            opacity: recipe.detailsOpacity
+            enabled: recipe.detailsEnabled
+
+            action: controlAction
+            Action {
+                id: controlAction
+                icon.source: "qrc:/images/dashboard.svg"
+                onTriggered: {
+                    swipePageIndex = 1;
+                    swipePageIndex = 0;
+                }
             }
         }
-    }
 
-    ToolButton {
-        id: configToolButton
-        width:0
-        height: 50
-        anchors.right: closeToolButton.left
-        anchors.verticalCenter: connectionImage.verticalCenter
+        ToolButton {
+            id: configToolButton
+            width:0
+            height: 50
+            anchors.right: closeToolButton.left
+            anchors.verticalCenter: connectionImage.verticalCenter
 
-        opacity: recipe.detailsOpacity
-        enabled: recipe.detailsEnabled
+            opacity: recipe.detailsOpacity
+            enabled: recipe.detailsEnabled
 
-        action: configAction
-        Action {
-            id: configAction
-            icon.source: "qrc:/images/config.svg"
-            onTriggered: {
-                swipePageIndex = 0;
-                swipePageIndex = 1;
+            action: configAction
+            Action {
+                id: configAction
+                icon.source: "qrc:/images/config.svg"
+                onTriggered: {
+                    swipePageIndex = 0;
+                    swipePageIndex = 1;
+                }
             }
         }
-    }
 
-    ToolButton {
-        id: closeToolButton
+        ToolButton {
+            id: closeToolButton
 
-        width:0
-        height: 50
-        anchors.right: parent.right
-        anchors.verticalCenter: connectionImage.verticalCenter
+            width:0
+            height: 50
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.verticalCenter: connectionImage.verticalCenter
 
-        opacity: recipe.detailsOpacity
-        enabled: recipe.detailsEnabled
+            opacity: recipe.detailsOpacity
+            enabled: recipe.detailsEnabled
 
-        action: closeAction
-        Action {
-            id: closeAction
-            icon.source: "qrc:/images/close.svg"
-            onTriggered: {
-                recipe.state = '';
+            action: closeAction
+            Action {
+                id: closeAction
+                icon.source: "qrc:/images/close.svg"
+                onTriggered: {
+                    recipe.state = '';
+                }
             }
         }
+
     }
-
-
-
-    //    }
 
     Loader {
-        anchors.top: closeToolButton.bottom
+        anchors.top: title.bottom
         anchors.topMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 5
@@ -136,10 +182,10 @@ ItemDelegate {
 
         source: {
             if (model.brickType === "T0002") {
-                recipe.height = 140
+                recipe.height = 240
                 return "DetailsT0002.qml"
             } else if (model.brickType === "B0002") {
-                recipe.height = 100
+                recipe.height = 200
                 return "DetailsB0002.qml"
             }
         }
@@ -195,8 +241,6 @@ ItemDelegate {
         PropertyChanges {
             recipe.ListView.view.interactive: false
         }
-
-
     }
 
     transitions: Transition {
