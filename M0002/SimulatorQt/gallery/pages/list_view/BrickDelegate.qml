@@ -247,7 +247,7 @@ ItemDelegate {
         // Make the state changes smooth
         ParallelAnimation {
             ColorAnimation { property: "color"; duration: 200 }
-            NumberAnimation { duration: 300; properties: "detailsOpacity,x,z,contentY,height,width" }
+            NumberAnimation { duration: 200; properties: "detailsOpacity,x,z,contentY,height,width" }
         }
     }
 
