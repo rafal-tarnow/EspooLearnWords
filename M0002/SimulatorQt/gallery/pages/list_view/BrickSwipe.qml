@@ -23,16 +23,11 @@ Item{
             }
         }
 
-        Item {
-            id: secondPage
-            Rectangle{
-                anchors.fill: secondPage
-                color: "green"
-
-                border.color: "orange"
-                border.width: 1
-            }
+        Loader {
+            source: "/pages/list_view/common/NetworkSettings.qml"
         }
+
+
     }
 
     PageIndicator {
