@@ -75,6 +75,10 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         QString deviceType = ProtocolStd::getQString(frame);
         QString deviceName = ProtocolStd::getQString(frame);
         QString deviceSsid = ProtocolStd::getQString(frame);
+        if(mWifiName != deviceSsid){
+            mWifiName = deviceSsid;
+            emit wifiSSIDChanged();
+        }
         QString devicePswd = ProtocolStd::getQString(frame);
         if(mName != deviceName){
             mName = deviceName;
@@ -98,6 +102,10 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         QString wifiSSID = ProtocolStd::getQString(frame);
         QString wifiPSWD = ProtocolStd::getQString(frame);
         emit brickNetworkSettings(wifiSSID, wifiPSWD);
+        if(mWifiName != wifiSSID){
+            mWifiName = wifiSSID;
+            emit wifiSSIDChanged();
+        }
     }
     return functionCode;
 }
@@ -122,6 +130,11 @@ QString Controller::lastTcpError() const
 QString Controller::name() const
 {
     return mName;
+}
+
+QString Controller::wifiSSID() const
+{
+    return mWifiName;
 }
 
 void Controller::cmdGetInfo()

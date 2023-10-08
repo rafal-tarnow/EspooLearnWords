@@ -14,6 +14,7 @@ class Controller : public QObject
     Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
     Q_PROPERTY(bool connected READ isBrickConnected NOTIFY brickConnectedChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(QString wifiSSID READ wifiSSID NOTIFY wifiSSIDChanged)
 public:
     explicit Controller(QObject *parent = nullptr);
     Q_INVOKABLE void connectToBrick(const QString &ip);
@@ -28,6 +29,7 @@ public:
     Q_INVOKABLE void cmdSaveBrickName(const QString & brickName);
     Q_INVOKABLE void cmdSaveNetworkConfig(const QString & ssid, const QString & pwd);
     Q_INVOKABLE QString name() const;
+    Q_INVOKABLE QString wifiSSID() const;
 
 signals:
     void birckPingTimeoutErrorOccurred();
@@ -41,6 +43,7 @@ signals:
     void brickName(const QString & brickName);
     void brickNetworkSettings(const QString & ssid, const QString & psswd);
     void nameChanged();
+    void wifiSSIDChanged();
 
 protected:
     virtual uint8_t handleProtocolFrame( QByteArray & frame);
@@ -63,6 +66,7 @@ private:
     bool mConnected = false;
     bool mConnecting = false;
     QString mName;
+    QString mWifiName;
     void pingFrameTimeout();
     DBG_COUNT("Controller");
 };

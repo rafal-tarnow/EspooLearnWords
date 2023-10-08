@@ -89,6 +89,8 @@ Item{
             icon.source: "qrc:/images/close.svg"
             onTriggered: {
                 recipe.state = '';
+                recipe.swipePageIndex = 1;
+                recipe.swipePageIndex = 0;
             }
         }
     }

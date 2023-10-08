@@ -149,6 +149,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES pages/list_view/common/BrickTitle.qml
     QML_FILES pages/list_view/T0002/T0002MainPage.qml
     QML_FILES pages/list_view/common/NetworkSettings.qml
+    QML_FILES pages/controls/SButton.qml
 )
 
 qt6_add_statecharts(Baboon_bricks
