@@ -32,6 +32,10 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/emulators/BrickIpFinder.cpp
     src/ObjectCounter.hpp
     src/ObjectCounter.cpp
+    src/controllers/Controller.hpp
+    src/controllers/Controller.cpp
+    src/controllers/T0002Controller.hpp
+    src/controllers/T0002Controller.cpp
 )
 
 qt_add_qml_module(Baboon_bricks
@@ -82,10 +86,12 @@ qt_add_qml_module(Baboon_bricks
     "pages/grid_view/RecipesModel.qml"
     "pages/list_view/ListViewPage.qml"
     "pages/list_view/RecipesModel.qml"
-    "pages/list_view/DetailsB0002.qml"
-    "pages/list_view/M0002/M0002Swipe.qml"
-    "pages/list_view/DetailsT0002.qml"
+    "pages/list_view/B0002Delegate.qml"
+    "pages/list_view/T0002Delegate.qml"
     "pages/list_view/BrickDelegate.qml"
+    "pages/list_view/M0002/M0002MainPage.qml"
+    "pages/list_view/BrickSwipe.qml"
+    "pages/list_view/T0002/T0002ControllerExt.qml"
 
     RESOURCES
     "icons/gallery/20x20/back.png"
@@ -139,16 +145,9 @@ qt_add_qml_module(Baboon_bricks
     "scxml/PseudoDNSStates.scxml"
     "qmldir"
     "qtquickcontrols2.conf"
-    SOURCES src/controllers/Controller.hpp
-    SOURCES src/controllers/Controller.cpp
-    SOURCES src/controllers/T0002Controller.hpp
-    SOURCES src/controllers/T0002Controller.cpp
-    QML_FILES pages/list_view/M0002/M0002MainPage.qml
-    QML_FILES pages/list_view/M0002/T0002MainPage.qml
     QML_FILES pages/list_view/M0002/M0002ControllerExt.qml
-    QML_FILES pages/list_view/M0002/T0002ControllerExt.qml
     QML_FILES pages/list_view/common/BrickTitle.qml
-
+    QML_FILES pages/list_view/T0002/T0002MainPage.qml
 )
 
 qt6_add_statecharts(Baboon_bricks

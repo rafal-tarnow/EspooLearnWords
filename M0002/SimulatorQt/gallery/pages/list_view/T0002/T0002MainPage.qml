@@ -9,6 +9,7 @@ Item {
         id:smallView
 
         anchors.verticalCenter: parent.verticalCenter
+        spacing: 5
 
         Row{
 
@@ -32,6 +33,58 @@ Item {
 
             Text {
                 id: temp
+
+                text: brickController.temperature.toFixed(1) + qsTr("°C")
+                font.pointSize: 16
+                //font.bold: true
+                color: "#7a7b7a"
+            }
+        }
+
+        Row{
+            Image {
+                id: pressureImage
+                width: 20
+                height: 20
+                fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(width,height)
+                source: "qrc:/images/pressure.svg"
+            }
+
+            Text {
+                id: presureLabel
+                text: qsTr("Pressure: ")
+                font.pointSize: 16;
+                color: "#7a7b7a"
+            }
+
+            Text {
+                id: pressure
+                text: brickController.temperature.toFixed(1) + qsTr("°C")
+                font.pointSize: 16
+                color: "#7a7b7a"
+            }
+        }
+
+        Row{
+            Image {
+                id: humidityImage
+                width: 20
+                height: 20
+                fillMode: Image.PreserveAspectFit
+                sourceSize: Qt.size(width,height)
+                source: "qrc:/images/humidity.svg"
+            }
+
+            Text {
+                id: humidityLabel
+                text: qsTr("Humidity: ")
+                font.pointSize: 16;
+                color: "#7a7b7a"
+            }
+
+            Text {
+                id: humidity
                 text: brickController.temperature.toFixed(1) + qsTr("°C")
                 font.pointSize: 16
                 color: "#7a7b7a"
@@ -63,22 +116,18 @@ Item {
             id: bigTemp
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            text: brickController.temperature.toFixed(1)
-            font.pointSize: 56
-        }
 
-        Text{
-            anchors.left: bigTemp.right
-            anchors.bottom: bigTemp.verticalCenter
-            text: qsTr("°C")
-            font.pointSize: 20
+
+            text: brickController.temperature.toFixed(1) + qsTr("°C")
+            font.pointSize: 56
+            //font.bold: true
+
         }
     }
 
     states:  State {
         name: "Details"
         when: mainPage.details
-
 
         PropertyChanges {
             smallView{
@@ -89,14 +138,10 @@ Item {
                 opacity: 1
                 enabled: true
             }
-
-
         }
     }
 
-
     transitions: Transition {
-        // Make the state changes smooth
         ParallelAnimation {
             NumberAnimation { duration:250; properties: "detailsOpacity,x,z,y,contentY,height,width,opacity, font.pointSize" }
         }

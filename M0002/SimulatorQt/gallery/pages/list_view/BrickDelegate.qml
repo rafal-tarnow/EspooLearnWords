@@ -10,45 +10,6 @@ import "./common"
 ItemDelegate {
     id: recipe
 
-
-
-    property var comp;
-    property var brickController : M0002ControllerExt{
-
-    }
-
-//    function createSpriteObjects() {
-//        comp = Qt.createComponent("M0002ControllerExt.qml");
-//        if (comp.status === Component.Ready)
-//            finishCreation();
-//        else
-//            comp.statusChanged.connect(finishCreation);
-//    }
-
-//    function finishCreation() {
-//        if (comp.status === Component.Ready) {
-//            brickController = comp.createObject(recipe);
-//            if (brickController === null) {
-//                // Error Handling
-//                console.log("Error creating object brickController");
-//            }
-//        } else if (comp.status === Component.Error) {
-//            // Error Handling
-//            console.log("Error loading component:", comp.errorString());
-//        }
-//    }
-
-     Component.onCompleted: {
-               // createSpriteObjects();
-         console.log("TYYYYYYYYYYYYYYYYYYYPE" + typeof brickController);
-            }
-
-//        M0002ControllerExt{
-//            id:brickController
-//        }
-
-
-
     property real detailsOpacity : 0
     property bool detailsEnabled: false
     property bool connected: false
@@ -57,7 +18,7 @@ ItemDelegate {
     width: listView.width
 
 
-    Rectangle {
+    background: Rectangle {
         id: background
         anchors.fill: parent
         color: "#ffffff"
@@ -70,123 +31,18 @@ ItemDelegate {
         onClicked: recipe.state = 'Details';
     }
 
-    Item{
-        id: title
-        x:10
-        y:10
-        width: parent.width
-        height: 50
-
-        Image {
-            id: connectionImage
-
-            x: 0
-            y: 0
-            width: 50
-            height: 50
-
-            fillMode: Image.PreserveAspectFit
-            sourceSize: Qt.size(width,height)
-            source: recipe.connected ? "qrc:/images/temp_connected.svg" : "qrc:/images/temp_disconnected.svg"
-        }
-
-        Text {
-            id: brickNameTitle
-            anchors.verticalCenter: connectionImage.verticalCenter
-            anchors.leftMargin: 10
-            anchors.left: connectionImage.right
-            anchors.right: controlToolButton.left
-            anchors.rightMargin: 10
-            text: model.brickName
-
-            //font.bold: true;
-            font.pointSize: 24
-            clip: true
-        }
-
-        ToolButton {
-            id: controlToolButton
-            width:0
-            height: 50
-            anchors.right: configToolButton.left
-            anchors.verticalCenter: connectionImage.verticalCenter
-
-            opacity: recipe.detailsOpacity
-            enabled: recipe.detailsEnabled
-
-            action: controlAction
-            Action {
-                id: controlAction
-                icon.source: "qrc:/images/dashboard.svg"
-                onTriggered: {
-                    swipePageIndex = 1;
-                    swipePageIndex = 0;
-                }
-            }
-        }
-
-        ToolButton {
-            id: configToolButton
-            width:0
-            height: 50
-            anchors.right: closeToolButton.left
-            anchors.verticalCenter: connectionImage.verticalCenter
-
-            opacity: recipe.detailsOpacity
-            enabled: recipe.detailsEnabled
-
-            action: configAction
-            Action {
-                id: configAction
-                icon.source: "qrc:/images/config.svg"
-                onTriggered: {
-                    swipePageIndex = 0;
-                    swipePageIndex = 1;
-                }
-            }
-        }
-
-        ToolButton {
-            id: closeToolButton
-
-            width:0
-            height: 50
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.verticalCenter: connectionImage.verticalCenter
-
-            opacity: recipe.detailsOpacity
-            enabled: recipe.detailsEnabled
-
-            action: closeAction
-            Action {
-                id: closeAction
-                icon.source: "qrc:/images/close.svg"
-                onTriggered: {
-                    recipe.state = '';
-                }
-            }
-        }
-
-    }
-
     Loader {
-        anchors.top: title.bottom
+        anchors.fill: parent
         anchors.topMargin: 5
-        anchors.left: parent.left
         anchors.leftMargin: 5
-        anchors.right: parent.right
         anchors.rightMargin: 5
-        anchors.bottom: parent.bottom
         anchors.bottomMargin: 5
 
         source: {
             if (model.brickType === "T0002") {
-                recipe.height = 240
-                return "DetailsT0002.qml"
+                return "T0002Delegate.qml"
             } else if (model.brickType === "B0002") {
-                recipe.height = 200
-                return "DetailsB0002.qml"
+                return "B0002Delegate.qml"
             }
         }
     }
@@ -196,27 +52,27 @@ ItemDelegate {
 
         PropertyChanges {
             background.color: "white"
-            connectionImage {
-                // Make picture bigger
-                width: 35
-                height: 35
-            }
+//            connectionImage {
+//                // Make picture bigger
+//                width: 35
+//                height: 35
+//            }
 
-            brickNameTitle{
-                anchors.rightMargin: 0
-            }
+//            brickNameTitle{
+//                anchors.rightMargin: 0
+//            }
 
-            controlToolButton{
-                width: 50
-            }
+//            controlToolButton{
+//                width: 50
+//            }
 
-            configToolButton{
-                width:50
-            }
+//            configToolButton{
+//                width:50
+//            }
 
-            closeToolButton{
-                width:50
-            }
+//            closeToolButton{
+//                width:50
+//            }
 
             recipe {
                 // Make details visible
@@ -246,8 +102,8 @@ ItemDelegate {
     transitions: Transition {
         // Make the state changes smooth
         ParallelAnimation {
-            ColorAnimation { property: "color"; duration: 200 }
-            NumberAnimation { duration: 200; properties: "detailsOpacity,x,z,contentY,height,width" }
+            ColorAnimation { property: "color"; duration: 250 }
+            NumberAnimation { duration: 250; properties: "detailsOpacity,x,z,contentY,height,width" }
         }
     }
 
