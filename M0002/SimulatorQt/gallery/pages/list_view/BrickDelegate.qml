@@ -10,6 +10,7 @@ import "./common"
 ItemDelegate {
     id: recipe
 
+
     property real detailsOpacity : 0
     property bool detailsEnabled: false
     property bool connected: false

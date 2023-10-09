@@ -3,7 +3,7 @@ project(Baboon_bricks LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Scxml Test)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Quick3D Scxml Test)
 
 qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     gallery.cpp
@@ -150,6 +150,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES pages/list_view/T0002/T0002MainPage.qml
     QML_FILES pages/list_view/common/NetworkSettings.qml
     QML_FILES pages/controls/SButton.qml
+    QML_FILES pages/list_view/common/DataLine.qml
 )
 
 qt6_add_statecharts(Baboon_bricks
@@ -162,6 +163,7 @@ target_link_libraries(Baboon_bricks PUBLIC
     Qt::Gui
     Qt::Quick
     Qt::QuickControls2
+    Qt::Quick3D
     Qt::Scxml
     Qt6::Test
 )

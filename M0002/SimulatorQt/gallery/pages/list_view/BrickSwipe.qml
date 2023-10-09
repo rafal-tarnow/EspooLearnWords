@@ -14,10 +14,10 @@ Item{
         Loader {
             source: {
                 if (model.brickType === "T0002") {
-                    recipe.height = 140
+                    recipe.height = 200
                     return "/pages/list_view/T0002/T0002MainPage.qml"
                 } else if (model.brickType === "B0002") {
-                    recipe.height = 100
+                    recipe.height = 120
                     return "/pages/list_view/M0002/M0002MainPage.qml"
                 }
             }

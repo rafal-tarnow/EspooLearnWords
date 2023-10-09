@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "../common"
 
 Item {
     id: mainPage
@@ -9,88 +10,32 @@ Item {
         id:smallView
 
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 5
+        width: parent.width
+        spacing: 20
 
-        Row{
-
-            Image {
-                id: tempImage
-
-                width: 20
-                height: 20
-
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(width,height)
-                source: "qrc:/images/temperature.svg"
-            }
-
-            Text {
-                id: tempLabel
-                text: qsTr("Temperature: ")
-                font.pointSize: 16;
-                color: "#7a7b7a"
-            }
-
-            Text {
-                id: temp
-
-                text: brickController.temperature.toFixed(1) + qsTr("°C")
-                font.pointSize: 16
-                //font.bold: true
-                color: "#7a7b7a"
-            }
+        DataLine{
+            width: parent.width
+            icon: "qrc:/images/temperature.svg"
+            label: qsTr("Temperature")
+            value: brickController.temperature.toFixed(1)
+            unit: qsTr("°C")
         }
 
-        Row{
-            Image {
-                id: pressureImage
-                width: 20
-                height: 20
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(width,height)
-                source: "qrc:/images/pressure.svg"
-            }
-
-            Text {
-                id: presureLabel
-                text: qsTr("Pressure: ")
-                font.pointSize: 16;
-                color: "#7a7b7a"
-            }
-
-            Text {
-                id: pressure
-                text: brickController.temperature.toFixed(1) + qsTr("°C")
-                font.pointSize: 16
-                color: "#7a7b7a"
-            }
+        DataLine{
+            width: parent.width
+            icon: "qrc:/images/pressure.svg"
+            label: qsTr("Pressure")
+            value: brickController.temperature.toFixed(1)
+            unit: qsTr("hPa")
         }
 
-        Row{
-            Image {
-                id: humidityImage
-                width: 20
-                height: 20
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(width,height)
-                source: "qrc:/images/humidity.svg"
-            }
-
-            Text {
-                id: humidityLabel
-                text: qsTr("Humidity: ")
-                font.pointSize: 16;
-                color: "#7a7b7a"
-            }
-
-            Text {
-                id: humidity
-                text: brickController.temperature.toFixed(1) + qsTr("°C")
-                font.pointSize: 16
-                color: "#7a7b7a"
-            }
+        DataLine{
+            width: parent.width
+            icon: "qrc:/images/humidity.svg"
+            label: qsTr("Humidity")
+            value: brickController.temperature.toFixed(1)
+            unit: qsTr("%")
         }
-
     }
 
     Item {

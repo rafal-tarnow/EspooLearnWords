@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "../common"
 
 Item {
     id: mainPage
@@ -9,35 +10,23 @@ Item {
         id:smallView
 
         anchors.verticalCenter: parent.verticalCenter
+        width: parent.width
 
-        Row{
+        DataLine{
+            id: data
+            width: parent.width
+            icon: "qrc:/images/temperature.svg"
+            label: qsTr("Temperature")
+            value: brickController.temperature.toFixed(1)
+            unit: qsTr("°C")
 
-            Image {
-                id: tempImage
 
-                width: 20
-                height: 20
-
-                fillMode: Image.PreserveAspectFit
-                sourceSize: Qt.size(width,height)
-                source: "qrc:/images/temperature.svg"
-            }
-
-            Text {
-                id: tempLabel
-                text: qsTr("Temperature: ")
-                font.pointSize: 16;
-                color: "#7a7b7a"
-            }
-
-            Text {
-                id: temp
-                text: brickController.temperature.toFixed(1) + qsTr("°C")
-                font.pointSize: 16
-                color: "#7a7b7a"
-            }
         }
 
+    }
+    Rectangle{
+        anchors.fill: data
+        color: "red"
     }
 
     Item {
