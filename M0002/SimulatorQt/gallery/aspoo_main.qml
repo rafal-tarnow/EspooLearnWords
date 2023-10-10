@@ -100,7 +100,7 @@ ApplicationWindow {
 
             Label {
                 id: titleLabel
-                text: listView.currentItem ? (listView.currentItem as ItemDelegate).text : qsTr("Baboon App")
+                text: stackView.currentItem.pageName
                 font.pixelSize: 20
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -204,7 +204,7 @@ ApplicationWindow {
 
                 onClicked: {
                     listView.currentIndex = index
-                    stackView.pushPage(source, title)
+                    stackView.pushPage(source)
                     if (window.portraitMode)
                     drawer.close()
                 }
@@ -221,18 +221,17 @@ ApplicationWindow {
         anchors.leftMargin: !window.portraitMode ? drawer.width : undefined
 
         function replacePage(newPage, title, properties) {
-            titleLabel.text = title;
             replace(currentItem, newPage, properties)
         }
 
-        function pushPage(newPage, title, properties) {
-            titleLabel.text = title;
+        function pushPage(newPage, properties) {
             push(newPage, properties)
         }
 
         initialItem: Pane {
             id: pane
             background: Qt.transparent
+            property string pageName: "Babbon App test"
             Image {
                 id: logo
                 width: pane.availableWidth / 2

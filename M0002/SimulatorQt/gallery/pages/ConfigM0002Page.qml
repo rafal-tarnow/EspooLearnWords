@@ -8,6 +8,7 @@ import Backend
 
 ScrollablePage {
     id: page
+    property string pageName: qsTr("Config Device")
 
     property string ipAddress
 

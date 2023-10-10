@@ -15,54 +15,34 @@ Item {
         DataLine{
             id: data
             width: parent.width
+
             icon: "qrc:/images/temperature.svg"
             label: qsTr("Temperature")
             value: brickController.temperature.toFixed(1)
             unit: qsTr("°C")
-
-
         }
 
     }
-    Rectangle{
-        anchors.fill: data
-        color: "red"
-    }
 
-    Item {
-        id: bigView
-        anchors.fill: parent
-        opacity: 0
-        enabled: false
 
-        Image {
-            id: bigTempImage
-            anchors.right: bigTemp.left
-            anchors.verticalCenter: bigTemp.verticalCenter
+    Column{
+         id: bigView
+         anchors.fill: parent
+         opacity: 0
+         enabled: false
 
-            width: 50
-            height: 50
-
-            fillMode: Image.PreserveAspectFit
-            sourceSize: Qt.size(width,height)
-            source: "qrc:/images/temperature.svg"
-        }
-
-        Text {
+        BigDataLine{
             id: bigTemp
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: brickController.temperature.toFixed(1)
-            font.pointSize: 56
-        }
+            anchors.verticalCenter: bigView.verticalCenter
+            anchors.horizontalCenter: bigView.horizontalCenter
 
-        Text{
-            anchors.left: bigTemp.right
-            anchors.bottom: bigTemp.verticalCenter
-            text: qsTr("°C")
-            font.pointSize: 20
+            icon: "qrc:/images/temperature.svg"
+            value: brickController.temperature.toFixed(1)
+            unit: qsTr("°C")
         }
     }
+
+
 
     states:  State {
         name: "Details"

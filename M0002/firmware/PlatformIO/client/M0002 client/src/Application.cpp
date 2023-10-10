@@ -218,6 +218,7 @@ void Application<T>::handleBrickSaveBrickName(BrickClient *client, const std::st
     Serial.println("Application::handleBrickSaveNetworkSettings()");
     pseudoDNS.setHostName(brickName);
     configSaveBrickName(brickName);
+    client->cmdSetName(getName());
 }
 
 template <typename T>

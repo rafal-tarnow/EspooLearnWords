@@ -8,6 +8,7 @@ import Backend
 
 Page {
     id: page
+    property string pageName: "UDP Terminal"
     property int controlsHeight: 40
 
     Component.onCompleted: {

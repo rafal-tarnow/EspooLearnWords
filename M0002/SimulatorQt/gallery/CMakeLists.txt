@@ -129,6 +129,8 @@ qt_add_qml_module(Baboon_bricks
     "images/connected_icon.svg"
     "images/disconnected_icon.svg"
     "images/dashboard.svg"
+    "images/t0002_connected.svg"
+    "images/t0002_disconnected.svg"
     "images/temp_connected.svg"
     "images/temp_disconnected.svg"
     "images/temperature.svg"
@@ -151,6 +153,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES pages/list_view/common/NetworkSettings.qml
     QML_FILES pages/controls/SButton.qml
     QML_FILES pages/list_view/common/DataLine.qml
+    QML_FILES pages/list_view/common/BigDataLine.qml
 )
 
 qt6_add_statecharts(Baboon_bricks

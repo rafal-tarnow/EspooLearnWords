@@ -17,6 +17,9 @@ Item{
         anchors.right: t0002Delegate.right
         anchors.left: t0002Delegate.left
         height: 50
+
+        connectedIcon: "qrc:/images/t0002_connected.svg"
+        disconnectedIcon: "qrc:/images/t0002_disconnected.svg"
     }
 
     BrickSwipe{

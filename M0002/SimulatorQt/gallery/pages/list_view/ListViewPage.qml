@@ -7,10 +7,12 @@ import "."
 
 Page {
     id: page
-    background: Rectangle{
-        //color: "yellow"
-        color: "#fafafa"
-    }
+    property string pageName: "Dashboard"
+
+//    background: Rectangle{
+//        //color: "yellow"
+//        color: "#fafafa"
+//    }
 
     PseudoDNSServer{
         id: dnsServer

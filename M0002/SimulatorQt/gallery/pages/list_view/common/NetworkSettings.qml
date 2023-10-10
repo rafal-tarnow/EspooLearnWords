@@ -85,8 +85,8 @@ ScrollablePage {
                 text: qsTr("SAVE CONFIG")
                 Layout.alignment: Qt.AlignRight
                 onClicked: {
-                    controller.cmdSaveBrickName(deviceName.text)
-                    controller.cmdSaveNetworkConfig(wifiNetworkName.text, wifiPassword.text)
+                    brickController.cmdSaveBrickName(deviceName.text)
+                    brickController.cmdSaveNetworkConfig(wifiNetworkName.text, wifiPassword.text)
                 }
             }
         }

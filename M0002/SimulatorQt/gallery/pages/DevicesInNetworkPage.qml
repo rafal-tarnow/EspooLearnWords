@@ -105,7 +105,7 @@ Page {
                     id: goToBrick
                     icon.source: "qrc:/images/config.svg"
                     onTriggered: {
-                            stackView.pushPage("qrc:/pages/ConfigM0002Page.qml", "Config Device",{ "ipAddress": ipLabel.text });
+                            stackView.pushPage("qrc:/pages/ConfigM0002Page.qml",{ "ipAddress": ipLabel.text });
                     }
                 }
 

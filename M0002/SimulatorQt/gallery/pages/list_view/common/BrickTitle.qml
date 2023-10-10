@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 
 Item{
+    property string connectedIcon
+    property string disconnectedIcon
 
     Image {
         id: connectionImage
@@ -13,7 +15,7 @@ Item{
 
         fillMode: Image.PreserveAspectFit
         sourceSize: Qt.size(width,height)
-        source: recipe.connected ? "qrc:/images/temp_connected.svg" : "qrc:/images/temp_disconnected.svg"
+        source: recipe.connected ? connectedIcon : disconnectedIcon
     }
 
     Text {

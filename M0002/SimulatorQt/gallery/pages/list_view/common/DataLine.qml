@@ -26,10 +26,10 @@ RowLayout{
     }
 
     Text {
-        id: value
+        id: valueLabel
         Layout.alignment: Qt.AlignRight
         Layout.rightMargin: 10
-        text: brickController.temperature.toFixed(1) + unit
+        text: value + unit
         font.pointSize: 16
         //color: "#7a7b7a"
     }

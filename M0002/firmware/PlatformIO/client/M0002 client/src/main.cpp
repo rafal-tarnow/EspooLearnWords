@@ -51,10 +51,11 @@ void setup()
   // Setup serial
   // Serial.begin(9600);
   //Serial.begin(115200);
-  Serial.begin(3000000);
   delay(100);
+  Serial.begin(3000000);
+
   printResetReason();
-  delay(12000);
+  //delay(12000);
 
 
   // Setup led
