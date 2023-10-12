@@ -36,6 +36,12 @@ T0002Controller{
         }
     }
 
+    onBrickName: function onName(name){
+        if(model.brickName !== name){
+            myBricksModel.set(index, name)
+        }
+    }
+
     function tryConnect(){
         console.log("tryConnect()");
         var ipaddr = dnsServer.getIpById(model.brickId)

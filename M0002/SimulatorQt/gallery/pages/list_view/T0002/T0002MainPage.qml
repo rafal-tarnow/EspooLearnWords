@@ -5,7 +5,7 @@ import "../common"
 
 Item {
     id: mainPage
-    property bool details: recipe.detailsEnabled
+    property bool details
 
     Column{
         id:smallView
@@ -49,7 +49,7 @@ Item {
 
         BigDataLine{
             id: bigTemp
-            anchors.horizontalCenter: bigView.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
 
             icon: "qrc:/images/temperature.svg"
             value: brickController.temperature.toFixed(1)
@@ -58,7 +58,7 @@ Item {
 
         BigDataLine{
             id: bigPressure
-            anchors.horizontalCenter: bigView.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
 
             icon: "qrc:/images/pressure.svg"
             value: brickController.pressure.toFixed(0)
@@ -67,7 +67,7 @@ Item {
 
         BigDataLine{
             id: bigHumidity
-            anchors.horizontalCenter: bigView.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
 
             icon: "qrc:/images/humidity.svg"
             value: brickController.humidity.toFixed(0)

@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Quick3D Scxml Test)
 
 qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
-    gallery.cpp
+    main.cpp
     src/tcp_terminal.hpp
     src/tcp_terminal.cpp
     src/udp_terminal.hpp

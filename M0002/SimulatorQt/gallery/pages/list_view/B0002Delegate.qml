@@ -7,6 +7,7 @@ import "./M0002"
 Item{
     id: b0002Delegate
     anchors.fill: parent
+    property int pageIndex: 0
 
     property var brickController : M0002ControllerExt{
 
@@ -19,6 +20,7 @@ Item{
         anchors.left: b0002Delegate.left
         height: 50
 
+        title: model.brickName
         connectedIcon: "qrc:/images/temp_connected.svg"
         disconnectedIcon: "qrc:/images/temp_disconnected.svg"
     }

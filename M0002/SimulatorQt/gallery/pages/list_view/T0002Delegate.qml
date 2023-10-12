@@ -7,6 +7,9 @@ import "./T0002"
 Item{
     id: t0002Delegate
     anchors.fill: parent
+    property int pageIndex: 0
+    property bool details: false
+
 
     property var brickController : T0002ControllerExt{
     }
@@ -18,8 +21,17 @@ Item{
         anchors.left: t0002Delegate.left
         height: 50
 
+        title: model.brickName
         connectedIcon: "qrc:/images/t0002_connected.svg"
         disconnectedIcon: "qrc:/images/t0002_disconnected.svg"
+        connected: brickController.connected
+
+        onCloseButton: {
+            brickDelegate.state = '';
+            brickDelegate.swipePageIndex = 1;
+            brickDelegate.swipePageIndex = 0;
+            t0002Delegate.pageIndex = 0;
+        }
     }
 
     BrickSwipe{
@@ -29,6 +41,7 @@ Item{
         anchors.left: t0002Delegate.left
         anchors.bottom: t0002Delegate.bottom
         clip: true
+        swipeIndex: pageIndex
+        details: t0002Delegate.details
     }
-
 }

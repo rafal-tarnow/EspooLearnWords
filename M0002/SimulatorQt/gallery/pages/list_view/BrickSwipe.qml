@@ -3,23 +3,33 @@ import QtQuick.Controls
 import "./M0002"
 
 Item{
+    id: brickSwipe
+    property int swipeIndex
+    property bool details
 
     SwipeView {
         id: detailsSwipeView
         anchors.fill: parent
 
-        currentIndex: recipe.swipePageIndex
-        interactive: recipe.detailsEnabled
+        currentIndex: swipeIndex
+        interactive: details
 
         Loader {
+            id: loader
             source: {
                 if (model.brickType === "T0002") {
-                    recipe.height = 200
+                    //recipe.height = 200
                     return "/pages/list_view/T0002/T0002MainPage.qml"
                 } else if (model.brickType === "B0002") {
-                    recipe.height = 120
+                    //recipe.height = 120
                     return "/pages/list_view/M0002/M0002MainPage.qml"
                 }
+            }
+
+            Binding {
+                target: loader.item
+                property: "details"
+                value: brickSwipe.details
             }
         }
 
@@ -31,20 +41,12 @@ Item{
     }
 
     PageIndicator {
-        opacity: recipe.detailsOpacity
-        enabled: recipe.detailsEnabled
+        opacity: details ? 1 : 0
+        enabled: details
         count: detailsSwipeView.count
         currentIndex: detailsSwipeView.currentIndex
         anchors.bottom: detailsSwipeView.bottom
         anchors.horizontalCenter: detailsSwipeView.horizontalCenter
     }
 
-    Component {
-        id: rectR
-        Rectangle{
-            width: 50
-            height: 50
-            color: "red"
-        }
-    }
 }

@@ -33,12 +33,13 @@ ScrollablePage {
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width < 300 ? parent.width : 300
             placeholderText: qsTr("WiFi password")
+            text: brickController.wifiPWD
         }
 
         RowLayout{
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width < 300 ? parent.width : 300
-            visible: true
+            visible: false
             RadioButton {
                 id: dynamicIP
                 text: qsTr("Dynamic IP")

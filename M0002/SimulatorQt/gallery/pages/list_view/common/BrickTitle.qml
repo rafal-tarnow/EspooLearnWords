@@ -2,8 +2,13 @@ import QtQuick
 import QtQuick.Controls
 
 Item{
+    property string title
+    property bool connected: false
     property string connectedIcon
     property string disconnectedIcon
+
+    signal closeButton()
+
 
     Image {
         id: connectionImage
@@ -15,7 +20,7 @@ Item{
 
         fillMode: Image.PreserveAspectFit
         sourceSize: Qt.size(width,height)
-        source: recipe.connected ? connectedIcon : disconnectedIcon
+        source: connected ? connectedIcon : disconnectedIcon
     }
 
     Text {
@@ -25,7 +30,7 @@ Item{
         anchors.left: connectionImage.right
         anchors.right: closeToolButton.left
         anchors.rightMargin: 10
-        text: model.brickName
+        text: title
 
         //font.bold: true;
         font.pointSize: 24
@@ -90,11 +95,10 @@ Item{
             id: closeAction
             icon.source: "qrc:/images/close.svg"
             onTriggered: {
-                recipe.state = '';
-                recipe.swipePageIndex = 1;
-                recipe.swipePageIndex = 0;
+                closeButton()
             }
         }
     }
+
 
 }

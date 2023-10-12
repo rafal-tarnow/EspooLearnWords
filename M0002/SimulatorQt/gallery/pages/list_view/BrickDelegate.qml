@@ -8,7 +8,7 @@ import "./M0002"
 import "./common"
 
 ItemDelegate {
-    id: recipe
+    id: brickDelegate
 
     property real detailsOpacity : 0
     property bool detailsEnabled: false
@@ -16,6 +16,7 @@ ItemDelegate {
     property int swipePageIndex: 0
 
     width: listView.width
+    //height: listView.height
 
 
     background: Rectangle {
@@ -28,10 +29,11 @@ ItemDelegate {
 
     MouseArea {
         anchors.fill: background
-        onClicked: recipe.state = 'Details';
+        onClicked: brickDelegate.state = 'Details';
     }
 
     Loader {
+        id: content
         anchors.fill: parent
         anchors.topMargin: 5
         anchors.leftMargin: 5
@@ -40,10 +42,18 @@ ItemDelegate {
 
         source: {
             if (model.brickType === "T0002") {
+                brickDelegate.height = 200
                 return "T0002Delegate.qml"
             } else if (model.brickType === "B0002") {
+                brickDelegate.height = 120
                 return "B0002Delegate.qml"
             }
+        }
+
+        Binding {
+            target: content.item
+            property: "details"
+            value: detailsEnabled
         }
     }
 
@@ -52,29 +62,8 @@ ItemDelegate {
 
         PropertyChanges {
             background.color: "white"
-//            connectionImage {
-//                // Make picture bigger
-//                width: 35
-//                height: 35
-//            }
 
-//            brickNameTitle{
-//                anchors.rightMargin: 0
-//            }
-
-//            controlToolButton{
-//                width: 50
-//            }
-
-//            configToolButton{
-//                width:50
-//            }
-
-//            closeToolButton{
-//                width:50
-//            }
-
-            recipe {
+            brickDelegate {
                 // Make details visible
                 detailsOpacity: 1
                 detailsEnabled: true
@@ -89,20 +78,19 @@ ItemDelegate {
         }
 
         PropertyChanges {
-            recipe.ListView.view.contentY: recipe.y
+            brickDelegate.ListView.view.contentY: brickDelegate.y
             explicit: true;
         }
 
         // Disallow flicking while we're in detailed view
         PropertyChanges {
-            recipe.ListView.view.interactive: false
+            brickDelegate.ListView.view.interactive: false
         }
     }
 
     transitions: Transition {
         // Make the state changes smooth
         ParallelAnimation {
-            ColorAnimation { property: "color"; duration: 250 }
             NumberAnimation { duration: 250; properties: "detailsOpacity,x,z,contentY,height,width" }
         }
     }

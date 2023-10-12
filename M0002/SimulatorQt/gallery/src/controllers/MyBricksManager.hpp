@@ -23,6 +23,7 @@ public:
 
     Q_INVOKABLE void append(const QString & id, const QString &brickType, const QString &brickName);
     Q_INVOKABLE void set(int row, const QString &id, const QString &brickType, const QString  &brickName);
+    Q_INVOKABLE void set(int row, const QString  &brickName);
     Q_INVOKABLE void remove(int row);
 
 signals:

@@ -75,6 +75,7 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         QString deviceType = ProtocolStd::getQString(frame);
         QString deviceName = ProtocolStd::getQString(frame);
         QString deviceSsid = ProtocolStd::getQString(frame);
+        QString devicePwd = ProtocolStd::getQString(frame);
         if(mWifiName != deviceSsid){
             mWifiName = deviceSsid;
             emit wifiSSIDChanged();
@@ -84,15 +85,30 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
             mName = deviceName;
             emit nameChanged();
         }
+        emit brickId(id);
+        if(mId != id){
+            mId = id;
+            emit identifierChanged();
+        }
         emit brickInfo(id, deviceType, deviceName, deviceSsid, devicePswd);
+        if(mWifiPwd != devicePwd){
+            mWifiPwd = devicePwd;
+            emit wifiPWDChanged();
+        }
+
     }else if (functionCode == 0x03) {
         QString id = ProtocolStd::getQString(frame);
         emit brickId(id);
+        if(mId != id){
+            mId = id;
+            emit identifierChanged();
+        }
     }else if (functionCode == 0x04) {
         QString deviceType = ProtocolStd::getQString(frame);
         emit brickType(deviceType);
     }else if (functionCode == 0x05) { //get Name
         QString deviceName = ProtocolStd::getQString(frame);
+        qDebug() << "Recived Name frame" << deviceName;
         if(mName != deviceName){
             mName = deviceName;
             emit nameChanged();
@@ -105,6 +121,10 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         if(mWifiName != wifiSSID){
             mWifiName = wifiSSID;
             emit wifiSSIDChanged();
+        }
+        if(mWifiPwd != wifiPSWD){
+            mWifiPwd = wifiPSWD;
+            emit wifiPWDChanged();
         }
     }
     return functionCode;
@@ -132,9 +152,19 @@ QString Controller::name() const
     return mName;
 }
 
+QString Controller::identifier() const
+{
+    return mId;
+}
+
 QString Controller::wifiSSID() const
 {
     return mWifiName;
+}
+
+QString Controller::wifiPWD() const
+{
+    return mWifiPwd;
 }
 
 void Controller::cmdGetInfo()

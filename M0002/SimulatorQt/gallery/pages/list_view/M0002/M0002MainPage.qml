@@ -4,7 +4,7 @@ import "../common"
 
 Item {
     id: mainPage
-    property bool details: recipe.detailsEnabled
+    property bool details
 
     Column{
         id:smallView

@@ -83,7 +83,20 @@ void MyBricksList::set(int row, const QString &id, const QString &brickType, con
 
     m_items.replace(row, { id, brickType, brickName });
     saveToSettings();
-    dataChanged(index(row, 0), index(row, 0), { IdRole, TypeRole, NameRole});
+    emit dataChanged(index(row, 0), index(row, 0), { IdRole, TypeRole, NameRole});
+}
+
+void MyBricksList::set(int row, const QString &brickName)
+{
+    qDebug() << "MyBricksList::set() " << row << " " << brickName;
+    if (row < 0 || row >= m_items.count())
+        return;
+
+    Brick brick = m_items.at(row);
+    brick.name = brickName;
+    m_items.replace(row, brick);
+    saveToSettings();
+    emit dataChanged(index(row, 0), index(row, 0), { IdRole, TypeRole, NameRole});
 }
 
 void MyBricksList::remove(int row)
