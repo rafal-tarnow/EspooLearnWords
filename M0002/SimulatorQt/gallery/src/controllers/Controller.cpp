@@ -6,6 +6,7 @@
 Controller::Controller(QObject *parent)
     : QObject(parent)
 {
+    qDebug() << "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH New Controller::Controller()";
     tcpConnection = std::make_unique<TcpConncetion>(this);
     connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &Controller::handleTcpConnected);
     connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &Controller::handleTcpDisconnected);

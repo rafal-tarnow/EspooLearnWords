@@ -50,15 +50,15 @@ int main(int argc, char *argv[])
         return -1;
 
 
-    QTimer timer;
-    QObject::connect(&timer, &QTimer::timeout, [&]() {
-        // Tutaj możesz umieścić kod, który zostanie wykonany po upływie czasu
-        qDebug() << "Timer timeout!";
-        ObjectCounter::printQt();
+//    QTimer timer;
+//    QObject::connect(&timer, &QTimer::timeout, [&]() {
+//        // Tutaj możesz umieścić kod, który zostanie wykonany po upływie czasu
+//        qDebug() << "Timer timeout!";
+//        ObjectCounter::printQt();
 
 
-    });
-    timer.start(1000);
+//    });
+//    timer.start(1000);
 
     return app.exec();
 }

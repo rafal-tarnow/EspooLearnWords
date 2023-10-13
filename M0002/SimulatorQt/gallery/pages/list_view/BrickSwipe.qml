@@ -7,6 +7,12 @@ Item{
     property int swipeIndex
     property bool details
 
+    function setSwipeIndex(index) {
+        console.log("setSwipeIndex");
+        // Możesz tu wykonać dowolne operacje
+        detailsSwipeView.currentIndex = index;
+    }
+
     SwipeView {
         id: detailsSwipeView
         anchors.fill: parent

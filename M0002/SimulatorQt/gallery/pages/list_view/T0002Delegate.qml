@@ -7,9 +7,9 @@ import "./T0002"
 Item{
     id: t0002Delegate
     anchors.fill: parent
+
     property int pageIndex: 0
     property bool details: false
-
 
     property var brickController : T0002ControllerExt{
     }
@@ -31,6 +31,7 @@ Item{
             brickDelegate.swipePageIndex = 1;
             brickDelegate.swipePageIndex = 0;
             t0002Delegate.pageIndex = 0;
+            swipe.setSwipeIndex(0);
         }
     }
 
