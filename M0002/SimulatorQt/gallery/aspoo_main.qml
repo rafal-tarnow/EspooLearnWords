@@ -147,7 +147,6 @@ ApplicationWindow {
 
         background: Rectangle {
             color: "#ffffff"
-
             //right border
             Rectangle {
                 anchors.right: parent.right
@@ -208,6 +207,7 @@ ApplicationWindow {
                 id: delegateItem
                 width: ListView.view.width
                 text: title
+                //font.bold: true
                 highlighted: ListView.isCurrentItem
 
                 required property int index
