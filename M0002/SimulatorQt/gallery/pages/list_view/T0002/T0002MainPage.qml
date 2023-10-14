@@ -7,6 +7,10 @@ Item {
     id: mainPage
     property bool details
 
+    Component.onCompleted:  {
+        console.log("T0002MainPageCompleted ############################################################")
+    }
+
     Column{
         id:smallView
 

@@ -37,7 +37,6 @@ int MyBricksList::rowCount(const QModelIndex &parent) const {
 }
 
 QVariant MyBricksList::data(const QModelIndex &index, int role) const {
-    qDebug() << "MyListModel::data()";
 
     if (index.row() < rowCount())
         switch (role) {

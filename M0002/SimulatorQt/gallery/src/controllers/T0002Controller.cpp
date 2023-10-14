@@ -39,7 +39,6 @@ uint8_t T0002Controller::handleProtocolFrame(QByteArray &frame)
         return functionCode;
     }
     if(functionCode == 0x10){
-        qDebug() << "T0002Controller functionCode=" << functionCode;
         float temp = ProtocolStd::getFloat(frame);
         float humidity = ProtocolStd::getFloat(frame);
         float pressure = ProtocolStd::getFloat(frame);

@@ -11,6 +11,10 @@ Item{
     property int pageIndex: 0
     property bool details: false
 
+    Component.onCompleted:  {
+        console.log("T0002Completed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    }
+
     property var brickController : T0002ControllerExt{
     }
 

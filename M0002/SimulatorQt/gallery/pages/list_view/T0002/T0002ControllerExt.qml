@@ -20,7 +20,7 @@ T0002Controller{
     }
 
     onBrickConnectedChanged: {
-        recipe.connected = connected;
+        brickDelegate.connected = connected;
         if(!connected){
             tryConnect();
         }
