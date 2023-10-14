@@ -9,10 +9,9 @@ Page {
     id: page
     property string pageName: "Dashboard"
 
-//    background: Rectangle{
-//        //color: "yellow"
-//        color: "#fafafa"
-//    }
+    background: Rectangle{
+        color: "#fafafa"
+    }
 
     PseudoDNSServer{
         id: dnsServer

@@ -145,6 +145,19 @@ ApplicationWindow {
         position: window.portraitMode ? 0 : 1
         visible: !window.portraitMode
 
+        background: Rectangle {
+            color: "#ffffff"
+
+            //right border
+            Rectangle {
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+
+                width: 1
+                color:"#e0e0e0"
+            }
+        }
 
         ListView {
             id: listView
@@ -230,7 +243,10 @@ ApplicationWindow {
 
         initialItem: Pane {
             id: pane
-            background: Qt.transparent
+            background: Rectangle{
+                color: "#fafafa"
+            }
+
             property string pageName: "Babbon App test"
             Image {
                 id: logo
