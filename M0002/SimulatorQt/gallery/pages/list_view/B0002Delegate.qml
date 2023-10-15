@@ -26,6 +26,7 @@ Item{
         connectedIcon: "qrc:/images/temp_connected.svg"
         disconnectedIcon: "qrc:/images/temp_disconnected.svg"
         connected: brickController.connected
+        details: parent.details
 
         onCloseButton: {
             brickDelegate.state = '';

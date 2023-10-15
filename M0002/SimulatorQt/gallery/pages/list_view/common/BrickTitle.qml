@@ -2,8 +2,10 @@ import QtQuick
 import QtQuick.Controls
 
 Item{
+    id: brickTitle
     property string title
     property bool connected: false
+    property bool details
     property string connectedIcon
     property string disconnectedIcon
 
@@ -82,7 +84,7 @@ Item{
     ToolButton {
         id: closeToolButton
 
-        width:50
+        width:0
         height: 50
         anchors.right: parent.right
         anchors.verticalCenter: connectionImage.verticalCenter
@@ -98,7 +100,30 @@ Item{
                 closeButton()
             }
         }
+
+//        transform: Scale {
+//            id: closeToolScale
+//            xScale: 0.0 // Skalowanie na początku do 0
+//            yScale: 0.0 // Skalowanie na początku do 0
+//        }
     }
 
+    states:  State {
+        name: "Details"
+        when: brickTitle.details
+
+        PropertyChanges {
+            closeToolButton{
+                width: 50
+            }
+        }
+
+    }
+
+    transitions: Transition {
+        ParallelAnimation {
+            NumberAnimation { duration:250; properties: "width" }
+        }
+    }
 
 }
