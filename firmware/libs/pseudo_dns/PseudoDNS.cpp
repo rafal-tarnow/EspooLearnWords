@@ -115,11 +115,14 @@ void PseudoDNS::onUdpDatagram(int packetSize)
         std::string hostName = (char *)&buffer[1];
         std::string hostIP = Udp.remoteIP().toString().c_str();
 
+        HostInfo hostInfo;
+        
+
         std::pair<std::string, std::string> hostNameAndIP(hostName, hostIP);
 
-        if (dnsDiscoverdHosts.find(hostNameAndIP) == dnsDiscoverdHosts.end())
+        if (dnsDiscoverdHosts.find(hostInfo) == dnsDiscoverdHosts.end())
         {
-          dnsDiscoverdHosts.insert(hostNameAndIP);
+          dnsDiscoverdHosts.insert(hostInfo);
           if (callbackFunction)
           {
             callbackFunction(hostName, hostIP);

@@ -9,6 +9,13 @@
 
 #include "ProtocolStd.h"
 
+struct HostInfo;
+
+auto cmp = [](HostInfo & a, HostInfo & b)
+{ 
+  return false; 
+};
+
 class PseudoDNS
 {
   using CallbackFunction = std::function<void(const std::string &, const std::string &)>;
@@ -38,13 +45,23 @@ public:
     callbackMethod = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2);
   }
 
+  std::string getIPById(std::string id);
+
 private:
   void onQueryTime();
   void onUdpDatagram(int packetSize);
   IPAddress softAPbroadcastIP();
 
 private:
-  std::set<std::pair<std::string, std::string>> dnsDiscoverdHosts; // string - hostName, string - hostIP
+  struct HostInfo
+  {
+    std::string hostId;
+    std::string hostType;
+    std::string hostName;
+    std::string hostIp;
+  };
+
+  std::set<HostInfo, decltype(cmp)> dnsDiscoverdHosts; // string - hostName, string - hostIP
   CallbackMethod callbackMethod;
   CallbackFunction callbackFunction;
   std::string mId;
