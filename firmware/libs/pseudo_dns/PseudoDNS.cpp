@@ -63,6 +63,11 @@ IPAddress PseudoDNS::softAPbroadcastIP()
   return IPAddress(ip.ip.addr | ~(ip.netmask.addr));
 }
 
+std::string PseudoDNS::getIPById(std::string id)
+{
+  return dnsDiscoverdHosts[id].hostIp;
+}
+
 void PseudoDNS::onQueryTime()
 {
   // Serial.println("\n PseudoDNS::onQueryTime()");
@@ -83,16 +88,22 @@ void PseudoDNS::onQueryTime()
 
 void PseudoDNS::onUdpDatagram(int packetSize)
 {
-  // Serial.println("\n PseudoDNS::onUdpDatagram()");
+// Serial.println("\n PseudoDNS::onUdpDatagram()");
+#warning "TODO data reading from the buffer can be optimized"
   byte buffer[packetSize];
   int len = Udp.read(buffer, sizeof(buffer));
 
+  std::deque<uint8_t> dataDeque(buffer, buffer + len);
+  // std::vector<uint8_t> receivedData;
+  // int len = Udp.read(receivedData.data(), packetSize);
+
   if (len > 0)
   {
-    buffer[len] = 0;
-    // Serial.println("<----Received packet from: " + Udp.remoteIP().toString() + " port: " + String(Udp.remotePort()) + " size: " + String(len) + " with data: " + String((char*)buffer));
-
-    if (buffer[0] == 0x01)
+    // buffer[len] = 0;
+    //  Serial.println("<----Received packet from: " + Udp.remoteIP().toString() + " port: " + String(Udp.remotePort()) + " size: " + String(len) + " with data: " + String((char*)buffer));
+    uint8_t functionCode = ProtocolStd::getUint8_t(dataDeque);
+    if (functionCode == 0x01)
+    // if (receivedData[0] == 0x01)
     {
       if (mRunning)
       {
@@ -107,29 +118,36 @@ void PseudoDNS::onUdpDatagram(int packetSize)
         // Serial.println("\n--->Send response package");
       }
     }
-    else if (buffer[0] == 0x02)
+    else if (functionCode == 0x02)
     {
-      if (mRunning)
+      Serial.println("0x02");
+      if (runQuery)
       {
-
-        std::string hostName = (char *)&buffer[1];
-        std::string hostIP = Udp.remoteIP().toString().c_str();
-
         HostInfo hostInfo;
-        
 
-        std::pair<std::string, std::string> hostNameAndIP(hostName, hostIP);
+        hostInfo.hostId = ProtocolStd::getString(dataDeque);
+        hostInfo.hostType = ProtocolStd::getString(dataDeque);
+        hostInfo.hostName = ProtocolStd::getString(dataDeque);
+        hostInfo.hostIp = Udp.remoteIP().toString().c_str();
 
-        if (dnsDiscoverdHosts.find(hostInfo) == dnsDiscoverdHosts.end())
+        Serial.println("0x02");
+        Serial.println(hostInfo.hostId.c_str());
+        Serial.println(hostInfo.hostType.c_str());
+        Serial.println(hostInfo.hostName.c_str());
+        Serial.println(hostInfo.hostIp.c_str());
+
+        auto iter = dnsDiscoverdHosts.find(hostInfo.hostId);
+
+        if (iter == dnsDiscoverdHosts.end() || (iter->second != hostInfo))
         {
-          dnsDiscoverdHosts.insert(hostInfo);
+          dnsDiscoverdHosts[hostInfo.hostId] = hostInfo;
           if (callbackFunction)
           {
-            callbackFunction(hostName, hostIP);
+            callbackFunction(hostInfo.hostId, hostInfo.hostType, hostInfo.hostName, hostInfo.hostIp);
           }
           if (callbackMethod)
           {
-            callbackMethod(hostName, hostIP);
+            callbackFunction(hostInfo.hostId, hostInfo.hostType, hostInfo.hostName, hostInfo.hostIp);
           }
         }
       }

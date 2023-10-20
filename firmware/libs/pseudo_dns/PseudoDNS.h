@@ -6,20 +6,35 @@
 #include <functional>
 #include <set>
 #include <utility>
+#include <map>
 
 #include "ProtocolStd.h"
 
-struct HostInfo;
+struct HostInfo
+{
+  std::string hostId;
+  std::string hostType;
+  std::string hostName;
+  std::string hostIp;
 
-auto cmp = [](HostInfo & a, HostInfo & b)
-{ 
-  return false; 
+  bool operator==(const HostInfo &other) const
+  {
+    return hostId == other.hostId &&
+           hostType == other.hostType &&
+           hostName == other.hostName &&
+           hostIp == other.hostIp;
+  }
+
+  bool operator!=(const HostInfo &other) const
+  {
+    return !(*this == other); // Operator != jest przeciwnością operatora ==
+  }
 };
 
 class PseudoDNS
 {
-  using CallbackFunction = std::function<void(const std::string &, const std::string &)>;
-  using CallbackMethod = std::function<void(const std::string &, const std::string &)>;
+  using CallbackFunction = std::function<void(const std::string &, const std::string &, const std::string &, const std::string &)>;
+  using CallbackMethod = std::function<void(const std::string &, const std::string &, const std::string &, const std::string &)>;
 
 public:
   void setHostName(const std::string &hostName);
@@ -34,15 +49,15 @@ public:
 
   void update();
 
-  void onHostFound(CallbackFunction callback)
+  void onHostFound(CallbackFunction callback) //hostId, hostType, hostName, hostIP
   {
     callbackFunction = callback;
   }
 
   template <typename T>
-  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &))
+  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &, const std::string &, const std::string &)) //string hostName, string hostIP
   {
-    callbackMethod = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2);
+    callbackMethod = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
   }
 
   std::string getIPById(std::string id);
@@ -53,15 +68,7 @@ private:
   IPAddress softAPbroadcastIP();
 
 private:
-  struct HostInfo
-  {
-    std::string hostId;
-    std::string hostType;
-    std::string hostName;
-    std::string hostIp;
-  };
-
-  std::set<HostInfo, decltype(cmp)> dnsDiscoverdHosts; // string - hostName, string - hostIP
+  std::map<std::string, HostInfo> dnsDiscoverdHosts; // key - hostId, value - HostInfo
   CallbackMethod callbackMethod;
   CallbackFunction callbackFunction;
   std::string mId;
@@ -70,10 +77,9 @@ private:
   bool mRunning = false;
   bool runQuery = false;
   uint16_t PORT = 6353;
-  const unsigned long QUERY_INTERVAL = 2500;
+  const unsigned long QUERY_INTERVAL = 250;
   unsigned long lastQueryTime = 0;
   WiFiUDP Udp;
   unsigned long lastTime = 0;
-  const unsigned long interval = 100;
   ProtocolStd protocolStd;
 };

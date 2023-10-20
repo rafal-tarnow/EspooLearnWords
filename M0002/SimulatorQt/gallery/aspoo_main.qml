@@ -176,7 +176,7 @@ ApplicationWindow {
 
             model: ListModel {
 //                ListElement { title: qsTr("My Bricks"); source: "qrc:/pages/my_bricks/MyBricksPage.qml" }
-//                ListElement { title: qsTr("Bricks in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
+                ListElement { title: qsTr("Bricks in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
 //                ListElement { title: qsTr("Config M0002"); source: "qrc:/pages/ConfigM0002Page.qml" }
 //                ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
 //                ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
