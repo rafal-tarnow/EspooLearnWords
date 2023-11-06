@@ -11,6 +11,7 @@ class M0002Controller : public Controller
 
 public:
     Q_INVOKABLE float temperature();
+    QString type() override;
 
 signals:
     void temperatureChanged();

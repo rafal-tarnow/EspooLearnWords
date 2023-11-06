@@ -44,6 +44,10 @@ void Controller::handleTcpConnected()
     checkConnectionStatus();
     emit brickConnected();
     emit brickConnectedChanged();
+    if(tcpConnectionIp != tcpConnection->getIp()){
+        tcpConnectionIp = tcpConnection->getIp();
+        emit ipChanged();
+    }
     cmdGetInfo();
 }
 
@@ -165,6 +169,11 @@ QString Controller::wifiSSID() const
 QString Controller::wifiPWD() const
 {
     return mWifiPwd;
+}
+
+QString Controller::ip() const
+{
+    return tcpConnectionIp;
 }
 
 void Controller::cmdGetInfo()

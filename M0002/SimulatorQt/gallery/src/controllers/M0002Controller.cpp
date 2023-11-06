@@ -6,6 +6,11 @@ float M0002Controller::temperature()
     return mTemp;
 }
 
+QString M0002Controller::type()
+{
+    return "M0002";
+}
+
 uint8_t M0002Controller::handleProtocolFrame(QByteArray &frame)
 {
     uint8_t functionCode = Controller::handleProtocolFrame(frame);

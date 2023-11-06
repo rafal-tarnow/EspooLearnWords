@@ -17,6 +17,8 @@ class Controller : public QObject
     Q_PROPERTY(QString identifier READ identifier NOTIFY identifierChanged)
     Q_PROPERTY(QString wifiSSID READ wifiSSID NOTIFY wifiSSIDChanged)
     Q_PROPERTY(QString wifiPWD READ wifiPWD NOTIFY wifiPWDChanged)
+    Q_PROPERTY(QString type READ type CONSTANT)
+    Q_PROPERTY(QString ip READ ip NOTIFY ipChanged)
 public:
     explicit Controller(QObject *parent = nullptr);
     Q_INVOKABLE void connectToBrick(const QString &ip);
@@ -34,6 +36,8 @@ public:
     Q_INVOKABLE QString identifier() const;
     Q_INVOKABLE QString wifiSSID() const;
     Q_INVOKABLE QString wifiPWD() const;
+    Q_INVOKABLE QString ip() const;
+    virtual QString type() = 0;
 
 signals:
     void birckPingTimeoutErrorOccurred();
@@ -50,6 +54,7 @@ signals:
     void nameChanged();
     void wifiSSIDChanged();
     void wifiPWDChanged();
+    void ipChanged();
 
 protected:
     virtual uint8_t handleProtocolFrame( QByteArray & frame);
@@ -68,6 +73,7 @@ private:
     std::unique_ptr<TcpConncetion> tcpConnection;
     QString mLastTcpError;
     QString mIp;
+    QString tcpConnectionIp;
     bool mConnectionCheck = false;
     bool mConnected = false;
     bool mConnecting = false;

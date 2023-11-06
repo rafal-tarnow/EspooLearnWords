@@ -31,6 +31,20 @@ struct HostInfo
   }
 };
 
+template <typename t, typename... u>
+size_t getaddress(std::function<t(u...)> f)
+{
+  typedef t(fntype)(u...);
+  fntype **fnpointer = f.template target<fntype *>();
+  return (size_t)*fnpointer;
+}
+
+class PseudoDNSEventListener
+{
+public:
+  virtual void handleOnHostFound(const std::string &id, const std::string &type, const std::string &name, const std::string &ip) = 0;
+};
+
 class PseudoDNS
 {
   using CallbackFunction = std::function<void(const std::string &, const std::string &, const std::string &, const std::string &)>;
@@ -49,18 +63,28 @@ public:
 
   void update();
 
-  void onHostFound(CallbackFunction callback) //hostId, hostType, hostName, hostIP
+  void addEventListener(PseudoDNSEventListener *listener)
+  {
+    eventListeners.insert(listener);
+  }
+  void removeEventListener(PseudoDNSEventListener *listener)
+  {
+    eventListeners.erase(listener);
+  }
+
+  void onHostFound(CallbackFunction callback) // hostId, hostType, hostName, hostIP
   {
     callbackFunction = callback;
   }
 
   template <typename T>
-  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &, const std::string &, const std::string &)) //string hostName, string hostIP
+  void onHostFound(T *obj, void (T::*method)(const std::string &, const std::string &, const std::string &, const std::string &)) // string hostName, string hostIP
   {
     callbackMethod = std::bind(method, obj, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
   }
 
   std::string getIPById(std::string id);
+  bool hasIP(std::string id);
 
 private:
   void onQueryTime();
@@ -68,6 +92,7 @@ private:
   IPAddress softAPbroadcastIP();
 
 private:
+  std::set<PseudoDNSEventListener *> eventListeners;
   std::map<std::string, HostInfo> dnsDiscoverdHosts; // key - hostId, value - HostInfo
   CallbackMethod callbackMethod;
   CallbackFunction callbackFunction;

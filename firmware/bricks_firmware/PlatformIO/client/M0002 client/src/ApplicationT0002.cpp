@@ -23,7 +23,7 @@ void ApplicationT0002::loop()
     for (auto it = clients.begin(); it != clients.end(); ++it)
     {
       T0002 *ptr = *it;
-      ptr->cmdSetMeasureTempHumPress(temp, humidity, pressure);
+      ptr->cmdSetMeasureTempPressHum(temp, pressure, humidity);
     }
   }
 }

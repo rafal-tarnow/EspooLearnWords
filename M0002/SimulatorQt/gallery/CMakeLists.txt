@@ -129,6 +129,8 @@ qt_add_qml_module(Baboon_bricks
     "images/connected_icon.svg"
     "images/disconnected_icon.svg"
     "images/dashboard.svg"
+    "images/device_type.svg"
+    "images/ip_address.svg"
     "images/t0002_connected.svg"
     "images/t0002_disconnected.svg"
     "images/temp_connected.svg"
@@ -143,6 +145,7 @@ qt_add_qml_module(Baboon_bricks
     "images/qt-logo@2x.png"
     "images/qt-logo@3x.png"
     "images/qt-logo@4x.png"
+    "images/wifi.svg"
     "scxml/EmulatorM0002States.scxml"
     "scxml/PseudoDNSStates.scxml"
     "qmldir"
@@ -154,6 +157,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES pages/controls/SButton.qml
     QML_FILES pages/list_view/common/DataLine.qml
     QML_FILES pages/list_view/common/BigDataLine.qml
+    QML_FILES pages/list_view/common/BrickInfoPage.qml
 )
 
 qt6_add_statecharts(Baboon_bricks

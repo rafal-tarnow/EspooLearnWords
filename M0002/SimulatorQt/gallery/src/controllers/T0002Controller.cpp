@@ -31,6 +31,11 @@ QString T0002Controller::pressureStr()
     return mPressureStr;
 }
 
+QString T0002Controller::type()
+{
+    return "T0002";
+}
+
 uint8_t T0002Controller::handleProtocolFrame(QByteArray &frame)
 {
     uint8_t functionCode = Controller::handleProtocolFrame(frame);

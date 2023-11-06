@@ -16,6 +16,7 @@ public:
     void disconnectFromServer();
     void abord();
     void sendFrame(const QByteArray & frame);
+    QString getIp() const;
 
 signals:
     void onTcpConnected();

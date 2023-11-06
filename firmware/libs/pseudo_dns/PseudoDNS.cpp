@@ -68,6 +68,11 @@ std::string PseudoDNS::getIPById(std::string id)
   return dnsDiscoverdHosts[id].hostIp;
 }
 
+bool PseudoDNS::hasIP(std::string id)
+{
+  return (dnsDiscoverdHosts.find(id) != dnsDiscoverdHosts.end());
+}
+
 void PseudoDNS::onQueryTime()
 {
   // Serial.println("\n PseudoDNS::onQueryTime()");
@@ -120,7 +125,7 @@ void PseudoDNS::onUdpDatagram(int packetSize)
     }
     else if (functionCode == 0x02)
     {
-      Serial.println("0x02");
+      //Serial.println("0x02");
       if (runQuery)
       {
         HostInfo hostInfo;
@@ -130,17 +135,23 @@ void PseudoDNS::onUdpDatagram(int packetSize)
         hostInfo.hostName = ProtocolStd::getString(dataDeque);
         hostInfo.hostIp = Udp.remoteIP().toString().c_str();
 
-        Serial.println("0x02");
-        Serial.println(hostInfo.hostId.c_str());
-        Serial.println(hostInfo.hostType.c_str());
-        Serial.println(hostInfo.hostName.c_str());
-        Serial.println(hostInfo.hostIp.c_str());
+        // Serial.println("0x02");
+        // Serial.println(hostInfo.hostId.c_str());
+        // Serial.println(hostInfo.hostType.c_str());
+        // Serial.println(hostInfo.hostName.c_str());
+        // Serial.println(hostInfo.hostIp.c_str());
 
         auto iter = dnsDiscoverdHosts.find(hostInfo.hostId);
 
         if (iter == dnsDiscoverdHosts.end() || (iter->second != hostInfo))
         {
           dnsDiscoverdHosts[hostInfo.hostId] = hostInfo;
+
+          for (auto listener : eventListeners)
+          {
+            listener->handleOnHostFound(hostInfo.hostId, hostInfo.hostType, hostInfo.hostName, hostInfo.hostIp);
+          }
+
           if (callbackFunction)
           {
             callbackFunction(hostInfo.hostId, hostInfo.hostType, hostInfo.hostName, hostInfo.hostIp);

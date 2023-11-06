@@ -47,6 +47,11 @@ void TcpConncetion::sendFrame(const QByteArray &frame)
     }
 }
 
+QString TcpConncetion::getIp() const
+{
+    return tcpSocket->peerAddress().toString();
+}
+
 void TcpConncetion::onSocketConnected()
 {
     protocolStd.reset();

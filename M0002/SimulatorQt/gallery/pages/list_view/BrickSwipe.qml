@@ -40,6 +40,10 @@ Item{
         }
 
         Loader {
+            source: "/pages/list_view/common/BrickInfoPage.qml"
+        }
+
+        Loader {
             source: "/pages/list_view/common/NetworkSettings.qml"
         }
 

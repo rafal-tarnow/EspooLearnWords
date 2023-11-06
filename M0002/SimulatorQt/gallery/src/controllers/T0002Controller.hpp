@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE QString temperatureStr();
     Q_INVOKABLE QString humidityStr();
     Q_INVOKABLE QString pressureStr();
+    QString type() override;
 
 protected:
     uint8_t handleProtocolFrame(QByteArray & frame) override;
