@@ -45,8 +45,8 @@ uint8_t T0002Controller::handleProtocolFrame(QByteArray &frame)
     }
     if(functionCode == 0x10){
         float temp = ProtocolStd::getFloat(frame);
-        float humidity = ProtocolStd::getFloat(frame);
         float pressure = ProtocolStd::getFloat(frame);
+        float humidity = ProtocolStd::getFloat(frame);
         if(mTemp != temp){
             mTemp = temp;
             emit temperatureChanged();

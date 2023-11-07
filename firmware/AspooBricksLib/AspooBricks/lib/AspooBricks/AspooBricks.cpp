@@ -149,9 +149,19 @@ void KiKoBrick::onPingTimer()
     Serial.println("KiKoBrick::onPingTimer");
     std::vector<uint8_t> frame;
     ProtocolStd::append(frame, uint8_t(0x01));
+    sendProtocolFrame(frame);
+}
+
+void KiKoBrick::sendProtocolFrame(const std::vector<uint8_t> &frame)
+{
+
+  uint16_t size = frame.size();
+  std::vector<uint8_t> datagram;
+  ProtocolStd::append(datagram, size);
+  datagram.insert(datagram.end(), frame.begin(), frame.end());
+
     if(client.connected()){
         Serial.println("KiKoBrick write ping frame");
-        //client.write(frame.data(), frame.size());
-        client.write(0x01);
+        client.write(datagram.data(), datagram.size());
     }
 }

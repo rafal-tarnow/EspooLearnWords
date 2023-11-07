@@ -17,6 +17,14 @@ ScrollablePage {
 
         DataLine{
             width: parent.width
+            icon: "qrc:/images/id.svg"
+            label: qsTr("Id")
+            value: brickController.identifier
+        }
+
+
+        DataLine{
+            width: parent.width
             icon: "qrc:/images/device_type.svg"
             label: qsTr("Type")
             value: brickController.type
@@ -34,6 +42,20 @@ ScrollablePage {
             icon: "qrc:/images/ip_address.svg"
             label: qsTr("IP")
             value: brickController.ip
+        }
+
+        DataLine{
+            width: parent.width
+            icon: "qrc:/images/tcp_port.svg"
+            label: qsTr("TCP port")
+            value: qsTr("2883")
+        }
+
+        DataLine{
+            width: parent.width
+            icon: "qrc:/images/udp_port.svg"
+            label: qsTr("UDP port")
+            value: qsTr("6353")
         }
     }
 }

@@ -55,6 +55,7 @@ protected:
 private:
     void loop();
     void onPingTimer();
+    void sendProtocolFrame(const std::vector<uint8_t> &frame);
 
 private:
     bool isConnected = false;

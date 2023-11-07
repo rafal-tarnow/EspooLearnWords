@@ -2,6 +2,7 @@
 #include <QtQml>
 #include <QTcpSocket>
 #include <QElapsedTimer>
+#include "emulators/ProtocolStd.h"
 
 TcpTerminal::TcpTerminal(QObject *parent)
     : QObject(parent)
@@ -37,8 +38,20 @@ void TcpTerminal::onSocketError(QAbstractSocket::SocketError socketError)
 
 void TcpTerminal::sendPing()
 {
+
+
+
     if (m_tcpSocket->state() == QAbstractSocket::ConnectedState) {
-        m_tcpSocket->write(QByteArray::fromHex("01")); // Wysłanie danej 0x01
+
+        QByteArray dataFrame;
+        ProtocolStd::append(dataFrame, uint8_t(0x01));
+
+        QByteArray protocolFrame;
+        uint16_t frameSize = static_cast<uint16_t>(dataFrame.size());
+        ProtocolStd::append(protocolFrame,frameSize);
+        protocolFrame.append(dataFrame);
+
+        m_tcpSocket->write(protocolFrame); // Wysłanie danej 0x01
         m_elapsedTimer.start(); // Uruchomienie timera
         // Możesz dodać kod obsługi, jeśli chcesz zareagować na wysłanie pinga
     }
