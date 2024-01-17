@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <PseudoDNS.h>
-#include <AspooBricks.h>
+#include <KiKoBrick.h>
 #include <StateMachine.h>
 #include <KiKoTimer.h>
 
@@ -12,17 +12,19 @@ const char *password = "Krzysiu1";
 
 AspooBrickT0002 mainSensor;
 
+KiKoBrickM0002 temp;
+
 void hadleMainSensorConnection(bool connected)
 {
-  Serial.printf("Handle connection function:\n");
+  Serial.printf("Handle connection function: %d\n", int(connected));
 }
 
 void handleMainSensorMeasure(float temp, float press, float humidity)
 {
-  // Serial.printf("Handle measure funciotn:\n");
-  // Serial.printf("   temperature:%f\n", temp);
-  // Serial.printf("   press:%f\n", press);
-  // Serial.printf("   humidity:%f\n", humidity);
+  Serial.printf("Handle measure function:\n");
+  Serial.printf("   temperature:%f\n", temp);
+  Serial.printf("   press:%f\n", press);
+  Serial.printf("   humidity:%f\n", humidity);
 }
 
 StateMachine stateMachine;
@@ -73,6 +75,13 @@ void handleTimer1()
 {
   static uint32_t value = 0;
   Serial.printf("Handle timer 1 funcion %d\n", value++);
+
+  if(mainSensor.isConnected()){
+    mainSensor.disconnect();
+  }else{
+    mainSensor.begin();
+  }
+
 }
 
 void handleTimer2()
@@ -115,12 +124,12 @@ void setup()
   mainSensor.setId("T000215978085");
   mainSensor.onConnection(hadleMainSensorConnection);
   mainSensor.onMeasure(handleMainSensorMeasure);
-  mainSensor.onMeasure(&application, &Application::handleMeasure);
-  mainSensor.begin();
+ // mainSensor.onMeasure(&application, &Application::handleMeasure);
+  
 
-  // timer1.onTimeout(handleTimer1);
-  // timer1.onTimeout(&application, &Application::handleTimer1);
-  // timer1.start(250);
+  timer1.onTimeout(handleTimer1);
+  timer1.onTimeout(&application, &Application::handleTimer1);
+  timer1.start(5000);
 
   // timer2.onTimeout(handleTimer2);
   // timer2.onTimeout(&application, &Application::handleTimer2);

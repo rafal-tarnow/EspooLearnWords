@@ -23,6 +23,7 @@ public:
     }
     void start(unsigned long msec);
     void start();
+    void reset();
     void stop();
 
     static void update();

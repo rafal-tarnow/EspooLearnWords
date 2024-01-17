@@ -41,17 +41,17 @@ ItemDelegate {
         anchors.bottomMargin: 5
 
         source: {
-            if (model.brickType === "T0002") {
+            if (brickType === "T0002") {
                 return "T0002Delegate.qml"
-            } else if (model.brickType === "B0002") {
+            } else if (brickType === "B0002") {
                 return "B0002Delegate.qml"
             }
         }
 
         Component.onCompleted: {
-            if (model.brickType === "T0002") {
+            if (brickType === "T0002") {
                 brickDelegate.height = 200
-            } else if (model.brickType === "B0002") {
+            } else if (brickType === "B0002") {
                 brickDelegate.height = 120
             }
         }

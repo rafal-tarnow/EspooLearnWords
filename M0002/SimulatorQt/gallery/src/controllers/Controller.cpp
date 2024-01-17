@@ -251,7 +251,7 @@ void Controller::pingFrameTimeout()
 
 static void registerControllerTypes()
 {
-    qmlRegisterType<Controller>("Backend", 1, 0, "Controller");
+    qmlRegisterUncreatableType<Controller>("Backend", 1, 0, "Controller", "Controller qml type cannot be created");
 }
 
 Q_COREAPP_STARTUP_FUNCTION(registerControllerTypes)

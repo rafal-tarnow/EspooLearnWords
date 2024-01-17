@@ -13,6 +13,7 @@ Page {
     background: Rectangle {
         color: "#f0eef0"
     }
+
     ListModel {
         id: devicesModel
     }
@@ -187,64 +188,64 @@ Page {
                 contactMenu.open()
             }
 
-            Controller{
+            M0002Controller{
                 id: controller
 
-                Component.onCompleted: {
-                    console.log("Component.onCompleted:")
-                    dnsServer.onHostFound.connect(controller.onHostFoundHandler)
+//                Component.onCompleted: {
+//                    console.log("Component.onCompleted:")
+//                    dnsServer.onHostFound.connect(controller.onHostFoundHandler)
 
-                    var ipaddr = dnsServer.getIpById(model.brickId)
-                    console.log("ipaddr = " + ipaddr)
-                    if(ipaddr !== "")
-                        connectToBrick(ipaddr)
-                }
+//                    var ipaddr = dnsServer.getIpById(model.brickId)
+//                    console.log("ipaddr = " + ipaddr)
+//                    if(ipaddr !== "")
+//                        connectToBrick(ipaddr)
+//                }
 
-                function onHostFoundHandler(hostId, hostType, hostName, hostIp) {
-                    console.log("function onHostFoundHandler " + hostId + " " + hostType + " " + hostName + " " + hostIp)
-                    console.log("isBrickConnected = " + isBrickConnected());
-                    console.log("mybrickDelegate.brickId = " + myBrickDelegate.brick )
-                    if (isBrickConnected() === false && myBrickDelegate.brickId === hostId) {
-                        connectToBrick(hostIp)
-                    }
-                }
+//                function onHostFoundHandler(hostId, hostType, hostName, hostIp) {
+//                    console.log("function onHostFoundHandler " + hostId + " " + hostType + " " + hostName + " " + hostIp)
+//                    console.log("isBrickConnected = " + isBrickConnected());
+//                    console.log("mybrickDelegate.brickId = " + myBrickDelegate.brick )
+//                    if (isBrickConnected() === false && myBrickDelegate.brickId === hostId) {
+//                        connectToBrick(hostIp)
+//                    }
+//                }
 
-                onBrickInfo: function onInfo(id, type, name, ssid, pwd){
-                    console.log("LLLLLLLLLLLLLLLL onBrickInfo: function onInfo(id, type, name, ssid, pwd) " + id + " " + type + " " + name + " " + ssid + " " + pwd)
-                    if(model.id === id){
-                        myBrickDelegate.brickConnected = true
-                        if(model.name !== name){
-                            console.log("UPPPPPPPPDATE !!!!!!!!!!")
-                            myBricksModel.set(index, id, type, name)
-                        }
-                    }else{
-                        controller.disconnectFromBrick()
-                    }
-                }
+//                onBrickInfo: function onInfo(id, type, name, ssid, pwd){
+//                    console.log("LLLLLLLLLLLLLLLL onBrickInfo: function onInfo(id, type, name, ssid, pwd) " + id + " " + type + " " + name + " " + ssid + " " + pwd)
+//                    if(model.id === id){
+//                        myBrickDelegate.brickConnected = true
+//                        if(model.name !== name){
+//                            console.log("UPPPPPPPPDATE !!!!!!!!!!")
+//                            myBricksModel.set(index, id, type, name)
+//                        }
+//                    }else{
+//                        controller.disconnectFromBrick()
+//                    }
+//                }
 
-                onBrickConnected: {
-                    controller.cmdGetInfo();
-                }
+//                onBrickConnected: {
+//                    controller.cmdGetInfo();
+//                }
 
-                onBrickTcpErrorOccurred: {
-                    if(isBrickConnected() === false){
-                        var ipaddr = dnsServer.getIp(model.name)
-                        if(ipaddr !== "")
-                            connectToBrick(ipaddr)
-                    }
-                }
+//                onBrickTcpErrorOccurred: {
+//                    if(isBrickConnected() === false){
+//                        var ipaddr = dnsServer.getIp(model.name)
+//                        if(ipaddr !== "")
+//                            connectToBrick(ipaddr)
+//                    }
+//                }
 
-                onBrickDisconnected: {
-                    myBrickDelegate.brickConnected = false
+//                onBrickDisconnected: {
+//                    myBrickDelegate.brickConnected = false
 
-                    var ipaddr = dnsServer.getIpById(model.id)
-                    if(ipaddr !== "")
-                        connectToBrick(ipaddr)
-                }
+//                    var ipaddr = dnsServer.getIpById(model.id)
+//                    if(ipaddr !== "")
+//                        connectToBrick(ipaddr)
+//                }
 
-                function celsiusToFahrenheit(celsius) {
-                    return (celsius * 9/5) + 32;
-                }
+//                function celsiusToFahrenheit(celsius) {
+//                    return (celsius * 9/5) + 32;
+//                }
             }
         }
 

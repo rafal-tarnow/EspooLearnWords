@@ -44,7 +44,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES
     "+Material/ToolBar.qml"
     "ToolBar.qml"
-    "aspoo_main.qml"
+    "kiko_main.qml"
     "pages/BusyIndicatorPage.qml"
     "pages/ButtonPage.qml"
     "pages/CheckBoxPage.qml"

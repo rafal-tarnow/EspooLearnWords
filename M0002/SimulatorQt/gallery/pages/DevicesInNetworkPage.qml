@@ -9,6 +9,9 @@ Page {
 
     ListModel {
         id: devicesModel
+
+        ListElement { text: "Device1"; ip: "192.168.1.1" }
+        ListElement { text: "Device2"; ip: "192.168.1.2" }
     }
 
     onFocusChanged: {

@@ -3,7 +3,8 @@
 #include <ESP8266mDNS.h>
 #include <OneButton.h>
 #include "led.h"
-#include "ApplicationB0002.h"
+#include "ApplicationM0002.h"
+#include "ApplicationM0004.hpp"
 #include "ApplicationT0002.h"
 #include "T0002.hpp"
 #include <Arduino.h>
@@ -20,8 +21,10 @@ OneButton button = OneButton(
     false       // Enable internal pull-up resistor
 );
 
-#ifdef __BRICK_B0002__
-ApplicationB0002 application;
+#ifdef __BRICK_M0002__
+ApplicationM0002 application;
+#elif defined(__BRICK_M0004__)
+ApplicationM0004 application;
 #elif defined(__BRICK_T0002__)
 ApplicationT0002 application;
 #endif

@@ -18,6 +18,11 @@ void KiKoTimer::start()
     timersToInsert.insert(this);
 }
 
+void KiKoTimer::reset()
+{
+    mLastTime = millis();
+}
+
 void KiKoTimer::stop()
 {
     mRunning = false;

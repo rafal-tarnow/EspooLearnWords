@@ -1,15 +1,15 @@
-#include "ApplicationB0002.h"
+#include "ApplicationM0004.hpp"
 
-ApplicationB0002::ApplicationB0002() : oneWire(oneWirePin), sensors(&oneWire)
+ApplicationM0004::ApplicationM0004() : oneWire(oneWirePin), sensors(&oneWire)
 {
     sensors.setWaitForConversion(false);
 }
 
-void ApplicationB0002::setup()
+void ApplicationM0004::setup()
 {
 }
 
-void ApplicationB0002::loop()
+void ApplicationM0004::loop()
 {
 
      static float temp_index = 0.0f;
@@ -26,7 +26,7 @@ void ApplicationB0002::loop()
 
         for (auto it = clients.begin(); it != clients.end(); ++it)
         {
-            B0002 *ptr = *it;
+            M0004 *ptr = *it;
             ptr->cmdSetMeasureTemp(temperatureCelsius);
         }
         sensors.requestTemperatures();

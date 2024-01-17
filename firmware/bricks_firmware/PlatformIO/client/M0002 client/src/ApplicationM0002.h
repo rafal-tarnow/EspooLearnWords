@@ -3,12 +3,12 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "Application.h"
-#include "B0002.hpp"
+#include "M0002.hpp"
 
-class ApplicationB0002 : public Application<B0002>
+class ApplicationM0002 : public Application<M0002>
 {
 public:
-  ApplicationB0002();
+  ApplicationM0002();
 //   void begin();
     void setup() override;
    void loop() override;

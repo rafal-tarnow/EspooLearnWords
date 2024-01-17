@@ -41,7 +41,7 @@ void PseudoDNS::startQueriesForAllHosts()
 
 bool PseudoDNS::isQueriesRunning()
 {
-  Serial.println("\n PseudoDNS::isQueriesRunning()");
+  //Serial.println("\n PseudoDNS::isQueriesRunning()");
   return runQuery;
 }
 

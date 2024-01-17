@@ -2,10 +2,12 @@
 #include <ESP8266WiFi.h>
 #include <sstream>
 #include "T0002.hpp"
-#include "B0002.hpp"
+#include "M0002.hpp"
+#include "M0004.hpp"
 
 template class Application<T0002>;
-template class Application<B0002>;
+template class Application<M0002>;
+template class Application<M0004>;
 
 using namespace std;
 

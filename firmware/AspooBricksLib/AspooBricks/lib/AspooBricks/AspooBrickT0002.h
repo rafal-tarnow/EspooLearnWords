@@ -1,5 +1,5 @@
 #pragma once
-#include "AspooBricks.h"
+#include "KiKoBrick.h"
 #include <functional>
 
 class AspooBrickT0002 : public KiKoBrick

@@ -13,7 +13,8 @@ class KiKoBrick : public PseudoDNSEventListener
 {
     typedef enum
     {
-        INIT = 0,
+        UNINITED = 0,
+        INITED,
         CONNECTING,
         CONNECTED,
         DISCONNECTED,
@@ -47,6 +48,8 @@ public:
 
     void setId(std::string);
     void begin();
+    void disconnect();
+    bool isConnected();
     static void update();
 
 protected:
@@ -54,11 +57,11 @@ protected:
 
 private:
     void loop();
-    void onPingTimer();
+    void handlePingTimer();
+    void handleTimeoutTimer();
     void sendProtocolFrame(const std::vector<uint8_t> &frame);
 
 private:
-    bool isConnected = false;
     std::string mId;
     static std::vector<KiKoBrick *> bricks;
     static PseudoDNS pseudoDNS;
@@ -68,6 +71,9 @@ private:
     WiFiClient client;
     ProtocolStd protocol;
     KiKoTimer pingTimer;
+    KiKoTimer timeoutTimer;
+    BrickState currentState = BrickState::UNINITED;
+    BrickState desiredState = BrickState::INITED;
 };
 
 #include "AspooBrickT0002.h"

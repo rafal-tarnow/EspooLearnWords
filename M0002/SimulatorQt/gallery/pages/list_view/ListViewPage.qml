@@ -13,19 +13,19 @@ Page {
         color: "#fafafa"
     }
 
+
+    ListModel {
+        id: devicesModel
+    }
+
     PseudoDNSServer{
         id: dnsServer
         onHostFound:  function (hostId, hostType, hostName, hostIp) {
             console.log("DNS host found " + hostId + " " + hostType + " " + hostName + " " + hostIp)
-        }
-        Component.onCompleted: {
-            dnsServer.startQueriesForAllHosts()
+            devicesModel.append({ name: hostName, ip: hostIp})
         }
     }
 
-    //    MyBricksList{
-    //        id: myBricksModel
-    //    }
 
     ListView {
         id: listView
@@ -42,28 +42,70 @@ Page {
         model:     MyBricksList{
             id: myBricksModel
         }
+
         delegate: BrickDelegate{
 
         }
-
-//        Rectangle {
-//            z: -1
-//            anchors.fill: parent
-//            color: "yellow"
-//            border.color: "blue"
-//        }
-
-        //columnCount: 3
-
-        //cellWidth: 100; cellHeight: 100
-
-
     }
 
+    Dialog {
+        id: dialog
+        property int gap: 20
+        x: gap
+        y: gap
+        width: parent.width - 2*gap
+        height: parent.height - 2*gap
+        title: qsTr("Avaliable Bricks")
+        standardButtons: Dialog.Cancel
 
+        background: Rectangle {
+            id: background
+            anchors.fill: parent
+            color: "#ffffff"
+            border.color: "#e0e0e0"
+            radius: 5
+        }
 
+        onOpened: {
+            console.log("Dialog opened()")
+            devicesModel.clear()
+            dnsServer.startQueriesForAllHosts()
+        }
 
+        onClosed: {
+            console.log("Dialog closed()")
+               dnsServer.stopQueries()
+        }
 
+        ListView{
+            id: dialogView
+            anchors.fill: parent
 
+            model: devicesModel
 
+            delegate: ItemDelegate{
+                id: delegate
+                width: parent.width
+                height: 50
+
+                contentItem: Label {
+                    text: name
+                    font.bold: true
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
+            }
+        }
+    }
+
+    RoundButton {
+        text: qsTr("+")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        onClicked: {
+            dialog.open()
+        }
+    }
 }

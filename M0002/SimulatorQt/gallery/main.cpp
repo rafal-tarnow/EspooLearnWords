@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 #endif
 
     engine.setInitialProperties({{ "builtInStyles", builtInStyles }});
-    engine.load(QUrl("qrc:/aspoo_main.qml"));
+    engine.load(QUrl("qrc:/kiko_main.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
 

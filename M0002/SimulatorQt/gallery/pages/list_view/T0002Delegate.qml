@@ -25,7 +25,7 @@ Item{
         anchors.left: t0002Delegate.left
         height: 50
 
-        title: model.brickName
+        title: brickName //model.brickName
         connectedIcon: "qrc:/images/t0002_connected.svg"
         disconnectedIcon: "qrc:/images/t0002_disconnected.svg"
         connected: brickController.connected
