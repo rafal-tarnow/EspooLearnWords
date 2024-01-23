@@ -17,7 +17,7 @@ static QDebug operator<<(QDebug debug, const QNetworkDatagram& datagram) {
     return debug;
 }
 
-PseudoDNSServer::PseudoDNSServer(QObject *parent) : QObject(parent)
+PseudoDNSServer::PseudoDNSServer(QObject *parent) : QAbstractListModel(parent)
 {
     qCDebug(PseudoDNS) << "Create PseudoDNSServer";
     queryTimer = std::make_unique<QTimer>(parent);
@@ -54,7 +54,9 @@ void PseudoDNSServer::stopRunning()
 
 void PseudoDNSServer::startQueriesForAllHosts()
 {
+    beginRemoveRows(QModelIndex(), 0, dnsDiscoverdHosts.size());
     dnsDiscoverdHosts.clear();
+    endRemoveRows();
     runQueriesForAllHosts = true;
     initSocket();
     queryTimer->start(DEFAULT_PSEUDO_DNS_QUERY_INTERVAL);
@@ -69,7 +71,9 @@ bool PseudoDNSServer::isQueriesRunning()
 void PseudoDNSServer::stopQueries()
 {
     runQueriesForAllHosts = false;
+    beginRemoveRows(QModelIndex(), 0, dnsDiscoverdHosts.size());
     dnsDiscoverdHosts.clear();
+    endRemoveRows();
     queryTimer->stop();
     if(isRun == false){
         uninitSocket();
@@ -93,6 +97,37 @@ QString PseudoDNSServer::getIpByName(const QString &hostName){
         }
     }
     return "";
+}
+
+int PseudoDNSServer::rowCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return dnsDiscoverdHosts.count();
+}
+
+QVariant PseudoDNSServer::data(const QModelIndex &index, int role) const
+{
+    if (index.row() < rowCount())
+        switch (role) {
+        case IdRole: return dnsDiscoverdHosts.at(index.row()).id;
+        case TypeRole: return dnsDiscoverdHosts.at(index.row()).type;
+        case NameRole: return dnsDiscoverdHosts.at(index.row()).name;
+        case IpRole: return dnsDiscoverdHosts.at(index.row()).ip;
+        default: return QVariant();
+        }
+    return QVariant();
+}
+
+QHash<int, QByteArray> PseudoDNSServer::roleNames() const
+{
+    static const QHash<int, QByteArray> roles {
+                                              { IdRole, "IdFromDns" },
+                                              { TypeRole, "TypeFromDns" },
+                                              { NameRole, "NameFromDns" },
+                                              { IpRole, "IpFromDns" },
+                                              };
+    return roles;
 }
 
 void PseudoDNSServer::initSocket()
@@ -202,9 +237,11 @@ void PseudoDNSServer::parseResponseWithHost(const QNetworkDatagram &datagram)
     host.ip = datagram.senderAddress().toString();
 
 
-    if(!dnsDiscoverdHosts.contains(host)){
+    if(!dnsDiscoverdHosts.contains(host)  ){
+        beginInsertRows(QModelIndex(), dnsDiscoverdHosts.size(), dnsDiscoverdHosts.size());
         dnsDiscoverdHosts.push_back(host);
-         qDebug() << "DNS FOUND" << functionCode << " " << host.id << " " << host.type << " " << host.name << " " << host.ip;
+        endInsertRows();
+        qDebug() << "DNS FOUND" << functionCode << " " << host.id << " " << host.type << " " << host.name << " " << host.ip;
         emit hostFound(host.id ,host.type, host.name, host.ip);
 
     }

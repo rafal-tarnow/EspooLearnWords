@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQuick.Effects
 import Backend
 import "."
+import "./common"
 
 Page {
     id: page
@@ -18,12 +19,31 @@ Page {
         id: devicesModel
     }
 
+    Connections {
+        target: Qt.application;
+        function onStateChanged(inState) {
+            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXX" + Qt.application.state)
+        }
+    }
+
+
     PseudoDNSServer{
         id: dnsServer
         onHostFound:  function (hostId, hostType, hostName, hostIp) {
             console.log("DNS host found " + hostId + " " + hostType + " " + hostName + " " + hostIp)
             devicesModel.append({ name: hostName, ip: hostIp})
         }
+
+        Component.onCompleted: {
+
+            devicesModel.clear()
+            dnsServer.startQueriesForAllHosts()
+        }
+
+
+        // Component.onDestroyed: {
+        //                    dnsServer.stopQueries()
+        // }
     }
 
 
@@ -68,37 +88,38 @@ Page {
 
         onOpened: {
             console.log("Dialog opened()")
-            devicesModel.clear()
-            dnsServer.startQueriesForAllHosts()
         }
 
         onClosed: {
             console.log("Dialog closed()")
-               dnsServer.stopQueries()
+
         }
 
         ListView{
             id: dialogView
             anchors.fill: parent
 
-            model: devicesModel
+            model: dnsServer
 
             delegate: ItemDelegate{
                 id: delegate
                 width: parent.width
                 height: 50
 
-                contentItem: Label {
-                    text: name
-                    font.bold: true
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
+                contentItem: DataLine{
+                    width: parent.width
+                    icon: "qrc:/images/wifi.svg"
+                    label: NameFromDns //model.IdFromDns
+                    leftMarginValue: 0
+                    //value: "test"
+                    //unit: qsTr("°C")
                 }
             }
         }
     }
 
     RoundButton {
+        id: plusButton
         text: qsTr("+")
         highlighted: true
         anchors.margins: 10
@@ -106,6 +127,30 @@ Page {
         anchors.bottom: parent.bottom
         onClicked: {
             dialog.open()
+        }
+    }
+
+    RoundButton {
+        id: runButton
+        text: qsTr("Run")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: plusButton.left
+        anchors.bottom: parent.bottom
+        onClicked: {
+            dnsServer.startQueriesForAllHosts()
+        }
+    }
+
+    RoundButton {
+        id: stopButton
+        text: qsTr("Stop")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: runButton.left
+        anchors.bottom: parent.bottom
+        onClicked: {
+            dnsServer.stopQueries()
         }
     }
 }

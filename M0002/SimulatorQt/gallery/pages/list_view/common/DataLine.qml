@@ -6,11 +6,12 @@ RowLayout{
     property string label
     property string value
     property string unit
+    property int leftMarginValue: 20
 
     Image {
         width: 20
         height: 20
-        Layout.leftMargin: 20
+        Layout.leftMargin: leftMarginValue
         Layout.alignment: Qt.AlignLeft
         fillMode: Image.PreserveAspectFit
         sourceSize: Qt.size(width,height)
@@ -22,6 +23,7 @@ RowLayout{
         Layout.fillWidth: true
         text: label
         font.pointSize: 16;
+        clip: true
         //color: "#7a7b7a"
     }
 

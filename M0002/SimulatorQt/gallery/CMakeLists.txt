@@ -161,6 +161,7 @@ qt_add_qml_module(Baboon_bricks
     QML_FILES pages/list_view/common/DataLine.qml
     QML_FILES pages/list_view/common/BigDataLine.qml
     QML_FILES pages/list_view/common/BrickInfoPage.qml
+    SOURCES main.hpp
 )
 
 qt6_add_statecharts(Baboon_bricks

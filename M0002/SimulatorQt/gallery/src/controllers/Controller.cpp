@@ -2,15 +2,18 @@
 #include <QtQml>
 #include <QTcpSocket>
 #include "../global_config.hpp"
+#include "main.hpp"
 
 Controller::Controller(QObject *parent)
     : QObject(parent)
 {
+    QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, this, &Controller::onApplicationStateChanged);
+
     tcpConnection = std::make_unique<TcpConncetion>(this);
     connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &Controller::handleTcpConnected);
     connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &Controller::handleTcpDisconnected);
     connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &Controller::handleTcpError);
-    connect(tcpConnection.get(), &TcpConncetion::onProtocolFrame, this, &Controller::handleProtocolFrame);
+    connect(tcpConnection.get(), &TcpConncetion::onProtocolFrame, this, &Controller::handleProtocolFrame); 
 }
 
 void Controller::connectToBrick(const QString &ip)

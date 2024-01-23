@@ -6,14 +6,23 @@
 #include <QMap>
 #include <QUdpSocket>
 #include <QLoggingCategory>
+#include <QAbstractListModel>
 #include "ProtocolStd.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PseudoDNS)
 
-class PseudoDNSServer : public QObject
+class PseudoDNSServer : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    enum DnsRole {
+        IdRole = Qt::UserRole,
+        TypeRole,
+        NameRole,
+        IpRole
+    };
+    Q_ENUM(DnsRole)
+
     explicit PseudoDNSServer(QObject *parent = nullptr);
     ~PseudoDNSServer();
 
@@ -27,6 +36,11 @@ public:
 
     Q_INVOKABLE QString getIpById(const QString & id);
     Q_INVOKABLE QString getIpByName(const QString& hostName);
+
+    //model methods
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
 signals:
     void hostFound(QString hostId, QString hostType, QString hostName, QString hostIp);

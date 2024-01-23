@@ -60,6 +60,12 @@ protected:
     virtual uint8_t handleProtocolFrame( QByteArray & frame);
 
 private slots:
+public slots:
+    void onApplicationStateChanged(Qt::ApplicationState state)
+    {
+        qDebug() << "Controller OOOOOOOOOOOOOOOOOOOOO Application state changeddddd:" << state;
+        // Tutaj możesz umieścić dowolny kod reagujący na zmianę stanu aplikacji
+    }
     void handleTcpConnected();
     void handleTcpDisconnected();
     void handleTcpError(const QString & error);

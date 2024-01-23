@@ -38,14 +38,7 @@ ApplicationWindow {
 
     required property var builtInStyles
 
-    Connections {
 
-        target: Qt.application;
-        function onStateChanged(inState) {
-
-            console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWw" + Qt.application.state)
-        }
-    }
 
     Settings {
         id: settings
