@@ -9,15 +9,12 @@ import "./common"
 
 ItemDelegate {
     id: brickDelegate
-
     property real detailsOpacity : 0
     property bool detailsEnabled: false
     property bool connected: false
     property int swipePageIndex: 0
-
-    width: listView.width
-    //height: listView.height
-
+    property string m_brickType
+    property string m_brickName
 
     background: Rectangle {
         id: background
@@ -41,17 +38,17 @@ ItemDelegate {
         anchors.bottomMargin: 5
 
         source: {
-            if (brickType === "T0002") {
+            if (m_brickType === "T0002") {
                 return "T0002Delegate.qml"
-            } else if (brickType === "B0002") {
+            } else if (m_brickType === "B0002") {
                 return "B0002Delegate.qml"
             }
         }
 
         Component.onCompleted: {
-            if (brickType === "T0002") {
+            if (m_brickType === "T0002") {
                 brickDelegate.height = 200
-            } else if (brickType === "B0002") {
+            } else if (m_brickType === "B0002") {
                 brickDelegate.height = 120
             }
         }
@@ -60,6 +57,12 @@ ItemDelegate {
             target: content.item
             property: "details"
             value: detailsEnabled
+        }
+
+        Binding {
+            target: content.item
+            property: "m_brickName"
+            value: brickDelegate.m_brickName
         }
     }
 

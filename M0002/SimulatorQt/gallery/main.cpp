@@ -9,8 +9,9 @@
 #include <QObject>
 #include <QtGlobal>
 #include "./src/ObjectCounter.hpp"
+#include "Application.hpp"
 
-
+#if defined(Q_OS_ANDROID)
 // install custom message handlet to see logs in adb logcat in android
 #include <android/log.h>
 const char*const applicationName="KiKo bricks";
@@ -50,6 +51,7 @@ void myMessageHandler(
         abort();
     }
 }
+#endif
 
 
 
@@ -78,16 +80,22 @@ int main(int argc, char *argv[])
     QGuiApplication::setApplicationName("Aspoo Bricks");
     QGuiApplication::setOrganizationName("Aspoo Labs");
 
+#if defined(Q_OS_ANDROID)
     qInstallMessageHandler(myMessageHandler); // install custom message handlet to see logs in adb logcat in android
+#endif
 
     QGuiApplication app(argc, argv);
     guiApp = &app;
+
+    Application application;
+    application.setUserName("My name is KiKo");
 
 
     // Tworzymy obiekt naszej klasy StateListener
     StateListener stateListener;
     // Łączymy sygnał applicationStateChanged z funkcją onApplicationStateChanged
     QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &stateListener, &StateListener::onApplicationStateChanged);
+
 
 
     QIcon::setThemeName("gallery");
@@ -104,6 +112,8 @@ int main(int argc, char *argv[])
         settings.setValue(QLatin1String("style"), QQuickStyle::name());
 
     QQmlApplicationEngine engine;
+
+    engine.rootContext()->setContextProperty("application", &application);
 
     QStringList builtInStyles = { QLatin1String("Basic"), QLatin1String("Fusion"),
                                  QLatin1String("Imagine"), QLatin1String("Material"), QLatin1String("Universal") };

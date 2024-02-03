@@ -10,6 +10,7 @@ Item{
 
     property int pageIndex: 0
     property bool details: false
+    property string m_brickName
 
     Component.onCompleted:  {
         console.log("T0002Completed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -25,7 +26,7 @@ Item{
         anchors.left: t0002Delegate.left
         height: 50
 
-        title: brickName //model.brickName
+        title: m_brickName //model.brickName
         connectedIcon: "qrc:/images/t0002_connected.svg"
         disconnectedIcon: "qrc:/images/t0002_disconnected.svg"
         connected: brickController.connected

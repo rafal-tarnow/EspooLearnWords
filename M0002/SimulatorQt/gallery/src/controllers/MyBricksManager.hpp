@@ -3,9 +3,12 @@
 #include <QAbstractListModel>
 #include <QList>
 #include <QVariantMap>
+#include <qqml.h>
+#include "../ObjectCounter.hpp"
 
 class MyBricksList : public QAbstractListModel {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     enum BrickRole {
@@ -21,7 +24,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void append(const QString & id, const QString &brickType, const QString &brickName);
+    Q_INVOKABLE bool append(const QString & id, const QString &brickType, const QString &brickName);
     Q_INVOKABLE void set(int row, const QString &id, const QString &brickType, const QString  &brickName);
     Q_INVOKABLE void set(int row, const QString  &brickName);
     Q_INVOKABLE void remove(int row);
@@ -41,6 +44,7 @@ private:
     bool brickExists(const QString &brickId) const;
     void loadFromSettings();
     void saveToSettings();
+    DBG_COUNT("MyBricksList");
 };
 
 

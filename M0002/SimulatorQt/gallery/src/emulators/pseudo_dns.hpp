@@ -7,13 +7,16 @@
 #include <QUdpSocket>
 #include <QLoggingCategory>
 #include <QAbstractListModel>
+#include <qqml.h>
 #include "ProtocolStd.h"
+#include "../ObjectCounter.hpp"
 
 Q_DECLARE_LOGGING_CATEGORY(PseudoDNS)
 
 class PseudoDNSServer : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
     enum DnsRole {
         IdRole = Qt::UserRole,
@@ -81,4 +84,5 @@ private:
     void parseResponseWithHost(const QNetworkDatagram & datagram);
     void respondQueryForAllHostsDatagram(const QNetworkDatagram &datagram);
     bool isMyAddress(const QHostAddress &address);
+    DBG_COUNT("PseudoDNSServer");
 };

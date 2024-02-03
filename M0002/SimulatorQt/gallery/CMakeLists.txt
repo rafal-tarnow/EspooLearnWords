@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
-project(Baboon_bricks LANGUAGES CXX)
+
+project(KikoBricks VERSION 0.1  LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Quick3D Scxml Test)
+find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Quick3D Scxml Test)
 
-qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
+qt_add_executable(kikoBricks WIN32 MACOSX_BUNDLE
     main.cpp
+    Application.hpp
+    Application.cpp
     src/tcp_terminal.hpp
     src/tcp_terminal.cpp
     src/udp_terminal.hpp
@@ -25,8 +28,6 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/controllers/M0002Controller.hpp
     src/controllers/M0002Controller.cpp
     src/global_config.hpp
-    src/controllers/MyBricksManager.hpp
-    src/controllers/MyBricksManager.cpp
     src/wifi_info.hpp
     src/emulators/BrickIpFinder.hpp
     src/emulators/BrickIpFinder.cpp
@@ -38,10 +39,31 @@ qt_add_executable(Baboon_bricks WIN32 MACOSX_BUNDLE
     src/controllers/T0002Controller.cpp
 )
 
-qt_add_qml_module(Baboon_bricks
-    URI gallery
+qt_add_qml_module(kikoBricks
+    URI KikoBricks
+    VERSION 1.0
     NO_RESOURCE_TARGET_PATH
+
+    SOURCES
+    AudioInfo.hpp
+    AudioInfo.cpp
+    src/controllers/MyBricksManager.hpp
+    src/controllers/MyBricksManager.cpp
+
     QML_FILES
+    pages/list_view/M0002/M0002ControllerExt.qml
+    pages/list_view/common/BrickTitle.qml
+    pages/list_view/T0002/T0002MainPage.qml
+    pages/list_view/common/NetworkSettings.qml
+    pages/controls/SButton.qml
+    pages/list_view/common/DataLine.qml
+    pages/list_view/common/BigDataLine.qml
+    pages/list_view/common/BrickInfoPage.qml
+    pages/list_view/common/ControllerCommon.qml
+    pages/list_view/NewT0002Delegate.qml
+    pages/list_view/common/AddBrickDialog.qml
+    pages/list_view/common/DialogBackground.qml
+    pages/list_view/common/WarningDialog.qml
     "+Material/ToolBar.qml"
     "ToolBar.qml"
     "kiko_main.qml"
@@ -148,28 +170,20 @@ qt_add_qml_module(Baboon_bricks
     "images/qt-logo@3x.png"
     "images/qt-logo@4x.png"
     "images/udp_port.svg"
+    images/warning.svg
     "images/wifi.svg"
     "scxml/EmulatorM0002States.scxml"
     "scxml/PseudoDNSStates.scxml"
     "qmldir"
     "qtquickcontrols2.conf"
-    QML_FILES pages/list_view/M0002/M0002ControllerExt.qml
-    QML_FILES pages/list_view/common/BrickTitle.qml
-    QML_FILES pages/list_view/T0002/T0002MainPage.qml
-    QML_FILES pages/list_view/common/NetworkSettings.qml
-    QML_FILES pages/controls/SButton.qml
-    QML_FILES pages/list_view/common/DataLine.qml
-    QML_FILES pages/list_view/common/BigDataLine.qml
-    QML_FILES pages/list_view/common/BrickInfoPage.qml
-    SOURCES main.hpp
 )
 
-qt6_add_statecharts(Baboon_bricks
+qt6_add_statecharts(kikoBricks
     "scxml/EmulatorM0002States.scxml"
     "scxml/PseudoDNSStates.scxml"
 )
 
-target_link_libraries(Baboon_bricks PUBLIC
+target_link_libraries(kikoBricks PUBLIC
     Qt::Core
     Qt::Gui
     Qt::Quick
@@ -183,10 +197,10 @@ if(UNIX AND NOT APPLE AND CMAKE_CROSSCOMPILING)
     find_package(Qt6 REQUIRED COMPONENTS QuickTemplates2)
 
     # Work around QTBUG-86533
-    target_link_libraries(Baboon_bricks PRIVATE Qt::QuickTemplates2)
+    target_link_libraries(kikoBricks PRIVATE Qt::QuickTemplates2)
 endif()
 
-install(TARGETS Baboon_bricks
+install(TARGETS kikoBricks
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

@@ -1,6 +1,3 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
-
 pragma ComponentBehavior: Bound
 
 import QtCore
@@ -19,7 +16,7 @@ ApplicationWindow {
     width: 360
     height: 520
     visible: true
-    title: qsTr("Qt Quick Controls")
+    title: qsTr("KiKo bricks")
 
     //! [orientation]
     readonly property bool portraitMode: window.width < window.height
@@ -37,6 +34,7 @@ ApplicationWindow {
     }
 
     required property var builtInStyles
+
 
 
 
@@ -178,12 +176,12 @@ ApplicationWindow {
                 //                ListElement { title: qsTr("Grid"); source: "qrc:/pages/grid/GridPage.qml" }
                 //                ListElement { title: qsTr("Grid View"); source: "qrc:/pages/grid_view/GridViewPage.qml" }
                 //                ListElement { title: qsTr("BusyIndicator"); source: "qrc:/pages/BusyIndicatorPage.qml" }
-                //                ListElement { title: qsTr("Button"); source: "qrc:/pages/ButtonPage.qml" }
+                ListElement { title: qsTr("Button"); source: "qrc:/pages/ButtonPage.qml" }
                 //                ListElement { title: qsTr("CheckBox"); source: "qrc:/pages/CheckBoxPage.qml" }
                 //                ListElement { title: qsTr("ComboBox"); source: "qrc:/pages/ComboBoxPage.qml" }
                 //                ListElement { title: qsTr("DelayButton"); source: "qrc:/pages/DelayButtonPage.qml" }
                 //                ListElement { title: qsTr("Dial"); source: "qrc:/pages/DialPage.qml" }
-                //                ListElement { title: qsTr("Dialog"); source: "qrc:/pages/DialogPage.qml" }
+                ListElement { title: qsTr("Dialog"); source: "qrc:/pages/DialogPage.qml" }
                 //                ListElement { title: qsTr("Delegates"); source: "qrc:/pages/DelegatePage.qml" }
                 //                ListElement { title: qsTr("Frame"); source: "qrc:/pages/FramePage.qml" }
                 //                ListElement { title: qsTr("GroupBox"); source: "qrc:/pages/GroupBoxPage.qml" }
@@ -250,6 +248,7 @@ ApplicationWindow {
             push(newPage, properties)
         }
 
+
         initialItem: Pane {
             id: pane
             background: Rectangle{
@@ -286,6 +285,22 @@ ApplicationWindow {
                 anchors.bottom: parent.bottom
                 visible: window.portraitMode
             }
+        }
+    }
+
+
+    Image {
+        id: babbon
+        width: 120
+        height: 120
+        x: 0
+        y:0
+        z: 0
+        fillMode: Image.PreserveAspectFit
+        source: "images/baboon.png"
+        MouseArea {
+            anchors.fill: parent
+            drag.target: parent
         }
     }
 

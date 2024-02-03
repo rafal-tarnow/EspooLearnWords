@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Effects
+import QtQuick.Dialogs
 import Backend
+import KikoBricks
 import "."
 import "./common"
 
@@ -10,13 +12,11 @@ Page {
     id: page
     property string pageName: "Dashboard"
 
+    readonly property MyBricksList myBricks: application.myBricks
+    readonly property PseudoDNSServer dnsServer: application.dns
+
     background: Rectangle{
         color: "#fafafa"
-    }
-
-
-    ListModel {
-        id: devicesModel
     }
 
     Connections {
@@ -27,25 +27,32 @@ Page {
     }
 
 
-    PseudoDNSServer{
-        id: dnsServer
-        onHostFound:  function (hostId, hostType, hostName, hostIp) {
-            console.log("DNS host found " + hostId + " " + hostType + " " + hostName + " " + hostIp)
-            devicesModel.append({ name: hostName, ip: hostIp})
+    Rectangle {
+        width: 100
+        height: 100
+        z: 3
+        color: "blue"
+
+        MouseArea {
+            id: dragArea
+            anchors.fill: parent
+            drag.target: parent
         }
-
-        Component.onCompleted: {
-
-            devicesModel.clear()
-            dnsServer.startQueriesForAllHosts()
-        }
-
-
-        // Component.onDestroyed: {
-        //                    dnsServer.stopQueries()
-        // }
     }
 
+    BrickDelegate{
+        width: 200
+        height: 100
+        m_brickType: myBricks.data(0,myBricks.TypeRole)
+        m_brickName: myBricks.data(0,myBricks.NameRole)
+        z: 3
+
+        MouseArea {
+            id: brickDrag
+            anchors.fill: parent
+            drag.target: parent
+        }
+    }
 
     ListView {
         id: listView
@@ -59,61 +66,35 @@ Page {
 
         width: parent.width > 700 ? 700 : parent.width - 2*5
 
-        model:     MyBricksList{
-            id: myBricksModel
-        }
+        // model:     MyBricksList{
+        //     id: application
+        // }
+
+        model: myBricks
 
         delegate: BrickDelegate{
+            m_brickType: brickType
+            m_brickName: brickName
+            width: listView.width
+        }
 
+        WarningDialog {
+            id: warningDialog
+            anchors.centerIn: parent
+            width: parent.width > 265 ? 265 : parent.width
+            warningText: qsTr("The brick has already been added.")
         }
     }
 
-    Dialog {
-        id: dialog
-        property int gap: 20
-        x: gap
-        y: gap
-        width: parent.width - 2*gap
-        height: parent.height - 2*gap
-        title: qsTr("Avaliable Bricks")
-        standardButtons: Dialog.Cancel
 
-        background: Rectangle {
-            id: background
-            anchors.fill: parent
-            color: "#ffffff"
-            border.color: "#e0e0e0"
-            radius: 5
-        }
 
-        onOpened: {
-            console.log("Dialog opened()")
-        }
+    AddBrickDialog{
+        id: addBrickDialog
+        model: dnsServer
 
-        onClosed: {
-            console.log("Dialog closed()")
-
-        }
-
-        ListView{
-            id: dialogView
-            anchors.fill: parent
-
-            model: dnsServer
-
-            delegate: ItemDelegate{
-                id: delegate
-                width: parent.width
-                height: 50
-
-                contentItem: DataLine{
-                    width: parent.width
-                    icon: "qrc:/images/wifi.svg"
-                    label: NameFromDns //model.IdFromDns
-                    leftMarginValue: 0
-                    //value: "test"
-                    //unit: qsTr("°C")
-                }
+        onAddBrick: function(brickId, brickName, brickType){
+            if(application.myBricks.append(brickId, brickType, brickName) === false){
+                warningDialog.open();
             }
         }
     }
@@ -126,7 +107,7 @@ Page {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         onClicked: {
-            dialog.open()
+            addBrickDialog.open()
         }
     }
 
@@ -151,6 +132,18 @@ Page {
         anchors.bottom: parent.bottom
         onClicked: {
             dnsServer.stopQueries()
+        }
+    }
+
+    RoundButton {
+        id: minusButton
+        text: qsTr("-")
+        highlighted: true
+        anchors.margins: 10
+        anchors.right: stopButton.left
+        anchors.bottom: parent.bottom
+        onClicked: {
+            myBricks.remove(myBricks.rowCount() - 1)
         }
     }
 }

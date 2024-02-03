@@ -57,12 +57,12 @@ QHash<int, QByteArray> MyBricksList::roleNames() const {
     return roles;
 }
 
-void MyBricksList::append(const QString & id, const QString &brickType, const QString &brickName)
+bool MyBricksList::append(const QString & id, const QString &brickType, const QString &brickName)
 {
     //qDebug() << "MyListModel::addBrick() " << "id=" << id << " type=" << brickType << " name=" << brickName << " ip=" << brickIp;
     if (brickExists(id)) {
         emit brickAlreadyAdded(brickType, brickName);
-        return;
+        return false;
     }
 
     int row = 0;
@@ -72,6 +72,7 @@ void MyBricksList::append(const QString & id, const QString &brickType, const QS
     m_items.insert(row, {id, brickType, brickName});
     saveToSettings();
     endInsertRows();
+    return true;
 }
 
 void MyBricksList::set(int row, const QString &id, const QString &brickType, const QString &brickName)
