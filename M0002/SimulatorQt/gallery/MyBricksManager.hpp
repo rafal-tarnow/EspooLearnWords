@@ -4,7 +4,7 @@
 #include <QList>
 #include <QVariantMap>
 #include <qqml.h>
-#include "../ObjectCounter.hpp"
+#include "./src/ObjectCounter.hpp"
 
 class MyBricksList : public QAbstractListModel {
     Q_OBJECT

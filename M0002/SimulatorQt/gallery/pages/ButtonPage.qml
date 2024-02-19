@@ -7,8 +7,8 @@ ScrollablePage {
     id: page
 
     //readonly property AudioInfo infoProvider: AudioInfo {}
-    //readonly property AudioInfo infoProvider: application.audioInfo
-    readonly property AudioInfo infoProvider: application.getAudioInfoAt()
+    //readonly property AudioInfo infoProvider: backend.audioInfo
+    readonly property AudioInfo infoProvider: backend.getAudioInfoAt()
 
     Component.onCompleted: {
         console.log("Button Page created")

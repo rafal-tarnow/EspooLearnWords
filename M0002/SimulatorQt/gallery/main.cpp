@@ -9,7 +9,7 @@
 #include <QObject>
 #include <QtGlobal>
 #include "./src/ObjectCounter.hpp"
-#include "Application.hpp"
+#include "Backend.hpp"
 
 #if defined(Q_OS_ANDROID)
 // install custom message handlet to see logs in adb logcat in android
@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
     QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
 
 #warning "First app run doesent load material style, it can be chacked by changing app and organization name"
-    QGuiApplication::setApplicationName("Aspoo Bricks");
-    QGuiApplication::setOrganizationName("Aspoo Labs");
+    QGuiApplication::setApplicationName("KiKo Bricks");
+    QGuiApplication::setOrganizationName("KIKO Labs");
 
 #if defined(Q_OS_ANDROID)
     qInstallMessageHandler(myMessageHandler); // install custom message handlet to see logs in adb logcat in android
@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     guiApp = &app;
 
-    Application application;
-    application.setUserName("My name is KiKo");
+    Backend backend;
+    backend.setUserName("My name is KiKo");
 
 
     // Tworzymy obiekt naszej klasy StateListener
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    engine.rootContext()->setContextProperty("application", &application);
+    engine.rootContext()->setContextProperty("backend", &backend);
 
     QStringList builtInStyles = { QLatin1String("Basic"), QLatin1String("Fusion"),
                                  QLatin1String("Imagine"), QLatin1String("Material"), QLatin1String("Universal") };

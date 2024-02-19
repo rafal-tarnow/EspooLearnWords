@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QNetworkDatagram>
 #include <QtQml>
-#include "../global_config.hpp"
+#include "./src/global_config.hpp"
 
 Q_LOGGING_CATEGORY(PseudoDNS, "PseudoDNSClass")
 
@@ -175,8 +175,6 @@ void PseudoDNSServer::onRepeatTimer()
     sendQueryDatagrams();
 }
 
-
-
 void PseudoDNSServer::readPendingDatagrams()
 {
     qCDebug(PseudoDNS) << "--------- START READ---------------";
@@ -253,8 +251,6 @@ void PseudoDNSServer::parseQueryForAllHostsDatagram(const QNetworkDatagram & rec
         respondQueryForAllHostsDatagram(receivedDatagram);
     }
 }
-
-
 
 void PseudoDNSServer::respondQueryForAllHostsDatagram(const QNetworkDatagram & receivedDatagram){
     //qCDebug(PseudoDNS) << "PseudoDNSServer::respondQueryForAllHostsDatagram()";

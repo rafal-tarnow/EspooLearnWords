@@ -4,13 +4,15 @@
 #include <QString>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <qqml.h>
 #include <memory>
-#include "../ObjectCounter.hpp"
-#include "../emulators/tcp_connection.hpp"
+#include "./src/ObjectCounter.hpp"
+#include "./src/emulators/tcp_connection.hpp"
 
 class Controller : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
     Q_PROPERTY(bool connected READ isBrickConnected NOTIFY brickConnectedChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)

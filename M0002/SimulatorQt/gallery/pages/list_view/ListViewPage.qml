@@ -10,13 +10,29 @@ import "./common"
 
 Page {
     id: page
-    property string pageName: "Dashboard"
 
-    readonly property MyBricksList myBricks: application.myBricks
-    readonly property PseudoDNSServer dnsServer: application.dns
+    property string pageName: "Dashboard"
+    readonly property MyBricksList myBricks: backend.myBricks
+    readonly property PseudoDNSServer dnsServer: backend.dns
+    readonly property T0002Controller t0002Controller: backend.getT0002Controller(0)
 
     background: Rectangle{
         color: "#fafafa"
+    }
+
+    Connections {
+        target: dnsServer
+        onHostFound:function(){
+            console.log("Qml : on host found: yeyeye");
+        }
+    }
+
+    Connections{
+        target: backend.getT0002Controller(0)
+        onTemperatureChanged: {
+            console.log(" temperature changed");
+            console.log(t0002Controller.temperature);
+        }
     }
 
     Connections {
@@ -26,32 +42,41 @@ Page {
         }
     }
 
+    Menu{
+        id: deleteMenu
 
-    Rectangle {
-        width: 100
-        height: 100
-        z: 3
-        color: "blue"
+        property int indexToDelete
+        property string brickNameToDelete
 
-        MouseArea {
-            id: dragArea
-            anchors.fill: parent
-            drag.target: parent
+        x: parent.width / 2 - width / 2
+        y: parent.height / 2 - height / 2
+        modal: true
+
+        Label {
+            padding: 10
+            font.bold: true
+            width: parent.width
+            horizontalAlignment: Qt.AlignHCenter
+            text: deleteMenu.brickNameToDelete
         }
-    }
-
-    BrickDelegate{
-        width: 200
-        height: 100
-        m_brickType: myBricks.data(0,myBricks.TypeRole)
-        m_brickName: myBricks.data(0,myBricks.NameRole)
-        z: 3
-
-        MouseArea {
-            id: brickDrag
-            anchors.fill: parent
-            drag.target: parent
+        MenuItem {
+            text: qsTr("Remove ...")
+            onTriggered: deleteWarningDialog.open()
         }
+
+        WarningDialog {
+            id: deleteWarningDialog
+            parent: listView
+            anchors.centerIn: parent
+            width: parent.width > 265 ? 265 : parent.width
+            standardButtons: Dialog.Yes | Dialog.No
+            imageSource: "qrc:/images/warning_red.svg"
+            warningText: qsTr("The brick will be removed, are you sure?")
+            onAccepted: {
+                myBricks.remove(deleteMenu.indexToDelete)
+            }
+        }
+
     }
 
     ListView {
@@ -66,16 +91,18 @@ Page {
 
         width: parent.width > 700 ? 700 : parent.width - 2*5
 
-        // model:     MyBricksList{
-        //     id: application
-        // }
-
         model: myBricks
 
         delegate: BrickDelegate{
             m_brickType: brickType
             m_brickName: brickName
             width: listView.width
+            onPressAndHold:{
+                console.log("BrickDelegate Press and hold index = ", index)
+                deleteMenu.brickNameToDelete = brickName
+                deleteMenu.indexToDelete = index
+                deleteMenu.open()
+            }
         }
 
         WarningDialog {
@@ -86,14 +113,12 @@ Page {
         }
     }
 
-
-
     AddBrickDialog{
         id: addBrickDialog
         model: dnsServer
 
         onAddBrick: function(brickId, brickName, brickType){
-            if(application.myBricks.append(brickId, brickType, brickName) === false){
+            if(backend.myBricks.append(brickId, brickType, brickName) === false){
                 warningDialog.open();
             }
         }
@@ -132,18 +157,6 @@ Page {
         anchors.bottom: parent.bottom
         onClicked: {
             dnsServer.stopQueries()
-        }
-    }
-
-    RoundButton {
-        id: minusButton
-        text: qsTr("-")
-        highlighted: true
-        anchors.margins: 10
-        anchors.right: stopButton.left
-        anchors.bottom: parent.bottom
-        onClicked: {
-            myBricks.remove(myBricks.rowCount() - 1)
         }
     }
 }

@@ -8,8 +8,8 @@
 #include <QLoggingCategory>
 #include <QAbstractListModel>
 #include <qqml.h>
-#include "ProtocolStd.h"
-#include "../ObjectCounter.hpp"
+#include "./src/emulators/ProtocolStd.h"
+#include "./src/ObjectCounter.hpp"
 
 Q_DECLARE_LOGGING_CATEGORY(PseudoDNS)
 

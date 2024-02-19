@@ -8,16 +8,16 @@ find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Quick3D S
 
 qt_add_executable(kikoBricks WIN32 MACOSX_BUNDLE
     main.cpp
-    Application.hpp
-    Application.cpp
+    Backend.hpp
+    Backend.cpp
     src/tcp_terminal.hpp
     src/tcp_terminal.cpp
     src/udp_terminal.hpp
     src/udp_terminal.cpp
     src/emulators/emulator_m0002.hpp
     src/emulators/emulator_m0002.cpp
-    src/emulators/pseudo_dns.hpp
-    src/emulators/pseudo_dns.cpp
+
+
     src/emulators/tcp_connection.hpp
     src/emulators/tcp_connection.cpp
     src/tests/PseudoDNSTest.cpp
@@ -25,18 +25,12 @@ qt_add_executable(kikoBricks WIN32 MACOSX_BUNDLE
     src/emulators/protocol.cpp
     src/emulators/ProtocolStd.h
     src/emulators/ProtocolStd.cpp
-    src/controllers/M0002Controller.hpp
-    src/controllers/M0002Controller.cpp
     src/global_config.hpp
     src/wifi_info.hpp
     src/emulators/BrickIpFinder.hpp
     src/emulators/BrickIpFinder.cpp
     src/ObjectCounter.hpp
     src/ObjectCounter.cpp
-    src/controllers/Controller.hpp
-    src/controllers/Controller.cpp
-    src/controllers/T0002Controller.hpp
-    src/controllers/T0002Controller.cpp
 )
 
 qt_add_qml_module(kikoBricks
@@ -47,11 +41,19 @@ qt_add_qml_module(kikoBricks
     SOURCES
     AudioInfo.hpp
     AudioInfo.cpp
-    src/controllers/MyBricksManager.hpp
-    src/controllers/MyBricksManager.cpp
+    Controller.hpp
+    Controller.cpp
+    M0002Controller.hpp
+    M0002Controller.cpp
+    MyBricksManager.hpp
+    MyBricksManager.cpp
+    T0002Controller.hpp
+    T0002Controller.cpp
+    pseudo_dns.hpp
+    pseudo_dns.cpp
 
     QML_FILES
-    pages/list_view/M0002/M0002ControllerExt.qml
+
     pages/list_view/common/BrickTitle.qml
     pages/list_view/T0002/T0002MainPage.qml
     pages/list_view/common/NetworkSettings.qml
@@ -112,12 +114,11 @@ qt_add_qml_module(kikoBricks
     "pages/list_view/T0002Delegate.qml"
     "pages/list_view/BrickDelegate.qml"
     "pages/list_view/M0002/M0002MainPage.qml"
-    "pages/list_view/BrickSwipe.qml"
-    "pages/list_view/T0002/T0002ControllerExt.qml"
+
 
     RESOURCES
-    "icons/gallery/20x20/back.png"
-    "icons/gallery/20x20/drawer.png"
+    icons/gallery/20x20/back.png
+    icons/gallery/20x20/drawer.png
     "icons/gallery/20x20/menu.png"
     "icons/gallery/20x20/show_details.png"
     "icons/gallery/20x20/hide_details.png"
@@ -171,11 +172,13 @@ qt_add_qml_module(kikoBricks
     "images/qt-logo@4x.png"
     "images/udp_port.svg"
     images/warning.svg
+    images/warning_red.svg
     "images/wifi.svg"
     "scxml/EmulatorM0002States.scxml"
     "scxml/PseudoDNSStates.scxml"
     "qmldir"
     "qtquickcontrols2.conf"
+
 )
 
 qt6_add_statecharts(kikoBricks

@@ -27,6 +27,9 @@ ItemDelegate {
     MouseArea {
         anchors.fill: background
         onClicked: brickDelegate.state = 'Details';
+        onPressAndHold: {
+            brickDelegate.pressAndHold()
+        }
     }
 
     Loader {
@@ -40,7 +43,7 @@ ItemDelegate {
         source: {
             if (m_brickType === "T0002") {
                 return "T0002Delegate.qml"
-            } else if (m_brickType === "B0002") {
+            } else if (m_brickType === "M0002") {
                 return "B0002Delegate.qml"
             }
         }
@@ -48,7 +51,7 @@ ItemDelegate {
         Component.onCompleted: {
             if (m_brickType === "T0002") {
                 brickDelegate.height = 200
-            } else if (m_brickType === "B0002") {
+            } else if (m_brickType === "M0002") {
                 brickDelegate.height = 120
             }
         }

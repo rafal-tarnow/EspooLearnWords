@@ -289,20 +289,20 @@ ApplicationWindow {
     }
 
 
-    Image {
-        id: babbon
-        width: 120
-        height: 120
-        x: 0
-        y:0
-        z: 0
-        fillMode: Image.PreserveAspectFit
-        source: "images/baboon.png"
-        MouseArea {
-            anchors.fill: parent
-            drag.target: parent
-        }
-    }
+    // Image {
+    //     id: babbon
+    //     width: 120
+    //     height: 120
+    //     x: 0
+    //     y:0
+    //     z: 0
+    //     fillMode: Image.PreserveAspectFit
+    //     source: "images/baboon.png"
+    //     MouseArea {
+    //         anchors.fill: parent
+    //         drag.target: parent
+    //     }
+    // }
 
     Dialog {
         id: settingsDialog

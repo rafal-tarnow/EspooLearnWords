@@ -2,11 +2,12 @@
 
 #include <QObject>
 #include "Controller.hpp"
-#include "../ObjectCounter.hpp"
+#include "./src/ObjectCounter.hpp"
 
 class M0002Controller : public Controller
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(float temperature READ temperature NOTIFY temperatureChanged)
 
 public:

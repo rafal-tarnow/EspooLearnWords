@@ -4,6 +4,7 @@ import QtQuick.Controls
 Dialog {
     id: warningDialog
     property string warningText
+    property string imageSource: "qrc:/images/warning.svg"
 
     contentHeight: logo.height + label.height
 
@@ -24,7 +25,7 @@ Dialog {
             anchors.horizontalCenter: parent.horizontalCenter
             fillMode: Image.PreserveAspectFit
             sourceSize: Qt.size(width,height)
-            source: "qrc:/images/warning.svg"
+            source: warningDialog.imageSource
         }
         Label {
             id: label

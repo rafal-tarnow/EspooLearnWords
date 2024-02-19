@@ -50,10 +50,10 @@ QVariant MyBricksList::data(const QModelIndex &index, int role) const {
 
 QHash<int, QByteArray> MyBricksList::roleNames() const {
     static const QHash<int, QByteArray> roles {
-        { IdRole, "brickId" },
-        { TypeRole, "brickType" },
-        { NameRole, "brickName" },
-    };
+                                              { IdRole, "brickId" },
+                                              { TypeRole, "brickType" },
+                                              { NameRole, "brickName" },
+                                              };
     return roles;
 }
 
@@ -125,4 +125,3 @@ static void registerMyBricksListTypes() {
 }
 
 Q_COREAPP_STARTUP_FUNCTION(registerMyBricksListTypes)
-

@@ -3,45 +3,26 @@
 #include <QObject>
 #include <QString>
 #include <qqml.h>
-#include "./src/emulators/pseudo_dns.hpp"
-#include "./src/controllers/MyBricksManager.hpp"
-#include "./src/controllers/T0002Controller.hpp"
+#include "pseudo_dns.hpp"
+#include "MyBricksManager.hpp"
+#include "T0002Controller.hpp"
+#include "M0002Controller.hpp"
 #include "./src/ObjectCounter.hpp"
 #include "AudioInfo.hpp"
 
-
-class CustomType : public QObject {
-    Q_OBJECT
-    // ... Deklaracje składowych klasy CustomType
-    Q_PROPERTY(QString name READ getName CONSTANT)
-
-public:
-    explicit CustomType(QObject *parent = nullptr):QObject(parent){
-        name = "CustomType";
-    }
-
-    QString getName(){
-        return name;
-    }
-
-private:
-    QString name;
-};
-
-Q_DECLARE_METATYPE(CustomType)
-
-class Application : public QObject
+class Backend : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
     Q_PROPERTY(PseudoDNSServer* dns READ getDNS CONSTANT)
     Q_PROPERTY(MyBricksList* myBricks READ getMyBricks CONSTANT)
-    Q_PROPERTY(T0002Controller* t0002Controller READ getT0002Controller CONSTANT)
+    Q_PROPERTY(T0002Controller* t0002Controller CONSTANT)
     Q_PROPERTY(AudioInfo* audioInfo READ getAudioInfo CONSTANT)
-    QML_ELEMENT
 
 public:
-    explicit Application(QObject *parent = nullptr);
+    explicit Backend(QObject *parent = nullptr);
 
     PseudoDNSServer *getDNS(){
         return &pseudoDNS;
@@ -52,8 +33,17 @@ public:
         //return nullptr;
     }
 
-    T0002Controller *getT0002Controller(){
-        //return &mT0002Controller;
+    Q_INVOKABLE T0002Controller *getT0002Controller(QString id){
+        if(id == "T000215978085"){
+            return &mT0002Controller;
+        }
+        return nullptr;
+    }
+
+    Q_INVOKABLE M0002Controller *getM0002Controller(QString id){
+        if(id == "M000216080620"){
+            return &mM0002Controller;
+        }
         return nullptr;
     }
 
@@ -79,12 +69,14 @@ private slots:
     {
         //ObjectCounter::printQt();
     }
+    void pseudoDNS_onHostFound(QString hostId, QString hostType, QString hostName, QString hostIp);
 
 private:
     QString m_userName;
     PseudoDNSServer pseudoDNS;
     MyBricksList myBricksList;
-    //T0002Controller mT0002Controller;
+    T0002Controller mT0002Controller;
+    M0002Controller mM0002Controller;
     QTimer testTimer;
     //AudioInfo testAudioInfo;
 };
