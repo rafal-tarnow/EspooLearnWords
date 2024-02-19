@@ -96,37 +96,11 @@ int main(int argc, char *argv[])
     // Łączymy sygnał applicationStateChanged z funkcją onApplicationStateChanged
     QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &stateListener, &StateListener::onApplicationStateChanged);
 
-
-
     QIcon::setThemeName("gallery");
-
-    QSettings settings;
-    if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE"))
-        QQuickStyle::setStyle(settings.value("style").toString());
-
-    // If this is the first time we're running the application,
-    // we need to set a style in the settings so that the QML
-    // can find it in the list of built-in styles.
-    const QString styleInSettings = settings.value("style").toString();
-    if (styleInSettings.isEmpty())
-        settings.setValue(QLatin1String("style"), QQuickStyle::name());
+    QQuickStyle::setStyle(QLatin1String("Material"));
 
     QQmlApplicationEngine engine;
-
     engine.rootContext()->setContextProperty("backend", &backend);
-
-    QStringList builtInStyles = { QLatin1String("Basic"), QLatin1String("Fusion"),
-                                 QLatin1String("Imagine"), QLatin1String("Material"), QLatin1String("Universal") };
-#if defined(Q_OS_MACOS)
-    builtInStyles << QLatin1String("macOS");
-    builtInStyles << QLatin1String("iOS");
-#elif defined(Q_OS_IOS)
-    builtInStyles << QLatin1String("iOS");
-#elif defined(Q_OS_WINDOWS)
-    builtInStyles << QLatin1String("Windows");
-#endif
-
-    engine.setInitialProperties({{ "builtInStyles", builtInStyles }});
     engine.load(QUrl("qrc:/kiko_main.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;

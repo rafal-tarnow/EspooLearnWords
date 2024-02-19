@@ -33,14 +33,10 @@ ApplicationWindow {
         Qt.openUrlExternally(url)
     }
 
-    required property var builtInStyles
-
-
 
 
     Settings {
         id: settings
-        property string style
         property string temperatureScale //Celsius, Fahrenheit
         signal sendMessage(string msg, int compId)
         function setTemperatureScale(scale) {
@@ -315,12 +311,10 @@ ApplicationWindow {
 
         standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: {
-            settings.style = styleBox.displayText
             settings.temperatureScale = temperatureBox.displayText
             settingsDialog.close()
         }
         onRejected: {
-            styleBox.currentIndex = styleBox.styleIndex
             settingsDialog.close()
         }
 
@@ -328,25 +322,6 @@ ApplicationWindow {
             id: settingsColumn
             spacing: 20
 
-            RowLayout {
-                spacing: 10
-
-                Label {
-                    text: qsTr("Style:")
-                }
-
-                ComboBox {
-                    id: styleBox
-                    property int styleIndex: -1
-                    model: window.builtInStyles
-                    Component.onCompleted: {
-                        styleIndex = find(settings.style, Qt.MatchFixedString)
-                        if (styleIndex !== -1)
-                        currentIndex = styleIndex
-                    }
-                    Layout.fillWidth: true
-                }
-            }
             RowLayout {
                 spacing: 10
 
@@ -368,16 +343,6 @@ ApplicationWindow {
                     }
                     Layout.fillWidth: true
                 }
-            }
-
-            Label {
-                text: qsTr("Restart required")
-                color: "#e41e25"
-                opacity: styleBox.currentIndex !== styleBox.styleIndex ? 1.0 : 0.0
-                horizontalAlignment: Label.AlignHCenter
-                verticalAlignment: Label.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
         }
     }

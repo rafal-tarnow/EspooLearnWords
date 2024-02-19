@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 6.6 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Quick3D Scxml Test)
 
+
+
 qt_add_executable(kikoBricks WIN32 MACOSX_BUNDLE
     main.cpp
     Backend.hpp
@@ -184,6 +186,10 @@ qt_add_qml_module(kikoBricks
 qt6_add_statecharts(kikoBricks
     "scxml/EmulatorM0002States.scxml"
     "scxml/PseudoDNSStates.scxml"
+)
+
+set_property(TARGET kikoBricks APPEND PROPERTY
+    QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android
 )
 
 target_link_libraries(kikoBricks PUBLIC
