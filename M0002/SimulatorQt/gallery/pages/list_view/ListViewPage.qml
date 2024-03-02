@@ -131,32 +131,33 @@ Page {
         anchors.margins: 10
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+        Material.background: Material.Pink
         onClicked: {
             addBrickDialog.open()
         }
     }
 
-    RoundButton {
-        id: runButton
-        text: qsTr("Run")
-        highlighted: true
-        anchors.margins: 10
-        anchors.right: plusButton.left
-        anchors.bottom: parent.bottom
-        onClicked: {
-            dnsServer.startQueriesForAllHosts()
-        }
-    }
+    // RoundButton {
+    //     id: runButton
+    //     text: qsTr("Run")
+    //     highlighted: true
+    //     anchors.margins: 10
+    //     anchors.right: plusButton.left
+    //     anchors.bottom: parent.bottom
+    //     onClicked: {
+    //         dnsServer.startQueriesForAllHosts()
+    //     }
+    // }
 
-    RoundButton {
-        id: stopButton
-        text: qsTr("Stop")
-        highlighted: true
-        anchors.margins: 10
-        anchors.right: runButton.left
-        anchors.bottom: parent.bottom
-        onClicked: {
-            dnsServer.stopQueries()
-        }
-    }
+    // RoundButton {
+    //     id: stopButton
+    //     text: qsTr("Stop")
+    //     highlighted: true
+    //     anchors.margins: 10
+    //     anchors.right: runButton.left
+    //     anchors.bottom: parent.bottom
+    //     onClicked: {
+    //         dnsServer.stopQueries()
+    //     }
+    // }
 }

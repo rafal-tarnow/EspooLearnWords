@@ -21,7 +21,7 @@ Item{
         anchors.left: delegate.left
         height: 50
 
-        title: brickController.name
+        title: brickController.name !== "" ? brickController.name : model.brickName
         connectedIcon: "qrc:/images/temp_connected.svg"
         disconnectedIcon: "qrc:/images/temp_disconnected.svg"
         connected: brickController.connected

@@ -5,18 +5,22 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Effects
+import Qt5Compat.GraphicalEffects
 
 import "." as App
 import "./pages/my_bricks"
 import "./pages/list_view"
 import "./pages/grid_view"
+import "./pages/list_view/common"
+import "./pages/controls"
+import "./pages"
 
 ApplicationWindow {
     id: window
     width: 360
     height: 520
     visible: true
-    title: qsTr("KiKo bricks")
+    title: qsTr("KIKO Bricks")
 
     //! [orientation]
     readonly property bool portraitMode: window.width < window.height
@@ -94,14 +98,29 @@ ApplicationWindow {
                 visible: window.portraitMode
             }
 
-            Label {
-                id: titleLabel
-                text: stackView.currentItem.pageName
-                font.pixelSize: 20
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
+            Item{
                 Layout.fillWidth: true
+
+                Image {
+                    anchors.right: titleLabel.left
+                    anchors.verticalCenter: titleLabel.verticalCenter
+                    anchors.rightMargin: 10
+                    width: 25
+                    height: 25
+                    fillMode: Image.PreserveAspectFit
+                    sourceSize: Qt.size(width,height)
+                    source: "qrc:/images/logo.svg"
+                }
+
+                Label {
+                    id: titleLabel
+                    anchors.centerIn: parent
+                    text: stackView.currentItem.pageName
+                    font.pixelSize: 20
+                    elide: Label.ElideRight
+                    horizontalAlignment: Qt.AlignHCenter
+                    verticalAlignment: Qt.AlignVCenter
+                }
             }
 
             ToolButton {
@@ -112,14 +131,14 @@ ApplicationWindow {
                     x: parent.width - width
                     transformOrigin: Menu.TopRight
 
-                    Action {
-                        text: qsTr("Settings")
-                        onTriggered: settingsDialog.open()
-                    }
-                    Action {
-                        text: qsTr("Help")
-                        onTriggered: window.help()
-                    }
+                    // Action {
+                    //     text: qsTr("Settings")
+                    //     onTriggered: settingsDialog.open()
+                    // }
+                    // Action {
+                    //     text: qsTr("Help")
+                    //     onTriggered: window.help()
+                    // }
                     Action {
                         text: qsTr("About")
                         onTriggered: aboutDialog.open()
@@ -162,41 +181,43 @@ ApplicationWindow {
             anchors.fill: parent
 
             model: ListModel {
-                ListElement { title: qsTr("My Bricks"); source: "qrc:/pages/my_bricks/MyBricksPage.qml" }
-                ListElement { title: qsTr("Bricks in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
+                ListElement { title: qsTr("Home"); source: "qrc:/pages/HomePage.qml" }
+                ListElement { title: qsTr("Dashboard"); source: "qrc:/pages/list_view/ListViewPage.qml" }
+                //ListElement { title: qsTr("My Bricks"); source: "qrc:/pages/my_bricks/MyBricksPage.qml" }
+                //ListElement { title: qsTr("Bricks in network"); source: "qrc:/pages/DevicesInNetworkPage.qml" }
                 //                ListElement { title: qsTr("Config M0002"); source: "qrc:/pages/ConfigM0002Page.qml" }
                 //                ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
-                ListElement { title: qsTr("Dashboard"); source: "qrc:/pages/list_view/ListViewPage.qml" }
-                ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
-                ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }
-                //                ListElement { title: qsTr("Grid"); source: "qrc:/pages/grid/GridPage.qml" }
-                //                ListElement { title: qsTr("Grid View"); source: "qrc:/pages/grid_view/GridViewPage.qml" }
-                //                ListElement { title: qsTr("BusyIndicator"); source: "qrc:/pages/BusyIndicatorPage.qml" }
-                ListElement { title: qsTr("Button"); source: "qrc:/pages/ButtonPage.qml" }
-                //                ListElement { title: qsTr("CheckBox"); source: "qrc:/pages/CheckBoxPage.qml" }
-                //                ListElement { title: qsTr("ComboBox"); source: "qrc:/pages/ComboBoxPage.qml" }
-                //                ListElement { title: qsTr("DelayButton"); source: "qrc:/pages/DelayButtonPage.qml" }
-                //                ListElement { title: qsTr("Dial"); source: "qrc:/pages/DialPage.qml" }
-                ListElement { title: qsTr("Dialog"); source: "qrc:/pages/DialogPage.qml" }
-                //                ListElement { title: qsTr("Delegates"); source: "qrc:/pages/DelegatePage.qml" }
-                //                ListElement { title: qsTr("Frame"); source: "qrc:/pages/FramePage.qml" }
-                //                ListElement { title: qsTr("GroupBox"); source: "qrc:/pages/GroupBoxPage.qml" }
-                //                ListElement { title: qsTr("PageIndicator"); source: "qrc:/pages/PageIndicatorPage.qml" }
-                //                ListElement { title: qsTr("ProgressBar"); source: "qrc:/pages/ProgressBarPage.qml" }
-                //                ListElement { title: qsTr("RadioButton"); source: "qrc:/pages/RadioButtonPage.qml" }
-                //                ListElement { title: qsTr("RangeSlider"); source: "qrc:/pages/RangeSliderPage.qml" }
-                //                ListElement { title: qsTr("ScrollBar"); source: "qrc:/pages/ScrollBarPage.qml" }
-                //                ListElement { title: qsTr("ScrollIndicator"); source: "qrc:/pages/ScrollIndicatorPage.qml" }
-                //                ListElement { title: qsTr("Slider"); source: "qrc:/pages/SliderPage.qml" }
-                //                ListElement { title: qsTr("SpinBox"); source: "qrc:/pages/SpinBoxPage.qml" }
-                //                ListElement { title: qsTr("StackView"); source: "qrc:/pages/StackViewPage.qml" }
-                //                ListElement { title: qsTr("SwipeView"); source: "qrc:/pages/SwipeViewPage.qml" }
-                //                ListElement { title: qsTr("Switch"); source: "qrc:/pages/SwitchPage.qml" }
-                //                ListElement { title: qsTr("TabBar"); source: "qrc:/pages/TabBarPage.qml" }
-                //                ListElement { title: qsTr("TextArea"); source: "qrc:/pages/TextAreaPage.qml" }
-                //                ListElement { title: qsTr("TextField"); source: "qrc:/pages/TextFieldPage.qml" }
-                //                ListElement { title: qsTr("ToolTip"); source: "qrc:/pages/ToolTipPage.qml" }
-                //                ListElement { title: qsTr("Tumbler"); source: "qrc:/pages/TumblerPage.qml" }
+
+                // ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
+                // ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }
+                // ListElement { title: qsTr("Grid"); source: "qrc:/pages/grid/GridPage.qml" }
+                // ListElement { title: qsTr("Grid View"); source: "qrc:/pages/grid_view/GridViewPage.qml" }
+                // ListElement { title: qsTr("BusyIndicator"); source: "qrc:/pages/BusyIndicatorPage.qml" }
+                // ListElement { title: qsTr("Button"); source: "qrc:/pages/ButtonPage.qml" }
+                // ListElement { title: qsTr("CheckBox"); source: "qrc:/pages/CheckBoxPage.qml" }
+                // ListElement { title: qsTr("ComboBox"); source: "qrc:/pages/ComboBoxPage.qml" }
+                // ListElement { title: qsTr("DelayButton"); source: "qrc:/pages/DelayButtonPage.qml" }
+                // ListElement { title: qsTr("Dial"); source: "qrc:/pages/DialPage.qml" }
+                // ListElement { title: qsTr("Dialog"); source: "qrc:/pages/DialogPage.qml" }
+                // ListElement { title: qsTr("Delegates"); source: "qrc:/pages/DelegatePage.qml" }
+                // ListElement { title: qsTr("Frame"); source: "qrc:/pages/FramePage.qml" }
+                // ListElement { title: qsTr("GroupBox"); source: "qrc:/pages/GroupBoxPage.qml" }
+                // ListElement { title: qsTr("PageIndicator"); source: "qrc:/pages/PageIndicatorPage.qml" }
+                // ListElement { title: qsTr("ProgressBar"); source: "qrc:/pages/ProgressBarPage.qml" }
+                // ListElement { title: qsTr("RadioButton"); source: "qrc:/pages/RadioButtonPage.qml" }
+                // ListElement { title: qsTr("RangeSlider"); source: "qrc:/pages/RangeSliderPage.qml" }
+                // ListElement { title: qsTr("ScrollBar"); source: "qrc:/pages/ScrollBarPage.qml" }
+                // ListElement { title: qsTr("ScrollIndicator"); source: "qrc:/pages/ScrollIndicatorPage.qml" }
+                // ListElement { title: qsTr("Slider"); source: "qrc:/pages/SliderPage.qml" }
+                // ListElement { title: qsTr("SpinBox"); source: "qrc:/pages/SpinBoxPage.qml" }
+                // ListElement { title: qsTr("StackView"); source: "qrc:/pages/StackViewPage.qml" }
+                // ListElement { title: qsTr("SwipeView"); source: "qrc:/pages/SwipeViewPage.qml" }
+                // ListElement { title: qsTr("Switch"); source: "qrc:/pages/SwitchPage.qml" }
+                // ListElement { title: qsTr("TabBar"); source: "qrc:/pages/TabBarPage.qml" }
+                // ListElement { title: qsTr("TextArea"); source: "qrc:/pages/TextAreaPage.qml" }
+                // ListElement { title: qsTr("TextField"); source: "qrc:/pages/TextFieldPage.qml" }
+                // ListElement { title: qsTr("ToolTip"); source: "qrc:/pages/ToolTipPage.qml" }
+                // ListElement { title: qsTr("Tumbler"); source: "qrc:/pages/TumblerPage.qml" }
             }
 
             delegate: ItemDelegate {
@@ -220,7 +241,7 @@ ApplicationWindow {
 
                 onClicked: {
                     listView.currentIndex = index
-                    stackView.pushPage(source)
+                    stackView.replace(source)
                     if (window.portraitMode)
                     drawer.close()
                 }
@@ -244,61 +265,8 @@ ApplicationWindow {
             push(newPage, properties)
         }
 
-
-        initialItem: Pane {
-            id: pane
-            background: Rectangle{
-                color: "#fafafa"
-            }
-
-            property string pageName: "Babbon App test"
-            Image {
-                id: logo
-                width: pane.availableWidth / 2
-                height: pane.availableHeight / 2
-                anchors.centerIn: parent
-                anchors.verticalCenterOffset: -50
-                fillMode: Image.PreserveAspectFit
-                source: "images/baboon.png"
-            }
-
-            Label {
-                text: qsTr("Aspoo app provides a set of functions that can be used to build complete IoT System.")
-                anchors.margins: 20
-                anchors.top: logo.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: arrow.top
-                horizontalAlignment: Label.AlignHCenter
-                verticalAlignment: Label.AlignVCenter
-                wrapMode: Label.Wrap
-            }
-
-            Image {
-                id: arrow
-                source: "images/arrow.png"
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                visible: window.portraitMode
-            }
-        }
+        initialItem: HomePage{}
     }
-
-
-    // Image {
-    //     id: babbon
-    //     width: 120
-    //     height: 120
-    //     x: 0
-    //     y:0
-    //     z: 0
-    //     fillMode: Image.PreserveAspectFit
-    //     source: "images/baboon.png"
-    //     MouseArea {
-    //         anchors.fill: parent
-    //         drag.target: parent
-    //     }
-    // }
 
     Dialog {
         id: settingsDialog
@@ -356,6 +324,7 @@ ApplicationWindow {
         y: window.height / 6
         width: Math.min(window.width, window.height) / 3 * 2
         contentHeight: aboutColumn.height
+        background: DialogBackground{}
 
         Column {
             id: aboutColumn
@@ -363,19 +332,17 @@ ApplicationWindow {
 
             Label {
                 width: aboutDialog.availableWidth
-                text: qsTr("The Qt Quick Controls module delivers the next generation user interface controls based on Qt Quick.")
+                text: qsTr("Join the Kiko Bricks community and embark on a journey of innovation.")
                 wrapMode: Label.Wrap
                 font.pixelSize: 12
             }
 
             Label {
                 width: aboutDialog.availableWidth
-                text: qsTr("In comparison to Qt Quick Controls 1, Qt Quick Controls "
-                           + "are an order of magnitude simpler, lighter, and faster.")
+                text: qsTr("With our mobile app, you can effortlessly assemble, configure, and control your IoT projects like never before.")
                 wrapMode: Label.Wrap
                 font.pixelSize: 12
             }
         }
     }
-
 }

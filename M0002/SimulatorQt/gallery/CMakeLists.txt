@@ -149,6 +149,12 @@ qt_add_qml_module(kikoBricks
     "images/arrows@3x.png"
     "images/arrows@4x.png"
     "images/baboon.png"
+    images/bricks/K0002.png
+    images/bricks/K0002_transparent.png
+    images/bricks/K0003.png
+    images/bricks/K0003_transparent.png
+    images/bricks/K0004.png
+    images/bricks/K0004_transparent.png
     "images/config.svg"
     "images/close.svg"
     "images/connected_icon.svg"
@@ -157,6 +163,7 @@ qt_add_qml_module(kikoBricks
     "images/device_type.svg"
     "images/id.svg"
     "images/ip_address.svg"
+    images/logo.svg
     "images/t0002_connected.svg"
     "images/t0002_disconnected.svg"
     "images/tcp_port.svg"
@@ -180,6 +187,9 @@ qt_add_qml_module(kikoBricks
     "scxml/PseudoDNSStates.scxml"
     "qmldir"
     "qtquickcontrols2.conf"
+    QML_FILES pages/controls/BrickTile.qml
+    QML_FILES CodingConventions.qml
+    QML_FILES pages/HomePage.qml
 
 )
 

@@ -90,10 +90,7 @@ int main(int argc, char *argv[])
     Backend backend;
     backend.setUserName("My name is KiKo");
 
-
-    // Tworzymy obiekt naszej klasy StateListener
     StateListener stateListener;
-    // Łączymy sygnał applicationStateChanged z funkcją onApplicationStateChanged
     QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &stateListener, &StateListener::onApplicationStateChanged);
 
     QIcon::setThemeName("gallery");
