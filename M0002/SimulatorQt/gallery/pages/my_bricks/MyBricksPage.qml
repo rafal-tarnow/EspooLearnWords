@@ -188,7 +188,7 @@ Page {
                 contactMenu.open()
             }
 
-            M0002Controller{
+            K0002Controller{
                 id: controller
 
 //                Component.onCompleted: {

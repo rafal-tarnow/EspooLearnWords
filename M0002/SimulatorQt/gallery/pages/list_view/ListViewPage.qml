@@ -4,7 +4,6 @@ import QtQuick.Controls
 import QtQuick.Effects
 import QtQuick.Dialogs
 import Backend
-import KikoBricks
 import "."
 import "./common"
 
@@ -14,7 +13,6 @@ Page {
     property string pageName: "Dashboard"
     readonly property MyBricksList myBricks: backend.myBricks
     readonly property PseudoDNSServer dnsServer: backend.dns
-    readonly property T0002Controller t0002Controller: backend.getT0002Controller(0)
 
     background: Rectangle{
         color: "#fafafa"
@@ -24,14 +22,6 @@ Page {
         target: dnsServer
         onHostFound:function(){
             console.log("Qml : on host found: yeyeye");
-        }
-    }
-
-    Connections{
-        target: backend.getT0002Controller(0)
-        onTemperatureChanged: {
-            console.log(" temperature changed");
-            console.log(t0002Controller.temperature);
         }
     }
 

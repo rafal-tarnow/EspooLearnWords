@@ -45,8 +45,8 @@ qt_add_qml_module(kikoBricks
     AudioInfo.cpp
     Controller.hpp
     Controller.cpp
-    M0002Controller.hpp
-    M0002Controller.cpp
+    K0002Controller.hpp
+    K0002Controller.cpp
     MyBricksManager.hpp
     MyBricksManager.cpp
     T0002Controller.hpp
@@ -112,7 +112,7 @@ qt_add_qml_module(kikoBricks
     "pages/grid_view/RecipesModel.qml"
     "pages/list_view/ListViewPage.qml"
     "pages/list_view/RecipesModel.qml"
-    "pages/list_view/B0002Delegate.qml"
+    "pages/list_view/K0002Delegate.qml"
     "pages/list_view/T0002Delegate.qml"
     "pages/list_view/BrickDelegate.qml"
     "pages/list_view/M0002/M0002MainPage.qml"
@@ -190,6 +190,7 @@ qt_add_qml_module(kikoBricks
     QML_FILES pages/controls/BrickTile.qml
     QML_FILES CodingConventions.qml
     QML_FILES pages/HomePage.qml
+    QML_FILES PagesModel.qml
 
 )
 

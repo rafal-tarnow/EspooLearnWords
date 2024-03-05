@@ -16,6 +16,8 @@ class T0002Controller : public Controller
     Q_PROPERTY(QString pressureStr READ pressureStr NOTIFY pressureStrChanged)
 
 public:
+    explicit T0002Controller(QObject *parent = nullptr, QString id = "", QString name = "");
+
     Q_INVOKABLE float temperature();
     Q_INVOKABLE float humidity();
     Q_INVOKABLE float pressure();

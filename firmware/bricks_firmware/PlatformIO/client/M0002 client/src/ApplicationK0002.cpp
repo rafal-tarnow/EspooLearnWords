@@ -1,4 +1,4 @@
-#include "ApplicationM0002.h"
+#include "ApplicationK0002.h"
 
 ApplicationM0002::ApplicationM0002() : oneWire(oneWirePin), sensors(&oneWire)
 {
@@ -26,7 +26,7 @@ void ApplicationM0002::loop()
 
         for (auto it = clients.begin(); it != clients.end(); ++it)
         {
-            M0002 *ptr = *it;
+            K0002Client *ptr = *it;
             ptr->cmdSetMeasureTemp(temperatureCelsius);
         }
         sensors.requestTemperatures();

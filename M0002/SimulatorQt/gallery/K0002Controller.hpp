@@ -4,13 +4,14 @@
 #include "Controller.hpp"
 #include "./src/ObjectCounter.hpp"
 
-class M0002Controller : public Controller
+class K0002Controller : public Controller
 {
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(float temperature READ temperature NOTIFY temperatureChanged)
 
 public:
+    explicit K0002Controller(QObject *parent = nullptr, QString id = "", QString name = "");
     Q_INVOKABLE float temperature();
     QString type() override;
 
@@ -23,5 +24,5 @@ protected:
 private:
     float mTemp = 0.0f;
 
-    DBG_COUNT("M0002Controller");
+    DBG_COUNT("K0002Controller");
 };

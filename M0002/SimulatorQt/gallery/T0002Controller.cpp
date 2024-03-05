@@ -1,6 +1,11 @@
 #include "T0002Controller.hpp"
 #include <QtQml>
 
+T0002Controller::T0002Controller(QObject *parent, QString id, QString name): Controller(parent, id, name)
+{
+
+}
+
 float T0002Controller::temperature()
 {
     return mTemp;

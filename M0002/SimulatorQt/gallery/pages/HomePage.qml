@@ -4,7 +4,9 @@ import "./controls"
 
 
 Pane{
+    id: homePage
     property string pageName: qsTr("KIKO Bricks")
+
     padding: 0
     background: Rectangle{
         color: "#fafafa"
@@ -51,7 +53,6 @@ Pane{
                     title: "KIKO K0004"
                     description: "Empower your DIY projects with our compact WiFi IoT module, offering precise control over a single relay for versatile applications."
                 }
-
             }
         }
     }
@@ -65,7 +66,8 @@ Pane{
         anchors.bottom: parent.bottom
         Material.background: Material.Pink
         onClicked: {
-            stackView.replace("qrc:/pages/list_view/ListViewPage.qml")
+            listView.currentIndex = 1;
+            stackView.replace("qrc:/pages/list_view/ListViewPage.qml");
         }
     }
 }

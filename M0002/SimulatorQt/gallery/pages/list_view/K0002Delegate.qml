@@ -12,7 +12,7 @@ Item{
     property int pageIndex: 0
     property bool details: false
 
-    readonly property M0002Controller brickController : backend.getM0002Controller("M000216080620")
+    readonly property K0002Controller brickController : backend.getK0002Controller("K000216080620")
 
     BrickTitle{
         id: title
@@ -21,7 +21,7 @@ Item{
         anchors.left: delegate.left
         height: 50
 
-        title: brickController.name !== "" ? brickController.name : model.brickName
+        title: brickController.name
         connectedIcon: "qrc:/images/temp_connected.svg"
         disconnectedIcon: "qrc:/images/temp_disconnected.svg"
         connected: brickController.connected

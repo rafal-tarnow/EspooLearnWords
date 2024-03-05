@@ -1,12 +1,14 @@
 #pragma once
 
+#include <map>
+
 #include <QObject>
 #include <QString>
 #include <qqml.h>
 #include "pseudo_dns.hpp"
 #include "MyBricksManager.hpp"
 #include "T0002Controller.hpp"
-#include "M0002Controller.hpp"
+#include "K0002Controller.hpp"
 #include "./src/ObjectCounter.hpp"
 #include "AudioInfo.hpp"
 
@@ -15,7 +17,6 @@ class Backend : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
     Q_PROPERTY(PseudoDNSServer* dns READ getDNS CONSTANT)
     Q_PROPERTY(MyBricksList* myBricks READ getMyBricks CONSTANT)
     Q_PROPERTY(T0002Controller* t0002Controller CONSTANT)
@@ -23,6 +24,7 @@ class Backend : public QObject
 
 public:
     explicit Backend(QObject *parent = nullptr);
+    ~Backend();
 
     PseudoDNSServer *getDNS(){
         return &pseudoDNS;
@@ -34,17 +36,11 @@ public:
     }
 
     Q_INVOKABLE T0002Controller *getT0002Controller(QString id){
-        if(id == "T000215978085"){
-            return &mT0002Controller;
-        }
-        return nullptr;
+        return t0002Controllers[id.toStdString()];
     }
 
-    Q_INVOKABLE M0002Controller *getM0002Controller(QString id){
-        if(id == "M000216080620"){
-            return &mM0002Controller;
-        }
-        return nullptr;
+    Q_INVOKABLE K0002Controller *getK0002Controller(QString id){
+        return k0002Controllers[id.toStdString()];
     }
 
     AudioInfo *getAudioInfo(){
@@ -57,13 +53,6 @@ public:
         return nullptr;
     }
 
-
-    QString userName();
-    void setUserName(const QString &userName);
-
-signals:
-    void userNameChanged();
-
 private slots:
     void timerSlot()
     {
@@ -72,11 +61,18 @@ private slots:
     void pseudoDNS_onHostFound(QString hostId, QString hostType, QString hostName, QString hostIp);
 
 private:
+    void initBricks();
+    void initBrick(const QString &brickId, const QString &brickType, const QString &brickName);
+    void initK0002Brick(const QString &brickId, const QString &brickName);
+    void initT0002Brick(const QString &brickId, const QString &brickName);
+
+private:
+    std::map<std::string, T0002Controller *> t0002Controllers;
+    std::map<std::string, K0002Controller *> k0002Controllers;
+
     QString m_userName;
     PseudoDNSServer pseudoDNS;
     MyBricksList myBricksList;
-    T0002Controller mT0002Controller;
-    M0002Controller mM0002Controller;
     QTimer testTimer;
     //AudioInfo testAudioInfo;
 };

@@ -4,9 +4,12 @@
 #include "./src/global_config.hpp"
 #include "main.hpp"
 
-Controller::Controller(QObject *parent)
+Controller::Controller(QObject *parent, QString id, QString name)
     : QObject(parent)
 {
+    mId = id;
+    mName = name;
+
     QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, this, &Controller::onApplicationStateChanged);
 
     tcpConnection = std::make_unique<TcpConncetion>(this);
@@ -18,7 +21,7 @@ Controller::Controller(QObject *parent)
 
 void Controller::connectToBrick(const QString &ip)
 {
-    qDebug() << "LocalM0002Controller::connectToBrick() Connecting to" << ip << "on port " << DEFAULT_TCP_PORT << "...";
+    qDebug() << "Controller::connectToBrick() Connecting to" << ip << "on port " << DEFAULT_TCP_PORT << "...";
     if(mConnected == false && mConnecting == false){
         mConnecting = true;
         mIp = ip;
@@ -34,13 +37,13 @@ bool Controller::isBrickConnected()
 
 void Controller::disconnectFromBrick()
 {
-    qDebug() << "LocalM0002Controller::disconnectFromBrick()";
+    qDebug() << "Controller::disconnectFromBrick()";
     tcpConnection->disconnectFromServer();
 }
 
 void Controller::handleTcpConnected()
 {
-    qDebug() << "LocalM0002Controller::handleTcpConnected()";
+    qDebug() << "Controller::handleTcpConnected()";
     // Tutaj można dodać kod obsługi połączenia
     mConnected = true;
     mConnecting = false;
@@ -56,11 +59,12 @@ void Controller::handleTcpConnected()
 
 void Controller::handleTcpDisconnected()
 {
-    qDebug() << "Disconnected from server";
+    qDebug() << "Start: Controller::handleTcpDisconnected()";
     // Tutaj można dodać kod obsługi rozłączenia
     mConnected = false;
     emit brickDisconnected();
     emit brickConnectedChanged();
+    qDebug() << "End: Controller::handleTcpDisconnected()";
 }
 
 void Controller::handleTcpError(const QString & error)

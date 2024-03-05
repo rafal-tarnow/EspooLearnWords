@@ -88,7 +88,6 @@ int main(int argc, char *argv[])
     guiApp = &app;
 
     Backend backend;
-    backend.setUserName("My name is KiKo");
 
     StateListener stateListener;
     QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &stateListener, &StateListener::onApplicationStateChanged);

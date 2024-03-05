@@ -3,9 +3,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "Application.h"
-#include "M0002.hpp"
+#include "K0002Client.hpp"
 
-class ApplicationM0002 : public Application<M0002>
+class ApplicationM0002 : public Application<K0002Client>
 {
 public:
   ApplicationM0002();

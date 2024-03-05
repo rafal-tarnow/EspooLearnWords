@@ -43,15 +43,15 @@ ItemDelegate {
         source: {
             if (m_brickType === "T0002") {
                 return "T0002Delegate.qml"
-            } else if (m_brickType === "M0002") {
-                return "B0002Delegate.qml"
+            } else if (m_brickType === "K0002") {
+                return "K0002Delegate.qml"
             }
         }
 
         Component.onCompleted: {
             if (m_brickType === "T0002") {
                 brickDelegate.height = 200
-            } else if (m_brickType === "M0002") {
+            } else if (m_brickType === "K0002") {
                 brickDelegate.height = 120
             }
         }

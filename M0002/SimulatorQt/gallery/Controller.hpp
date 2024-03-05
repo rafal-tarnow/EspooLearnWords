@@ -22,7 +22,7 @@ class Controller : public QObject
     Q_PROPERTY(QString type READ type CONSTANT)
     Q_PROPERTY(QString ip READ ip NOTIFY ipChanged)
 public:
-    explicit Controller(QObject *parent = nullptr);
+    explicit Controller(QObject *parent = nullptr, QString id = "", QString name = "");
     Q_INVOKABLE void connectToBrick(const QString &ip);
     Q_INVOKABLE bool isBrickConnected();
     Q_INVOKABLE void disconnectFromBrick();

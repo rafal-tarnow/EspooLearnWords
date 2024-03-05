@@ -2,14 +2,14 @@
 #include "BrickClient.hpp"
 #include "Debug.hpp"
 
-class M0002 : public BrickClient
+class K0002Client : public BrickClient
 {
 public:
-    M0002(AsyncClient *asyncClient);
-    M0002(TcpSocket *tcpSocket);
+    K0002Client(AsyncClient *asyncClient);
+    K0002Client(TcpSocket *tcpSocket);
     void cmdSetMeasureTemp(float temp);
     static std::string type();
 
 private:
-    DBG_COUNT("M0002");
+    DBG_COUNT("K0002Client");
 };
