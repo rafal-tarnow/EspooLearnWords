@@ -11,8 +11,9 @@ Item{
 
     property int pageIndex: 0
     property bool details: false
-
-    readonly property K0002Controller brickController : backend.getK0002Controller("K000216080620")
+    property string brickIdFromModel
+    property string brickNameFromModel
+    readonly property K0002Controller brickController : backend.getK0002Controller(brickIdFromModel)
 
     BrickTitle{
         id: title

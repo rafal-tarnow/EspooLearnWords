@@ -71,6 +71,7 @@ bool MyBricksList::append(const QString & id, const QString &brickType, const QS
     beginInsertRows(QModelIndex(), row, row);
     m_items.insert(row, {id, brickType, brickName});
     saveToSettings();
+    emit brickAdded(id, brickType, brickName);
     endInsertRows();
     return true;
 }

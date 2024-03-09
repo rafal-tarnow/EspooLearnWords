@@ -13,6 +13,7 @@ ItemDelegate {
     property bool detailsEnabled: false
     property bool connected: false
     property int swipePageIndex: 0
+    property string m_brickId
     property string m_brickType
     property string m_brickName
 
@@ -64,8 +65,14 @@ ItemDelegate {
 
         Binding {
             target: content.item
-            property: "m_brickName"
+            property: "brickNameFromModel"
             value: brickDelegate.m_brickName
+        }
+
+        Binding {
+            target: content.item
+            property: "brickIdFromModel"
+            value: brickDelegate.m_brickId
         }
     }
 

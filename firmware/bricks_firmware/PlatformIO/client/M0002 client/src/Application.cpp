@@ -264,7 +264,7 @@ void Application<T>::wifiCreateAccesPoint(const std::string &ssid, const std::st
 {
     if (pwd == "") // create accespoint without password
     {
-        while (!WiFi.softAP(string("Aspoo " + getType() + " Config Network").c_str(), nullptr, 6, false, 15))
+        while (!WiFi.softAP(string("KIKO " + getType() + " Config Network").c_str(), nullptr, 6, false, 15))
         {
             delay(500);
         }

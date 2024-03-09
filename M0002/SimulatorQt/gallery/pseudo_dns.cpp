@@ -80,6 +80,16 @@ void PseudoDNSServer::stopQueries()
     }
 }
 
+
+bool PseudoDNSServer::hasBrickIp(const QString &id){
+    for (const Host& host : dnsDiscoverdHosts) {
+        if (host.id == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
 QString PseudoDNSServer::getIpById(const QString &id)
 {
     for (const Host& host : dnsDiscoverdHosts) {
@@ -233,15 +243,14 @@ void PseudoDNSServer::parseResponseWithHost(const QNetworkDatagram &datagram)
     host.type = ProtocolStd::getQString(data);
     host.name = ProtocolStd::getQString(data);
     host.ip = datagram.senderAddress().toString();
+    host.lastDiscoverTime = QDateTime::currentDateTime();
 
-
-    if(!dnsDiscoverdHosts.contains(host)  ){
+    if(!dnsDiscoverdHosts.contains(host)){
         beginInsertRows(QModelIndex(), dnsDiscoverdHosts.size(), dnsDiscoverdHosts.size());
         dnsDiscoverdHosts.push_back(host);
         endInsertRows();
         qDebug() << "DNS FOUND" << functionCode << " " << host.id << " " << host.type << " " << host.name << " " << host.ip;
         emit hostFound(host.id ,host.type, host.name, host.ip);
-
     }
 }
 

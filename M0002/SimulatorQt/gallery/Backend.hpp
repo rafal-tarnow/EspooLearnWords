@@ -59,12 +59,13 @@ private slots:
         //ObjectCounter::printQt();
     }
     void pseudoDNS_onHostFound(QString hostId, QString hostType, QString hostName, QString hostIp);
+    void bricksList_onBrickAdded(const QString &id, const QString &type, const QString &name);
 
 private:
     void initBricks();
-    void initBrick(const QString &brickId, const QString &brickType, const QString &brickName);
-    void initK0002Brick(const QString &brickId, const QString &brickName);
-    void initT0002Brick(const QString &brickId, const QString &brickName);
+    Controller* initBrick(const QString &brickId, const QString &brickType, const QString &brickName);
+    K0002Controller* initK0002Brick(const QString &brickId, const QString &brickName);
+    T0002Controller* initT0002Brick(const QString &brickId, const QString &brickName);
 
 private:
     std::map<std::string, T0002Controller *> t0002Controllers;

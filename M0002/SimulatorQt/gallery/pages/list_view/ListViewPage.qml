@@ -84,6 +84,7 @@ Page {
         model: myBricks
 
         delegate: BrickDelegate{
+            m_brickId: brickId
             m_brickType: brickType
             m_brickName: brickName
             width: listView.width

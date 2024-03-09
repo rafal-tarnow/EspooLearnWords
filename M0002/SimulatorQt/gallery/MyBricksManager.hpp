@@ -31,6 +31,7 @@ public:
 
 signals:
     void brickAlreadyAdded(const QString &brickType, const QString &brickName);
+    void brickAdded(const QString &id, const QString &type, const QString &name);
 
 private:
     struct Brick {

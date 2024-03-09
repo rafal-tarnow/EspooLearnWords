@@ -7,6 +7,7 @@
 #include <QUdpSocket>
 #include <QLoggingCategory>
 #include <QAbstractListModel>
+#include <QDateTime>
 #include <qqml.h>
 #include "./src/emulators/ProtocolStd.h"
 #include "./src/ObjectCounter.hpp"
@@ -37,6 +38,7 @@ public:
     Q_INVOKABLE bool isQueriesRunning();
     Q_INVOKABLE void stopQueries();
 
+    Q_INVOKABLE bool hasBrickIp(const QString &id);
     Q_INVOKABLE QString getIpById(const QString & id);
     Q_INVOKABLE QString getIpByName(const QString& hostName);
 
@@ -60,6 +62,7 @@ private:
         QString type;
         QString name;
         QString ip;
+        QDateTime lastDiscoverTime;
 
         bool operator==(const Host &other) const
         {
