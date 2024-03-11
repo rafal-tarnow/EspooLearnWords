@@ -26,12 +26,12 @@ Dialog {
     ListView{
         id: dialogView
         anchors.fill: parent
+        clip: true
 
         delegate: ItemDelegate{
             id: delegate
             width: parent.width
             height: 50
-            //height: 200
 
             onClicked: {
                 brickIdToAdd = model.IdFromDns
@@ -40,39 +40,11 @@ Dialog {
                 confirmationDialog.open()
             }
 
-            contentItem:
-            //     DataLine{
-            //     width: parent.width
-            //     icon: "qrc:/images/wifi.svg"
-            //     label: model.NameFromDns
-            //     leftMarginValue: 0
-            // }
-
-            Column{
-                DataLine{
-                    width: parent.width
-                    icon: "qrc:/images/wifi.svg"
-                    label: model.IdFromDns
-                    leftMarginValue: 0
-                }
-                DataLine{
-                    width: parent.width
-                    icon: "qrc:/images/wifi.svg"
-                    label: model.NameFromDns
-                    leftMarginValue: 0
-                }
-                DataLine{
-                    width: parent.width
-                    icon: "qrc:/images/wifi.svg"
-                    label: model.TypeFromDns
-                    leftMarginValue: 0
-                }
-                DataLine{
-                    width: parent.width
-                    icon: "qrc:/images/wifi.svg"
-                    label: model.IpFromDns
-                    leftMarginValue: 0
-                }
+            contentItem: DataLine{
+                width: parent.width
+                icon: "qrc:/images/wifi.svg"
+                label: model.NameFromDns
+                leftMarginValue: 0
             }
         }
     }

@@ -21,9 +21,12 @@ PseudoDNSServer::PseudoDNSServer(QObject *parent) : QAbstractListModel(parent)
 {
     qCDebug(PseudoDNS) << "Create PseudoDNSServer";
     queryTimer = std::make_unique<QTimer>(parent);
+    checkDateTimeTimer = std::make_unique<QTimer>(parent);
     udpSocket = std::make_unique<QUdpSocket>(parent);
 
     connect(queryTimer.get(), &QTimer::timeout, this, &PseudoDNSServer::onRepeatTimer);
+    connect(checkDateTimeTimer.get(), &QTimer::timeout, this, &PseudoDNSServer::onCheckLastTimeTimer);
+    checkDateTimeTimer->start(1000);
 }
 
 PseudoDNSServer::~PseudoDNSServer()
@@ -185,6 +188,26 @@ void PseudoDNSServer::onRepeatTimer()
     sendQueryDatagrams();
 }
 
+void PseudoDNSServer::onCheckLastTimeTimer()
+{
+    int currentRow = 0;
+    //iterate through all elements
+    for (auto it = dnsDiscoverdHosts.begin(); it != dnsDiscoverdHosts.end(); ) {
+        qint64 msecondsPassed = it->lastDiscoverTime.msecsTo(QDateTime::currentDateTime());
+        if (msecondsPassed > DNS_HOST_TIMEOUT) {
+            //if last discovered time is bigger DNS_HOST_TIMEOUT then remove host
+            beginRemoveRows(QModelIndex(), currentRow, currentRow);
+            it = dnsDiscoverdHosts.erase(it);
+            currentRow++;
+            endRemoveRows();
+        } else {
+            //else go next element
+            ++it;
+            ++currentRow;
+        }
+    }
+}
+
 void PseudoDNSServer::readPendingDatagrams()
 {
     qCDebug(PseudoDNS) << "--------- START READ---------------";
@@ -246,12 +269,38 @@ void PseudoDNSServer::parseResponseWithHost(const QNetworkDatagram &datagram)
     host.lastDiscoverTime = QDateTime::currentDateTime();
 
     if(!dnsDiscoverdHosts.contains(host)){
-        beginInsertRows(QModelIndex(), dnsDiscoverdHosts.size(), dnsDiscoverdHosts.size());
-        dnsDiscoverdHosts.push_back(host);
-        endInsertRows();
-        qDebug() << "DNS FOUND" << functionCode << " " << host.id << " " << host.type << " " << host.name << " " << host.ip;
-        emit hostFound(host.id ,host.type, host.name, host.ip);
+        addFoundedHost(host);
+    }else{
+        int currentIndex = 0;
+        for (auto it = dnsDiscoverdHosts.begin(); it != dnsDiscoverdHosts.end(); it++) {
+            if(it->id == host.id){
+                //update last discover time
+                it->lastDiscoverTime = QDateTime::currentDateTime();
+
+                if(it->name != host.name){
+                    //name changed
+                    it->name = host.name;
+                    emit dataChanged(index(currentIndex), index(currentIndex), {NameRole});
+                    emit hostNameChanged(it->id, it->name);
+                }
+                if(it->ip != host.ip){
+                    //ip changed
+                    it->ip = host.ip;
+                    emit dataChanged(index(currentIndex), index(currentIndex), {IpRole});
+                    emit hostIpChanged(it->id, it->ip);
+                }
+            }
+            currentIndex++;
+        }
     }
+}
+
+void PseudoDNSServer::addFoundedHost(const Host & host){
+    beginInsertRows(QModelIndex(), dnsDiscoverdHosts.size(), dnsDiscoverdHosts.size());
+    dnsDiscoverdHosts.push_back(host);
+    endInsertRows();
+    qDebug() << "DNS FOUND" << " " << host.id << " " << host.type << " " << host.name << " " << host.ip;
+    emit hostFound(host.id ,host.type, host.name, host.ip);
 }
 
 void PseudoDNSServer::parseQueryForAllHostsDatagram(const QNetworkDatagram & receivedDatagram){

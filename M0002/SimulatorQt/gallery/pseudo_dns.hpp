@@ -49,10 +49,13 @@ public:
 
 signals:
     void hostFound(QString hostId, QString hostType, QString hostName, QString hostIp);
+    void hostNameChanged(QString hostId, QString hostName);
+    void hostIpChanged(QString hostId, QString hostIp);
 
 private slots:
     void onRepeatTimer();
     void readPendingDatagrams();
+    void onCheckLastTimeTimer();
 
 private:
     class Host
@@ -71,9 +74,10 @@ private:
     };
 
     QString myHostName;
+    std::unique_ptr<QTimer> checkDateTimeTimer;
     std::unique_ptr<QTimer> queryTimer;
     std::unique_ptr<QUdpSocket> udpSocket;
-    QVector<Host> dnsDiscoverdHosts; //QString - hostName, QString - IP
+    QList<Host> dnsDiscoverdHosts; //QString - hostName, QString - IP
     QMap<int, QNetworkAddressEntry> interfaceAdresses; // int - interface index, QNetworkAddressEntry - adresses at network interface
     bool runQueriesForAllHosts = false;
     bool isRun = false;
@@ -87,5 +91,6 @@ private:
     void parseResponseWithHost(const QNetworkDatagram & datagram);
     void respondQueryForAllHostsDatagram(const QNetworkDatagram &datagram);
     bool isMyAddress(const QHostAddress &address);
+    void addFoundedHost(const Host &host);
     DBG_COUNT("PseudoDNSServer");
 };
