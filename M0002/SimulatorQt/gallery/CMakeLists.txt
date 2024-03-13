@@ -41,8 +41,8 @@ qt_add_qml_module(kikoBricks
     NO_RESOURCE_TARGET_PATH
 
     SOURCES
-    AudioInfo.hpp
-    AudioInfo.cpp
+
+
     Controller.hpp
     Controller.cpp
     K0002Controller.hpp
@@ -191,6 +191,8 @@ qt_add_qml_module(kikoBricks
     QML_FILES CodingConventions.qml
     QML_FILES pages/HomePage.qml
     QML_FILES PagesModel.qml
+    SOURCES BrickCommunicationWrapper.hpp
+    SOURCES BrickCommunicationWrapper.cpp
 
 )
 

@@ -2,26 +2,73 @@
 #include <QtQml>
 #include <QTcpSocket>
 #include "./src/global_config.hpp"
-#include "main.hpp"
+
+ConnectionMonitor::ConnectionMonitor(QObject *parent) : QObject(parent){
+    pingTimer = std::make_unique<QTimer>(parent);
+    connect(pingTimer.get(), &QTimer::timeout, this, &ConnectionMonitor::onPingTimer);
+}
+
+ConnectionMonitor::~ConnectionMonitor(){
+
+}
+
+void ConnectionMonitor::onFrammeArrive(){
+    qDebug() << "ConnectionMonitor::onFrammeArrive()";
+    if(mRun == true){
+        mFrameArrived = true;
+    }
+}
+
+void ConnectionMonitor::onPingTimer(){
+    qDebug() << "ConnectionMonitor::onPingTimer()";
+    if(mRun == true){
+        if(mFrameArrived == false){
+            emit  frameTimout();
+        }else{
+           mFrameArrived = false;
+           emit sendPingFrame();
+        }
+    }
+}
+
+void ConnectionMonitor::startConnectionMonitoring(){
+    qDebug() << "ConnectionMonitor::startConnectionMonitoring()";
+    if(mRun == false){
+        mRun = true;
+        mFrameArrived = false;
+        pingTimer->start(5000);
+        emit sendPingFrame();
+    }
+}
+
+void ConnectionMonitor::stopConnectionMonitoring(){
+    qDebug() << "ConnectionMonitor::stopConnectionMonitoring()";
+    if(mRun == true){
+        mRun = false;
+        mFrameArrived = false;
+        pingTimer->stop();
+    }
+}
 
 Controller::Controller(QObject *parent, QString id, QString name)
-    : QObject(parent)
+    : QObject(parent), mConnectionMonitor(parent)
 {
     mId = id;
     mName = name;
-
-    QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, this, &Controller::onApplicationStateChanged);
 
     tcpConnection = std::make_unique<TcpConncetion>(this);
     connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &Controller::handleTcpConnected);
     connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &Controller::handleTcpDisconnected);
     connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &Controller::handleTcpError);
     connect(tcpConnection.get(), &TcpConncetion::onProtocolFrame, this, &Controller::handleProtocolFrame);
+
+    connect(&mConnectionMonitor, &ConnectionMonitor::sendPingFrame, this, &Controller::handleConnectionMonitor_sendPingFrame);
+    connect(&mConnectionMonitor, &ConnectionMonitor::frameTimout, this, &Controller::handleConnectionMonitor_frameTimout);
 }
 
 void Controller::connectToBrick(const QString &ip)
 {
-    qDebug() << "Controller::connectToBrick() Connecting to" << ip << "on port " << DEFAULT_TCP_PORT << "...";
+    qDebug() << "Controller::connectToBrick() Connecting to" << ip << "on port " << DEFAULT_TCP_PORT << " this.mId=" << mId;
     if(mConnected == false && mConnecting == false){
         mConnecting = true;
         mIp = ip;
@@ -43,11 +90,11 @@ void Controller::disconnectFromBrick()
 
 void Controller::handleTcpConnected()
 {
-    qDebug() << "Controller::handleTcpConnected()";
+    qDebug() << "Controller::handleTcpConnected() id = " << mId;
     // Tutaj można dodać kod obsługi połączenia
     mConnected = true;
     mConnecting = false;
-    checkConnectionStatus();
+    mConnectionMonitor.startConnectionMonitoring();
     emit brickConnected();
     emit brickConnectedChanged();
     if(tcpConnectionIp != tcpConnection->getIp()){
@@ -59,17 +106,17 @@ void Controller::handleTcpConnected()
 
 void Controller::handleTcpDisconnected()
 {
-    qDebug() << "Start: Controller::handleTcpDisconnected()";
-    // Tutaj można dodać kod obsługi rozłączenia
+    qDebug() << "Controller::handleTcpDisconnected() this.mId=" << mId;
     mConnected = false;
+    mConnecting = false;
+    mConnectionMonitor.stopConnectionMonitoring();
     emit brickDisconnected();
     emit brickConnectedChanged();
-    qDebug() << "End: Controller::handleTcpDisconnected()";
 }
 
 void Controller::handleTcpError(const QString & error)
 {
-    qDebug() << "Error: " << error;
+    qDebug() << "Controller::handleTcpError() error=" << error;
     tcpConnection->abord();
     mConnecting = false;
     mConnected = false;
@@ -80,9 +127,15 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
 {
     uint8_t functionCode = ProtocolStd::getUint8_t(frame);
     if(functionCode == 0x01){ //we received ping frame
-        mConnectionCheck = true;
+        mConnectionMonitor.onFrammeArrive();
     }else if (functionCode == 0x02){ //get Info
         QString id = ProtocolStd::getQString(frame);
+        if(mId != id){
+            emit brickError(QDateTime::currentDateTime(),  "Brick Id does not match the Id retrieved from the brick.");
+            qDebug() << "Controller::handleProtocolFrame disconnectFromBrick() 1";
+            disconnectFromBrick();
+            return functionCode;
+        }
         QString deviceType = ProtocolStd::getQString(frame);
         QString deviceName = ProtocolStd::getQString(frame);
         QString deviceSsid = ProtocolStd::getQString(frame);
@@ -96,11 +149,6 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
             mName = deviceName;
             emit nameChanged();
         }
-        emit brickId(id);
-        if(mId != id){
-            mId = id;
-            emit identifierChanged();
-        }
         emit brickInfo(id, deviceType, deviceName, deviceSsid, devicePswd);
         if(mWifiPwd != devicePwd){
             mWifiPwd = devicePwd;
@@ -109,10 +157,11 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
 
     }else if (functionCode == 0x03) {
         QString id = ProtocolStd::getQString(frame);
-        emit brickId(id);
         if(mId != id){
-            mId = id;
-            emit identifierChanged();
+            emit brickError(QDateTime::currentDateTime(),  "Brick Id does not match the Id retrieved from the brick.");
+            qDebug() << "Controller::handleProtocolFrame disconnectFromBrick() 2";
+            disconnectFromBrick();
+            return functionCode;
         }
     }else if (functionCode == 0x04) {
         QString deviceType = ProtocolStd::getQString(frame);
@@ -124,7 +173,6 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
             mName = deviceName;
             emit nameChanged();
         }
-        emit brickName(deviceName);
     }else if(functionCode == 0x06){
         QString wifiSSID = ProtocolStd::getQString(frame);
         QString wifiPSWD = ProtocolStd::getQString(frame);
@@ -139,6 +187,17 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         }
     }
     return functionCode;
+}
+
+void Controller::handleConnectionMonitor_sendPingFrame()
+{
+    sendPingFrame();
+}
+
+void Controller::handleConnectionMonitor_frameTimout()
+{
+    emit birckPingTimeoutErrorOccurred();
+    tcpConnection->disconnectFromServer();
 }
 
 void Controller::handleTcpConnectingTimeout()
@@ -233,27 +292,6 @@ void Controller::cmdSaveNetworkConfig(const QString &ssid, const QString &pwd)
     ProtocolStd::append(frame,ssid);
     ProtocolStd::append(frame,pwd);
     tcpConnection->sendFrame(frame);
-}
-
-void Controller::checkConnectionStatus()
-{
-    if(mConnected){
-        mConnectionCheck = false;
-        sendPingFrame();
-        QTimer::singleShot(5000, this, &Controller::pingFrameTimeout);
-    }
-}
-
-void Controller::pingFrameTimeout()
-{
-    if(mConnected){
-        if(mConnectionCheck == false){
-            emit birckPingTimeoutErrorOccurred();
-            tcpConnection->disconnectFromServer();
-        }else{
-            checkConnectionStatus();
-        }
-    }
 }
 
 static void registerControllerTypes()

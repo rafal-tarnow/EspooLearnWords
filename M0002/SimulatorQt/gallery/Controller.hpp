@@ -9,6 +9,30 @@
 #include "./src/ObjectCounter.hpp"
 #include "./src/emulators/tcp_connection.hpp"
 
+
+class ConnectionMonitor: public QObject{
+    Q_OBJECT
+public:
+    ConnectionMonitor(QObject *parent = nullptr);
+    ~ConnectionMonitor();
+
+    void onFrammeArrive();
+    void startConnectionMonitoring();
+    void stopConnectionMonitoring();
+
+signals:
+    void frameTimout();
+    void sendPingFrame();
+
+private slots:
+    void onPingTimer();
+
+private:
+    std::unique_ptr<QTimer> pingTimer;
+    bool mRun = false;
+    bool mFrameArrived = false;
+};
+
 class Controller : public QObject
 {
     Q_OBJECT
@@ -16,7 +40,7 @@ class Controller : public QObject
     Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
     Q_PROPERTY(bool connected READ isBrickConnected NOTIFY brickConnectedChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
-    Q_PROPERTY(QString identifier READ identifier NOTIFY identifierChanged)
+    Q_PROPERTY(QString identifier READ identifier)
     Q_PROPERTY(QString wifiSSID READ wifiSSID NOTIFY wifiSSIDChanged)
     Q_PROPERTY(QString wifiPWD READ wifiPWD NOTIFY wifiPWDChanged)
     Q_PROPERTY(QString type READ type CONSTANT)
@@ -44,14 +68,12 @@ public:
 signals:
     void birckPingTimeoutErrorOccurred();
     void brickTcpErrorOccurred();
+    void brickError(QDateTime date, QString error);
     void brickConnected();
     void brickConnectedChanged();
     void brickDisconnected();
     void brickInfo(const QString & id, const QString & type, const QString & name, const QString & ssid, const QString & psswd);
-    void brickId(const QString & id);
-    void identifierChanged();
     void brickType(const QString & type);
-    void brickName(const QString & brickName);
     void brickNetworkSettings(const QString & ssid, const QString & psswd);
     void nameChanged();
     void wifiSSIDChanged();
@@ -62,12 +84,10 @@ protected:
     virtual uint8_t handleProtocolFrame( QByteArray & frame);
 
 private slots:
+    void handleConnectionMonitor_sendPingFrame();
+    void handleConnectionMonitor_frameTimout();
+
 public slots:
-    void onApplicationStateChanged(Qt::ApplicationState state)
-    {
-        qDebug() << "Controller OOOOOOOOOOOOOOOOOOOOO Application state changeddddd:" << state;
-        // Tutaj możesz umieścić dowolny kod reagujący na zmianę stanu aplikacji
-    }
     void handleTcpConnected();
     void handleTcpDisconnected();
     void handleTcpError(const QString & error);
@@ -89,6 +109,7 @@ private:
     QString mWifiName;
     QString mWifiPwd;
     QString mId;
+    ConnectionMonitor mConnectionMonitor;
     void pingFrameTimeout();
     DBG_COUNT("Controller");
 };

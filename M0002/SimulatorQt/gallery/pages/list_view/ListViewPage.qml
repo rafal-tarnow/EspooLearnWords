@@ -20,15 +20,8 @@ Page {
 
     Connections {
         target: dnsServer
-        onHostFound:function(){
+        function onHostFound(hostId, hostType, hostName, hostIp){
             console.log("Qml : on host found: yeyeye");
-        }
-    }
-
-    Connections {
-        target: Qt.application;
-        function onStateChanged(inState) {
-            console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXX" + Qt.application.state)
         }
     }
 

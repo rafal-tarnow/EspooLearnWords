@@ -53,19 +53,6 @@ void myMessageHandler(
 }
 #endif
 
-
-
-class StateListener : public QObject
-{
-    Q_OBJECT
-public slots:
-    void onApplicationStateChanged(Qt::ApplicationState state)
-    {
-        qDebug() << "OOOOOOOOOOOOOOOOOOOOO Application state changeddddd:" << state;
-        // Tutaj możesz umieścić dowolny kod reagujący na zmianę stanu aplikacji
-    }
-};
-
 static QGuiApplication * guiApp = nullptr;
 
 QGuiApplication* getQGuiApplication(){
@@ -89,8 +76,7 @@ int main(int argc, char *argv[])
 
     Backend backend;
 
-    StateListener stateListener;
-    QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &stateListener, &StateListener::onApplicationStateChanged);
+    QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &backend, &Backend::onApplicationStateChanged);
 
     QIcon::setThemeName("gallery");
     QQuickStyle::setStyle(QLatin1String("Material"));

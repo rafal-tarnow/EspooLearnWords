@@ -1,6 +1,7 @@
 #include "emulator_m0002.hpp"
 #include "../global_config.hpp"
 #include <QtQml>
+#include <QDebug>
 
 EmulatorM0002::EmulatorM0002(QObject *parent) : QObject(parent), mModuleType("B0002")
 {
@@ -116,6 +117,7 @@ void EmulatorM0002::enterConnectedState()
 
 void EmulatorM0002::exitConnectedState()
 {
+    qDebug() << "EmulatorM0002::exitConnectedState()";
     tcpConnection->disconnectFromServer();
     measureTimer->stop();
 }

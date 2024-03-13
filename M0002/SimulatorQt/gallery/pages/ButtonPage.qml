@@ -6,10 +6,6 @@ import KikoBricks
 ScrollablePage {
     id: page
 
-    //readonly property AudioInfo infoProvider: AudioInfo {}
-    //readonly property AudioInfo infoProvider: backend.audioInfo
-    readonly property AudioInfo infoProvider: backend.getAudioInfoAt()
-
     Component.onCompleted: {
         console.log("Button Page created")
         // myCustomObject = new CustomType()
@@ -48,14 +44,6 @@ ScrollablePage {
                 text: qsTr("Third")
                 enabled: false
                 Layout.fillWidth: true
-            }
-            Button {
-                id: testButton
-                text: infoProvider.title
-                Layout.fillWidth: true
-                onClicked: {
-                    //testButton.text = myCustomObject.getName()
-                }
             }
         }
     }

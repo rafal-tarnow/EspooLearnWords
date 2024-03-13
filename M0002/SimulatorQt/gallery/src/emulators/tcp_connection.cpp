@@ -5,6 +5,7 @@
 TcpConncetion::TcpConncetion(QObject *parent)
     : QObject()
 {
+    qDebug() << "TcpConncetion::TcpConncetion()";
     tcpSocket = new QTcpSocket(this);
     connect(tcpSocket, &QTcpSocket::connected, this, &TcpConncetion::onSocketConnected);
     connect(tcpSocket, &QTcpSocket::disconnected, this, &TcpConncetion::onSocketDisconnected);
@@ -16,22 +17,26 @@ TcpConncetion::TcpConncetion(QObject *parent)
 
 TcpConncetion::~TcpConncetion()
 {
+    qDebug() << "TcpConncetion::~TcpConncetion()()";
     tcpSocket->close();
     delete tcpSocket;
 }
 
 void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort)
 {
+    qDebug() << "TcpConncetion::connectToServer()";
     tcpSocket->connectToHost(serverIP, serverPort);
 }
 
 void TcpConncetion::disconnectFromServer()
 {
+    qDebug() << "TcpConncetion::disconnectFromServer()";
     tcpSocket->close();
 }
 
 void TcpConncetion::abord()
 {
+    qDebug() << "TcpConncetion::abord()";
     tcpSocket->abort();
 }
 
@@ -54,12 +59,14 @@ QString TcpConncetion::getIp() const
 
 void TcpConncetion::onSocketConnected()
 {
+    qDebug() << "TcpConncetion::onSocketConnected()";
     protocolStd.reset();
     emit onTcpConnected();
 }
 
 void TcpConncetion::onSocketDisconnected()
 {
+    qDebug() << "TcpConncetion::onSocketDisconnected()";
     protocolStd.reset();
     emit onTcpDisconnected();
 }
@@ -73,6 +80,7 @@ void TcpConncetion::onTcpReadyRead()
 
 void TcpConncetion::onSocketError(QAbstractSocket::SocketError socketError)
 {
+    qDebug() << "TcpConncetion::onSocketError()";
     QString error = tcpSocket->errorString();
     emit onTcpError(error);
 }

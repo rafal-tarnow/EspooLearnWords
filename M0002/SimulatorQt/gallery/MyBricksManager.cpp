@@ -106,9 +106,24 @@ void MyBricksList::remove(int row)
         return;
 
     beginRemoveRows(QModelIndex(), row, row);
+    Brick brickTmp = m_items.at(row);
     m_items.removeAt(row);
     saveToSettings();
     endRemoveRows();
+    emit brickRemoved(brickTmp.id, brickTmp.type, brickTmp.name);
+}
+
+void MyBricksList::renameBrick(const QString &id, const QString &name)
+{
+    qDebug() << "MyBricksList::renameBrick()";
+    for (int i = 0; i < m_items.size(); ++i) {
+        if (m_items.at(i).id == id) {
+            m_items[i].name = name;
+            saveToSettings();
+            emit dataChanged(index(i, 0), index(i, 0), {NameRole});
+            return;
+        }
+    }
 }
 
 bool MyBricksList::brickExists(const QString &brickId) const

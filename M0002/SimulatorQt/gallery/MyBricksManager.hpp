@@ -28,10 +28,12 @@ public:
     Q_INVOKABLE void set(int row, const QString &id, const QString &brickType, const QString  &brickName);
     Q_INVOKABLE void set(int row, const QString  &brickName);
     Q_INVOKABLE void remove(int row);
+    void renameBrick(const QString &id, const QString &name);
 
 signals:
     void brickAlreadyAdded(const QString &brickType, const QString &brickName);
     void brickAdded(const QString &id, const QString &type, const QString &name);
+    void brickRemoved(const QString &id, const QString &type, const QString &name);
 
 private:
     struct Brick {
