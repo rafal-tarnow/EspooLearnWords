@@ -73,7 +73,7 @@ private:
     std::string getPswd();
 
 private:
-#define AP_CONFIG_SSID "Aspoo Brick Config Network"
+#define AP_CONFIG_SSID "KIKO Brick Config Network"
 #define AP_CONFIG_PASSWORD "12345678"
     AppState appState = RUN_STATE;
     PseudoDNS pseudoDNS;

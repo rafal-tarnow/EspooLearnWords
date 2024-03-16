@@ -12,6 +12,8 @@
 #include "BrickCommunicationWrapper.hpp"
 #include "./src/ObjectCounter.hpp"
 
+Q_DECLARE_LOGGING_CATEGORY(BackendClass)
+
 class Backend : public QObject
 {
     Q_OBJECT
@@ -67,7 +69,7 @@ private:
     Controller * initBrick(const QString &brickId, const QString &brickType, const QString &brickName);
 
 private:
-    std::map<std::string, BrickCommunicationWrapper *> bricksWrappers;
+    std::map<std::string, BrickCommunicationWrapper *> bricksWrappers; //key = id
 
     QString m_userName;
     PseudoDNSServer pseudoDNS;

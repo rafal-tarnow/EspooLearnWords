@@ -9,7 +9,7 @@ ListModel {
                 //                ListElement { title: qsTr("Emulator M0002"); source: "qrc:/pages/EmulatorM0002Page.qml" }
 
                 // ListElement { title: qsTr("TCP terminal"); source: "qrc:/pages/TCPTerminalPage.qml" }
-                ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }
+                //ListElement { title: qsTr("UDP terminal"); source: "qrc:/pages/UDPTerminalPage.qml" }
                 // ListElement { title: qsTr("Grid"); source: "qrc:/pages/grid/GridPage.qml" }
                 // ListElement { title: qsTr("Grid View"); source: "qrc:/pages/grid_view/GridViewPage.qml" }
                 // ListElement { title: qsTr("BusyIndicator"); source: "qrc:/pages/BusyIndicatorPage.qml" }

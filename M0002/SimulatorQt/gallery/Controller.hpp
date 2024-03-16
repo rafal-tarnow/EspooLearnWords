@@ -28,7 +28,7 @@ private slots:
     void onPingTimer();
 
 private:
-    std::unique_ptr<QTimer> pingTimer;
+    QTimer *pingTimer;
     bool mRun = false;
     bool mFrameArrived = false;
 };
@@ -47,6 +47,7 @@ class Controller : public QObject
     Q_PROPERTY(QString ip READ ip NOTIFY ipChanged)
 public:
     explicit Controller(QObject *parent = nullptr, QString id = "", QString name = "");
+    ~Controller();
     Q_INVOKABLE void connectToBrick(const QString &ip);
     Q_INVOKABLE bool isBrickConnected();
     Q_INVOKABLE void disconnectFromBrick();
@@ -67,7 +68,7 @@ public:
 
 signals:
     void birckPingTimeoutErrorOccurred();
-    void brickTcpErrorOccurred();
+    void brickTcpErrorOccurred(const QString & error);
     void brickError(QDateTime date, QString error);
     void brickConnected();
     void brickConnectedChanged();
@@ -98,7 +99,7 @@ private:
     void checkConnectionStatus();
 
 private:
-    std::unique_ptr<TcpConncetion> tcpConnection;
+    TcpConncetion* tcpConnection;
     QString mLastTcpError;
     QString mIp;
     QString tcpConnectionIp;

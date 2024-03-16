@@ -61,7 +61,13 @@ QGuiApplication* getQGuiApplication(){
 
 int main(int argc, char *argv[])
 {
-    QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
+    // QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
+    // QLoggingCategory::setFilterRules("BrickCommunicationWrapperLog=true");
+    //QLoggingCategory::setFilterRules("*.debug=false\n");
+    QLoggingCategory::setFilterRules("*.debug=false\n"
+                                     "*.warning=false\n"
+                                     "BrickCommunicationWrapperClass.debug=true\n"
+                                     "BackendClass.debug=true");
 
 #warning "First app run doesent load material style, it can be chacked by changing app and organization name"
     QGuiApplication::setApplicationName("KiKo Bricks");
@@ -74,7 +80,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     guiApp = &app;
 
-    Backend backend;
+    Backend backend(&app);
 
     QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &backend, &Backend::onApplicationStateChanged);
 

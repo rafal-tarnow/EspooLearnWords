@@ -4,12 +4,14 @@
 #include "./src/global_config.hpp"
 
 ConnectionMonitor::ConnectionMonitor(QObject *parent) : QObject(parent){
-    pingTimer = std::make_unique<QTimer>(parent);
-    connect(pingTimer.get(), &QTimer::timeout, this, &ConnectionMonitor::onPingTimer);
+    pingTimer = new QTimer(this);
+    connect(pingTimer, &QTimer::timeout, this, &ConnectionMonitor::onPingTimer);
 }
 
 ConnectionMonitor::~ConnectionMonitor(){
-
+    qDebug() << "ConnectionMonitor::~ConnectionMonitor()";
+    delete pingTimer;
+    qDebug() << "END ConnectionMonitor::~ConnectionMonitor()";
 }
 
 void ConnectionMonitor::onFrammeArrive(){
@@ -25,8 +27,8 @@ void ConnectionMonitor::onPingTimer(){
         if(mFrameArrived == false){
             emit  frameTimout();
         }else{
-           mFrameArrived = false;
-           emit sendPingFrame();
+            mFrameArrived = false;
+            emit sendPingFrame();
         }
     }
 }
@@ -56,14 +58,20 @@ Controller::Controller(QObject *parent, QString id, QString name)
     mId = id;
     mName = name;
 
-    tcpConnection = std::make_unique<TcpConncetion>(this);
-    connect(tcpConnection.get(),&TcpConncetion::onTcpConnected, this, &Controller::handleTcpConnected);
-    connect(tcpConnection.get(),&TcpConncetion::onTcpDisconnected,this, &Controller::handleTcpDisconnected);
-    connect(tcpConnection.get(), &TcpConncetion::onTcpError, this, &Controller::handleTcpError);
-    connect(tcpConnection.get(), &TcpConncetion::onProtocolFrame, this, &Controller::handleProtocolFrame);
+    tcpConnection = new TcpConncetion(this);
+    connect(tcpConnection, &TcpConncetion::onTcpConnected, this, &Controller::handleTcpConnected);
+    connect(tcpConnection, &TcpConncetion::onTcpDisconnected,this, &Controller::handleTcpDisconnected);
+    connect(tcpConnection, &TcpConncetion::onTcpError, this, &Controller::handleTcpError);
+    connect(tcpConnection, &TcpConncetion::onProtocolFrame, this, &Controller::handleProtocolFrame);
 
     connect(&mConnectionMonitor, &ConnectionMonitor::sendPingFrame, this, &Controller::handleConnectionMonitor_sendPingFrame);
     connect(&mConnectionMonitor, &ConnectionMonitor::frameTimout, this, &Controller::handleConnectionMonitor_frameTimout);
+}
+
+Controller::~Controller()
+{
+    qDebug() << "Controller::~Controller()";
+    delete tcpConnection;
 }
 
 void Controller::connectToBrick(const QString &ip)
@@ -120,7 +128,7 @@ void Controller::handleTcpError(const QString & error)
     tcpConnection->abord();
     mConnecting = false;
     mConnected = false;
-    emit brickTcpErrorOccurred();
+    emit brickTcpErrorOccurred(error);
 }
 
 uint8_t Controller::handleProtocolFrame(QByteArray &frame)

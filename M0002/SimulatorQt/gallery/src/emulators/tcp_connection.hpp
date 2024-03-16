@@ -34,6 +34,9 @@ private slots:
 
 private:
     void onProtocolStdFrame(std::deque<uint8_t>& frame);
+    QString mServerIP;
+    quint16 mServerPort;
     QTcpSocket * tcpSocket;
     ProtocolStd protocolStd;
+    std::unique_ptr<QTimer> connectTimer;
 };

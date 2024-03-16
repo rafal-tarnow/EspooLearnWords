@@ -1,6 +1,7 @@
 #include "Backend.hpp"
 #include <QtQml>
 
+Q_LOGGING_CATEGORY(BackendClass, "BackendClass")
 
 Backend::Backend(QObject *parent) :
     QObject(parent)
@@ -29,10 +30,12 @@ void Backend::applicationSuspended(){
 
 Backend::~Backend()
 {
+    qDebug() << "Backend::~Backend()";
     for (auto it = bricksWrappers.begin(); it != bricksWrappers.end(); ++it) {
         delete it->second;
     }
     bricksWrappers.clear();
+    qDebug() << "END Backend::~Backend()";
 }
 
 
@@ -62,19 +65,25 @@ void Backend::onApplicationStateChanged(Qt::ApplicationState state)
 
 void Backend::bricksList_onBrickAdded(const QString &id, const QString &type, const QString &name)
 {
-    qDebug() << "Backend::bricksList_onBrickAdded " << id << type << name;
+    qCDebug(BackendClass) << "Backend::bricksList_onBrickAdded() " << id << type << name;
     initBrick(id, type, name);
 }
 
 
 void Backend::bricksList_onBrickRemoved(const QString &id, const QString &type, const QString &name)
 {
-    qDebug() << "Backend::bricksList_onBrickRemoved " << id << type << name;
+    qCDebug(BackendClass) << "Backend::bricksList_onBrickRemoved()";
+    auto it = bricksWrappers.find(id.toStdString());
+    if (it != bricksWrappers.end()) {
+        delete it->second;
+        bricksWrappers.erase(it);
+    }
 }
 
 
 void Backend::controller_onNameChanged(Controller * controller)
 {
+    qCDebug(BrickCommunicationWrapperClass) << __FUNCTION__;
     QString id = controller->identifier();
     QString name = controller->name();
     myBricksList.renameBrick(id, name);
@@ -83,6 +92,7 @@ void Backend::controller_onNameChanged(Controller * controller)
 
 void Backend::initBricks()
 {
+    qCDebug(BackendClass) << "Backend::initBricks()";
     for (int i = 0; i < myBricksList.rowCount(); ++i) {
         QString brickId = myBricksList.data(myBricksList.index(i), MyBricksList::IdRole).toString();
         QString brickType = myBricksList.data(myBricksList.index(i), MyBricksList::TypeRole).toString();
@@ -98,10 +108,11 @@ void Backend::initBricks()
 
 Controller * Backend::initBrick(const QString &brickId, const QString &brickType, const QString &brickName)
 {
+    qCDebug(BackendClass) << "Backend::initBrick() id=" << brickId;
     BrickCommunicationWrapper * brick = new BrickCommunicationWrapper(&pseudoDNS, brickId, brickType, brickName, this);
     bricksWrappers[brickId.toStdString()] = brick;
     return brick->get();
-    qDebug() << "END Backend::initBrick";
+    qCDebug(BackendClass) << "END Backend::initBrick() id=" << brickId;
 }
 
 

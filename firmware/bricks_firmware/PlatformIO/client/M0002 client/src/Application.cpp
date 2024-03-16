@@ -303,8 +303,8 @@ void Application<T>::wifiDisconnectAll()
 template <typename T>
 std::string Application<T>::configReadBrickName()
 {
-    prefs.begin("ASPOO_BRICK");
-    string brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getType()).c_str()).c_str(); // + T::type()).c_str();
+    prefs.begin("KIKO_BRICK");
+    string brickName = prefs.getString("BRICK_NAME", std::string("KIKO " + getType()).c_str()).c_str(); // + T::type()).c_str();
     prefs.end();
     return brickName;
 }
@@ -313,9 +313,9 @@ template <typename T>
 void Application<T>::configReadBrickName(std::string &brickName)
 {
     Serial.printf("\n%lu Application::configReadBrickName()", dtime());
-    prefs.begin("ASPOO_BRICK");
-    // Serial.printf("\nprefs.begin(\"ASPOO_BRICK\");");
-    brickName = prefs.getString("BRICK_NAME", std::string("Aspoo" + getType()).c_str()).c_str(); // + T::type()).c_str();
+    prefs.begin("KIKO_BRICK");
+    // Serial.printf("\nprefs.begin(\"KIKO_BRICK\");");
+    brickName = prefs.getString("BRICK_NAME", std::string("KIKO " + getType()).c_str()).c_str(); // + T::type()).c_str();
     // Serial.printf("\npbrickName = prefs.getString");
     prefs.end();
     Serial.printf("\n%lu END Application::configReadBrickName()", dtime());
@@ -324,7 +324,7 @@ void Application<T>::configReadBrickName(std::string &brickName)
 template <typename T>
 void Application<T>::configReadNetworkSettings(std::string &ssid, std::string &pwd)
 {
-    prefs.begin("ASPOO_BRICK");
+    prefs.begin("KIKO_BRICK");
     ssid = prefs.getString("SSID", "DefaultSSID").c_str();
     pwd = prefs.getString("PWD", "DefaultPWD").c_str();
     prefs.end();
@@ -334,7 +334,7 @@ template <typename T>
 void Application<T>::configSaveNetworkSettings(const std::string &ssid, const std::string &pwd)
 {
     Serial.println("Application::configSaveNetworkSettings()");
-    prefs.begin("ASPOO_BRICK");
+    prefs.begin("KIKO_BRICK");
     prefs.putString("SSID", String(ssid.c_str()));
     prefs.putString("PWD", String(pwd.c_str()));
     prefs.end();
@@ -344,7 +344,7 @@ template <typename T>
 void Application<T>::configSaveBrickName(const std::string &brickName)
 {
     Serial.println("Application::configSaveBrickName()");
-    prefs.begin("ASPOO_BRICK");
+    prefs.begin("KIKO_BRICK");
     prefs.putString("BRICK_NAME", String(brickName.c_str()));
     prefs.end();
 }

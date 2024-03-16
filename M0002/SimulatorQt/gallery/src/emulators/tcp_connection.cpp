@@ -13,19 +13,28 @@ TcpConncetion::TcpConncetion(QObject *parent)
     connect(tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred), this, &TcpConncetion::onSocketError);
 
     protocolStd.setOnFrameCallback(this, &TcpConncetion::onProtocolStdFrame);
+
+    connectTimer = std::make_unique<QTimer>(parent);
+    connectTimer->setSingleShot(true);
+    connect(connectTimer.get(), &QTimer::timeout, this, [this](){
+        // from qt QAbstractSocket::errorOccurred documentation: When this signal is emitted, the socket may not be ready for a reconnect attempt. In that case, attempts to reconnect should be done from the event loop. For example, use a QTimer::singleShot() with 0 as the timeout.
+        this->tcpSocket->connectToHost(this->mServerIP, this->mServerPort);
+    });
 }
 
 TcpConncetion::~TcpConncetion()
 {
-    qDebug() << "TcpConncetion::~TcpConncetion()()";
-    tcpSocket->close();
-    delete tcpSocket;
+    qDebug() << "TcpConncetion::~TcpConncetion()";
+    delete tcpSocket; //delete socket also close socket
 }
 
 void TcpConncetion::connectToServer(QString serverIP, quint16 serverPort)
 {
     qDebug() << "TcpConncetion::connectToServer()";
-    tcpSocket->connectToHost(serverIP, serverPort);
+    mServerIP = serverIP;
+    mServerPort = serverPort;
+    //when we try reconnect in error slot, we must do it in next main loop
+    connectTimer->start(0);
 }
 
 void TcpConncetion::disconnectFromServer()
