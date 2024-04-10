@@ -18,8 +18,6 @@ qt_add_executable(kikoBricks WIN32 MACOSX_BUNDLE
     src/udp_terminal.cpp
     src/emulators/emulator_m0002.hpp
     src/emulators/emulator_m0002.cpp
-
-
     src/emulators/tcp_connection.hpp
     src/emulators/tcp_connection.cpp
     src/tests/PseudoDNSTest.cpp
@@ -193,6 +191,18 @@ qt_add_qml_module(kikoBricks
     QML_FILES PagesModel.qml
     SOURCES BrickCommunicationWrapper.hpp
     SOURCES BrickCommunicationWrapper.cpp
+    SOURCES BrickFinder.hpp
+    SOURCES BrickFinder.cpp
+    QML_FILES pages/list_view/K0004Delegate.qml
+    SOURCES K0004Controller.hpp
+    SOURCES K0004Controller.cpp
+    QML_FILES pages/list_view/K0004/K0004MainPage.qml
+    QML_FILES pages/list_view/common/RelayLine.qml
+    QML_FILES pages/list_view/K0007Delegate.qml
+    QML_FILES pages/list_view/K0007/K0007MainPage.qml
+    SOURCES K0007Controller.hpp
+    SOURCES K0007Controller.cpp
+    QML_FILES pages/list_view/common/SwitchLine.qml
 
 )
 

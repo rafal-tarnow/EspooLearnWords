@@ -3,32 +3,45 @@
 
 Q_LOGGING_CATEGORY(BrickCommunicationWrapperClass, "BrickCommunicationWrapperClass")
 
-BrickCommunicationWrapper::BrickCommunicationWrapper(PseudoDNSServer * dnsServer, QString id, QString type, QString name, QObject *parent) : QObject(parent){
+BrickCommunicationWrapper:: BrickCommunicationWrapper(MyBricksList * brickList, BrickFinder * brickFinder, QString id, QString type, QString name, QObject *parent) : QObject(parent){
     qCDebug(BrickCommunicationWrapperClass) << __PRETTY_FUNCTION__ << id;
 
     mId = id;
-    dns = dnsServer;
-    connect(dns, &PseudoDNSServer::hostFound, this, &BrickCommunicationWrapper::pseudoDNS_onHostFound);
+    mBrickFinder = brickFinder;
+    mBrickList = brickList;
 
-    connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, this, &BrickCommunicationWrapper::onApplicationStateChanged);
+
 
     if(type == "T0002"){
-        controller = new T0002Controller(this, id, name);
+        mController = new T0002Controller(this, id, name);
     }else if(type == "K0002"){
-        controller = new K0002Controller(this, id, name);
+        mController = new K0002Controller(this, id, name);
+    }else if(type == "K0004"){
+        mController = new K0004Controller(this, id, name);
+    }else if(type == "K0007"){
+        mController = new K0007Controller(this, id, name);
     }
 
-    reconnectTimer = std::make_unique<QTimer>(parent);
-    connect(reconnectTimer.get(), &QTimer::timeout, this, &BrickCommunicationWrapper::tryReconnect);
+    if(mController){
+        connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, this, &BrickCommunicationWrapper::onApplicationStateChanged);
 
-    activateBrick();
+        connect(mController, &Controller::nameChanged, this, &BrickCommunicationWrapper::controller_onNameChanged);
+
+        connect(mBrickFinder, &BrickFinder::hostFound, this, &BrickCommunicationWrapper::brickFinder_onHostFound);
+
+        mReconnectTimer = std::make_unique<QTimer>(parent);
+        connect(mReconnectTimer.get(), &QTimer::timeout, this, &BrickCommunicationWrapper::tryReconnect);
+
+        activateBrick();
+
+    }
 }
 
 BrickCommunicationWrapper::~BrickCommunicationWrapper()
 {
     qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::~BrickCommunicationWrapper() id=" << mId;
-    if(controller){
-        delete controller;
+    if(mController){
+        delete mController;
     }
 
 }
@@ -38,22 +51,22 @@ void BrickCommunicationWrapper::activateBrick()
     if(mActive == false){
         mActive = true;
         qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::initBrick() id=" << mId;
-        if(controller != nullptr){
-            connect(controller, &Controller::brickDisconnected, this,
+        if(mController != nullptr){
+            connect(mController, &Controller::tcpDisconnected, this,
                     [this](){
                         qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::  Brick Disconnected";
                         this->tryReconnect();
-                        reconnectTimer->start(RECONNECT_TIME);
+                        mReconnectTimer->start(RECONNECT_TIME);
                     });
 
-            connect(controller, &Controller::brickConnected, this,
+            connect(mController, &Controller::tcpConnected, this,
                     [this](){
                         qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper:: Brick Connected id=" << mId;
-                        reconnectTimer->stop();
+                        mReconnectTimer->stop();
                     });
 
             this->tryReconnect();
-            reconnectTimer->start(RECONNECT_TIME);
+            mReconnectTimer->start(RECONNECT_TIME);
         }
     }
 }
@@ -62,10 +75,10 @@ void BrickCommunicationWrapper::suspendBrick()
 {
     qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::uninitBrick()";
     mActive = false;
-    if(controller != nullptr){
-        disconnect(controller, nullptr, nullptr, nullptr);
-        reconnectTimer->stop();
-        controller->disconnectFromBrick();
+    if(mController != nullptr){
+        disconnect(mController, nullptr, nullptr, nullptr);
+        mReconnectTimer->stop();
+        mController->disconnectFromBrick();
     }
 }
 
@@ -84,7 +97,7 @@ void BrickCommunicationWrapper::applicationSuspended()
 Controller *BrickCommunicationWrapper::get()
 {
     qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::get()";
-    return controller;
+    return mController;
 }
 
 void BrickCommunicationWrapper::onApplicationStateChanged(Qt::ApplicationState state)
@@ -103,17 +116,30 @@ void BrickCommunicationWrapper::onApplicationStateChanged(Qt::ApplicationState s
 void BrickCommunicationWrapper::tryReconnect()
 {
     qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::tryReconnect() id=" << mId;
-    if(dns->hasBrickIp(controller->identifier())){
-        controller->connectToBrick(dns->getIpById(controller->identifier()));
+    if(mBrickFinder->hasBrickIp(mController->identifier())){
+        mController->connectToBrick(mBrickFinder->getIpById(mController->identifier()));
     }else{
         qCDebug(BrickCommunicationWrapperClass) << "BrickCommunicationWrapper::  Reconnection fail because of empty dns";
     }
 }
 
-void BrickCommunicationWrapper::pseudoDNS_onHostFound(QString hostId, QString hostType, QString hostName, QString hostIp)
+void BrickCommunicationWrapper::brickFinder_onHostFound(QString hostId, QString hostType, QString hostName, QString hostIp)
 {
     qCDebug(BrickCommunicationWrapperClass) << __FUNCTION__ << "id=" << mId << " " << hostId << " " << hostType << " " << hostName << " " << hostIp;
-    if(hostId == controller->identifier()){
-        controller->connectToBrick(hostIp);
+    if(hostId == mController->identifier()){
+        if(mController->tcpState() != QAbstractSocket::ConnectedState){
+            mController->tcpAbort();
+            mController->connectToBrick(hostIp);
+        }
+    }
+}
+
+void BrickCommunicationWrapper::controller_onNameChanged()
+{
+    qCDebug(BrickCommunicationWrapperClass) << __FUNCTION__;
+    if(mController){
+        QString id = mController->identifier();
+        QString name = mController->name();
+        mBrickList->renameBrick(id, name);
     }
 }

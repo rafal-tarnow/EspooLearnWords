@@ -31,8 +31,8 @@ Dialog {
         delegate: ItemDelegate{
             id: delegate
             width: parent.width
-            height: 50
-            //height: 125
+            //height: 50
+            height: 125
 
             onClicked: {
                 brickIdToAdd = model.IdFromDns
@@ -41,39 +41,39 @@ Dialog {
                 confirmationDialog.open()
             }
 
-            contentItem: DataLine{
-                width: parent.width
-                icon: "qrc:/images/wifi.svg"
-                label: model.NameFromDns
-                leftMarginValue: 0
-            }
-
-            // contentItem: Column{
-            //     DataLine{
-            //         width: parent.width
-            //         icon: "qrc:/images/wifi.svg"
-            //         label: model.NameFromDns
-            //         leftMarginValue: 0
-            //     }
-            //     DataLine{
-            //         width: parent.width
-            //         icon: "qrc:/images/wifi.svg"
-            //         label: model.IdFromDns
-            //         leftMarginValue: 0
-            //     }
-            //     DataLine{
-            //         width: parent.width
-            //         icon: "qrc:/images/wifi.svg"
-            //         label: model.TypeFromDns
-            //         leftMarginValue: 0
-            //     }
-            //     DataLine{
-            //         width: parent.width
-            //         icon: "qrc:/images/wifi.svg"
-            //         label: model.IpFromDns
-            //         leftMarginValue: 0
-            //     }
+            // contentItem: DataLine{
+            //     width: parent.width
+            //     icon: "qrc:/images/wifi.svg"
+            //     label: model.NameFromDns
+            //     leftMarginValue: 0
             // }
+
+            contentItem: Column{
+                DataLine{
+                    width: parent.width
+                    icon: "qrc:/images/wifi.svg"
+                    label: model.NameFromDns
+                    leftMarginValue: 0
+                }
+                DataLine{
+                    width: parent.width
+                    icon: "qrc:/images/wifi.svg"
+                    label: model.IdFromDns
+                    leftMarginValue: 0
+                }
+                DataLine{
+                    width: parent.width
+                    icon: "qrc:/images/wifi.svg"
+                    label: model.TypeFromDns
+                    leftMarginValue: 0
+                }
+                DataLine{
+                    width: parent.width
+                    icon: "qrc:/images/wifi.svg"
+                    label: model.IpFromDns
+                    leftMarginValue: 0
+                }
+            }
         }
     }
 

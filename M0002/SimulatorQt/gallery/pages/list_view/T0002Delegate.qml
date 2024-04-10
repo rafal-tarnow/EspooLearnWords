@@ -25,7 +25,7 @@ Item{
         title: brickController.name
         connectedIcon: "qrc:/images/t0002_connected.svg"
         disconnectedIcon: "qrc:/images/t0002_disconnected.svg"
-        connected: brickController.connected
+        connected: brickController.tcpConnected
         details: parent.details
 
         onCloseButton: {
@@ -62,7 +62,13 @@ Item{
         }
 
         Loader {
+            id: networkSettings
             source: "/pages/list_view/common/NetworkSettings.qml"
+            Binding {
+                target: networkSettings.item
+                property: "active"
+                value: brickController.tcpConnected
+            }
         }
     }
 

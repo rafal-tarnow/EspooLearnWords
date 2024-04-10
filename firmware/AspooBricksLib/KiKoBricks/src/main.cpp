@@ -4,6 +4,7 @@
 #include <KiKoBrick.h>
 #include <StateMachine.h>
 #include <KiKoTimer.h>
+#include <HalLib.hpp>
 
 const char *ssid = "TP-LINK_A1AE89";
 const char *password = "Krzysiu1";
@@ -12,7 +13,7 @@ const char *password = "Krzysiu1";
 
 AspooBrickT0002 mainSensor;
 
-KiKoBrickM0002 temp;
+//KiKoBrickM0002 temp;
 
 void hadleMainSensorConnection(bool connected)
 {
@@ -31,6 +32,8 @@ StateMachine stateMachine;
 KiKoTimer timer1;
 KiKoTimer timer2;
 KiKoTimer timer3;
+
+HalLib halLib;
 
 class Application
 {

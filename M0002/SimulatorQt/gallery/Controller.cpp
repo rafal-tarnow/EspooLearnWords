@@ -3,6 +3,8 @@
 #include <QTcpSocket>
 #include "./src/global_config.hpp"
 
+Q_LOGGING_CATEGORY(ControllerClass, "ControllerClass")
+
 ConnectionMonitor::ConnectionMonitor(QObject *parent) : QObject(parent){
     pingTimer = new QTimer(this);
     connect(pingTimer, &QTimer::timeout, this, &ConnectionMonitor::onPingTimer);
@@ -55,58 +57,72 @@ void ConnectionMonitor::stopConnectionMonitoring(){
 Controller::Controller(QObject *parent, QString id, QString name)
     : QObject(parent), mConnectionMonitor(parent)
 {
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__;
     mId = id;
     mName = name;
 
-    tcpConnection = new TcpConncetion(this);
-    connect(tcpConnection, &TcpConncetion::onTcpConnected, this, &Controller::handleTcpConnected);
-    connect(tcpConnection, &TcpConncetion::onTcpDisconnected,this, &Controller::handleTcpDisconnected);
-    connect(tcpConnection, &TcpConncetion::onTcpError, this, &Controller::handleTcpError);
-    connect(tcpConnection, &TcpConncetion::onProtocolFrame, this, &Controller::handleProtocolFrame);
+    protocolStd.setOnFrameCallback(this, &Controller::onProtocolStdFrame);
+
+    connectTimer = std::make_unique<QTimer>(parent);
+    connectTimer->setSingleShot(true);
+    connect(connectTimer.get(), &QTimer::timeout, this, [this](){
+        // from qt QAbstractSocket::errorOccurred documentation: When this signal is emitted, the socket may not be ready for a reconnect attempt. In that case, attempts to reconnect should be done from the event loop. For example, use a QTimer::singleShot() with 0 as the timeout.
+        qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " LAMBDA socket state=" << tcpSocket->state();
+        //if(this->tcpSocket->state() == QAbstractSocket::UnconnectedState){
+            this->tcpSocket->connectToHost(this->mServerIP, DEFAULT_TCP_PORT);
+        //}
+    });
+
+    tcpSocket = new QTcpSocket(this);
+    tcpSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+    connect(tcpSocket, &QTcpSocket::connected, this, &Controller::handleTcpConnected);
+    connect(tcpSocket, &QTcpSocket::disconnected, this, &Controller::handleTcpDisconnected);
+    connect(tcpSocket, &QTcpSocket::readyRead, this, &Controller::handleTcpReadyRead);
+    connect(tcpSocket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred), this, &Controller::handleTcpError);
+    connect(tcpSocket, QOverload<QAbstractSocket::SocketState>::of(&QTcpSocket::stateChanged), this, &Controller::handleTcpStateChanged);
 
     connect(&mConnectionMonitor, &ConnectionMonitor::sendPingFrame, this, &Controller::handleConnectionMonitor_sendPingFrame);
     connect(&mConnectionMonitor, &ConnectionMonitor::frameTimout, this, &Controller::handleConnectionMonitor_frameTimout);
+
 }
 
 Controller::~Controller()
 {
-    qDebug() << "Controller::~Controller()";
-    delete tcpConnection;
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__;
+    delete tcpSocket; //delete socket also close socket
 }
 
 void Controller::connectToBrick(const QString &ip)
 {
-    qDebug() << "Controller::connectToBrick() Connecting to" << ip << "on port " << DEFAULT_TCP_PORT << " this.mId=" << mId;
-    if(mConnected == false && mConnecting == false){
-        mConnecting = true;
-        mIp = ip;
-        qDebug() << "tcpConnection->connectToServer mConnected = " << mConnected << " mConnecting = " << mConnecting;
-        tcpConnection->connectToServer(mIp, DEFAULT_TCP_PORT);
-    }
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " ip=" << ip;
+    mServerIP = ip;
+    qCDebug(ControllerClass) << "   socket state=" << tcpSocket->state();
+    //when we try reconnect in error slot, we must do it in next main loop
+    connectTimer->start(0);
 }
 
-bool Controller::isBrickConnected()
+bool Controller::isTcpConnected()
 {
-    return mConnected;
+    return tcpSocket->state() == QAbstractSocket::ConnectedState;
 }
 
 void Controller::disconnectFromBrick()
 {
-    qDebug() << "Controller::disconnectFromBrick()";
-    tcpConnection->disconnectFromServer();
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__;
+    tcpSocket->disconnectFromHost();
+    //tcpSocket->close();
 }
 
 void Controller::handleTcpConnected()
 {
-    qDebug() << "Controller::handleTcpConnected() id = " << mId;
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " mId=" << mId;
     // Tutaj można dodać kod obsługi połączenia
-    mConnected = true;
-    mConnecting = false;
+    protocolStd.reset();
     mConnectionMonitor.startConnectionMonitoring();
-    emit brickConnected();
-    emit brickConnectedChanged();
-    if(tcpConnectionIp != tcpConnection->getIp()){
-        tcpConnectionIp = tcpConnection->getIp();
+    emit tcpConnected();
+    emit tcpConnectedChanged();
+    if(mServerIP != tcpSocket->peerAddress().toString()){
+        mServerIP = tcpSocket->peerAddress().toString();
         emit ipChanged();
     }
     cmdGetInfo();
@@ -114,31 +130,36 @@ void Controller::handleTcpConnected()
 
 void Controller::handleTcpDisconnected()
 {
-    qDebug() << "Controller::handleTcpDisconnected() this.mId=" << mId;
-    mConnected = false;
-    mConnecting = false;
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " mId=" << mId;
+    protocolStd.reset();
     mConnectionMonitor.stopConnectionMonitoring();
-    emit brickDisconnected();
-    emit brickConnectedChanged();
+    emit tcpDisconnected();
+    emit tcpConnectedChanged();
 }
 
-void Controller::handleTcpError(const QString & error)
+void Controller::handleTcpStateChanged(QAbstractSocket::SocketState socketState)
 {
-    qDebug() << "Controller::handleTcpError() error=" << error;
-    tcpConnection->abord();
-    mConnecting = false;
-    mConnected = false;
-    emit brickTcpErrorOccurred(error);
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " socketState=" << socketState;
+}
+
+void Controller::handleTcpError(QAbstractSocket::SocketError socketError)
+{
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " error=" << socketError;
+    QString error = tcpSocket->errorString();
+    tcpSocket->abort();
+    emit tcpErrorOccurred(error);
 }
 
 uint8_t Controller::handleProtocolFrame(QByteArray &frame)
 {
     uint8_t functionCode = ProtocolStd::getUint8_t(frame);
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " functionCode=" << functionCode;
     if(functionCode == 0x01){ //we received ping frame
         mConnectionMonitor.onFrammeArrive();
     }else if (functionCode == 0x02){ //get Info
         QString id = ProtocolStd::getQString(frame);
         if(mId != id){
+            qCDebug(ControllerClass) << "Brick Error: Brick Id does not match the Id retrieved from the brick.";
             emit brickError(QDateTime::currentDateTime(),  "Brick Id does not match the Id retrieved from the brick.");
             qDebug() << "Controller::handleProtocolFrame disconnectFromBrick() 1";
             disconnectFromBrick();
@@ -148,16 +169,18 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         QString deviceName = ProtocolStd::getQString(frame);
         QString deviceSsid = ProtocolStd::getQString(frame);
         QString devicePwd = ProtocolStd::getQString(frame);
+        qCDebug(ControllerClass) << "Received info frame: deviceType=" << deviceType << " deviceName=" << deviceName << " deviceSsid=" << deviceSsid << " devicePwd=" << devicePwd;
         if(mWifiName != deviceSsid){
             mWifiName = deviceSsid;
             emit wifiSSIDChanged();
         }
-        QString devicePswd = ProtocolStd::getQString(frame);
+        qCDebug(ControllerClass) << " mName=" << mName << " deviceName=" << deviceName;
         if(mName != deviceName){
             mName = deviceName;
+            qCDebug(ControllerClass) << "emit nameChanged()";
             emit nameChanged();
         }
-        emit brickInfo(id, deviceType, deviceName, deviceSsid, devicePswd);
+        emit brickInfo(id, deviceType, deviceName, deviceSsid, devicePwd);
         if(mWifiPwd != devicePwd){
             mWifiPwd = devicePwd;
             emit wifiPWDChanged();
@@ -187,6 +210,7 @@ uint8_t Controller::handleProtocolFrame(QByteArray &frame)
         emit brickNetworkSettings(wifiSSID, wifiPSWD);
         if(mWifiName != wifiSSID){
             mWifiName = wifiSSID;
+
             emit wifiSSIDChanged();
         }
         if(mWifiPwd != wifiPSWD){
@@ -205,7 +229,26 @@ void Controller::handleConnectionMonitor_sendPingFrame()
 void Controller::handleConnectionMonitor_frameTimout()
 {
     emit birckPingTimeoutErrorOccurred();
-    tcpConnection->disconnectFromServer();
+    disconnectFromBrick();
+}
+
+void Controller::sendStdFrame(const QByteArray &frame)
+{
+    QByteArray protocolFrame;
+    uint16_t frameSize = static_cast<uint16_t>(frame.size());
+    ProtocolStd::append(protocolFrame,frameSize);
+    protocolFrame.append(frame);
+
+    if (tcpSocket->state() == QAbstractSocket::ConnectedState) {
+        tcpSocket->write(protocolFrame);
+    }
+}
+
+void Controller::handleTcpReadyRead()
+{
+    QByteArray data = tcpSocket->readAll();
+    std::vector<uint8_t> dataStdVector(data.begin(), data.end());
+    protocolStd.addData(dataStdVector);
 }
 
 void Controller::handleTcpConnectingTimeout()
@@ -213,11 +256,21 @@ void Controller::handleTcpConnectingTimeout()
 
 }
 
+void Controller::onProtocolStdFrame(std::deque<uint8_t>& frame)
+{
+    QByteArray byteArray;
+    byteArray.reserve(frame.size());
+    for (const auto& byte : frame) {
+        byteArray.append(byte);
+    }
+    handleProtocolFrame(byteArray);
+}
+
 void Controller::sendPingFrame()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x01));
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 QString Controller::lastTcpError() const
@@ -247,59 +300,74 @@ QString Controller::wifiPWD() const
 
 QString Controller::ip() const
 {
-    return tcpConnectionIp;
+    return tcpSocket->peerAddress().toString();
+}
+
+void Controller::tcpAbort()
+{
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " mId=" << mId;
+    tcpSocket->abort();
+}
+
+QAbstractSocket::SocketState Controller::tcpState()
+{
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__ << " mId=" << mId;
+    return tcpSocket->state();
 }
 
 void Controller::cmdGetInfo()
 {
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__;
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x02));
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 void Controller::cmdGetId()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x03));
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 void Controller::cmdGetType()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x04));
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 void Controller::cmdGetName()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x05));
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 void Controller::cmdGetNetworkConfig()
 {
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x06));
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 void Controller::cmdSaveBrickName(const QString &brickName)
 {
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__;
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x07));
     ProtocolStd::append(frame,brickName);
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 void Controller::cmdSaveNetworkConfig(const QString &ssid, const QString &pwd)
 {
+    qCDebug(ControllerClass) << __PRETTY_FUNCTION__;
     QByteArray frame;
     ProtocolStd::append(frame, uint8_t(0x08));
     ProtocolStd::append(frame,ssid);
     ProtocolStd::append(frame,pwd);
-    tcpConnection->sendFrame(frame);
+    sendStdFrame(frame);
 }
 
 static void registerControllerTypes()

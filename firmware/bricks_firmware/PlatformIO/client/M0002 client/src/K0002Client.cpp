@@ -19,3 +19,7 @@ std::string K0002Client::type()
 {
     return "K0002";
 }
+
+void K0002Client::processProtocolStdFrame(std::deque<uint8_t> &frame)
+{
+}

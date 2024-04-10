@@ -141,6 +141,12 @@ void ProtocolStd::append(std::vector<uint8_t> &array, const std::string &data)
 }
 
 #ifdef QT_CORE_LIB
+
+void ProtocolStd::append(QByteArray &array, const bool &data)
+{
+    append(array, static_cast<uint8_t>(data));
+}
+
 void ProtocolStd::append(QByteArray &array, const uint8_t &data)
 {
     array.append(data);
@@ -172,6 +178,15 @@ void ProtocolStd::append(QByteArray &array, const QString &text)
     QByteArray rawBinaryText = text.toUtf8();
     append(array, static_cast<uint16_t>(rawBinaryText.size()));
     array.append(rawBinaryText);
+}
+
+bool ProtocolStd::getBool(QByteArray &array)
+{
+    if (array.size() < 1)
+    {
+        return false;
+    }
+    return static_cast<bool>(getUint8_t(array));
 }
 
 uint8_t ProtocolStd::getUint8_t(QByteArray &array)

@@ -6,41 +6,44 @@ Q_LOGGING_CATEGORY(BackendClass, "BackendClass")
 Backend::Backend(QObject *parent) :
     QObject(parent)
 {
-#warning "initBricks race condidtion with pseudoDNS onHostFound"
+    qCDebug(BackendClass) << __FUNCTION__;
     initBricks();
 
-    connect(&myBricksList, &MyBricksList::brickAdded, this, &Backend::bricksList_onBrickAdded);
-    connect(&myBricksList, &MyBricksList::brickRemoved, this, &Backend::bricksList_onBrickRemoved);
+    connect(&myBricksList, &MyBricksList::brickAdded, this, &Backend::handleBricksList_onBrickAdded);
+    connect(&myBricksList, &MyBricksList::brickRemoved, this, &Backend::handleBricksList_onBrickRemoved);
     connect(&testTimer, &QTimer::timeout, this, &Backend::timerSlot);
 
-    pseudoDNS.startQueriesForAllHosts();
+    mBrickFinder.startQueriesForAllHosts();
 }
 
 void Backend::applicationActive(){
-    qDebug() << "Backend::applicationActive()";
-    //pseudoDNS.startQueriesForAllHosts();
+    qCDebug(BackendClass) << __FUNCTION__;
     //testTimer.start(10000);
 }
 
 void Backend::applicationSuspended(){
-    qDebug() << "Backend::applicationSuspended()";
-    //pseudoDNS.stopQueries();
+    qCDebug(BackendClass) << __FUNCTION__;
     //testTimer.stop();
 }
 
 Backend::~Backend()
 {
-    qDebug() << "Backend::~Backend()";
+    qCDebug(BackendClass) << __FUNCTION__;
     for (auto it = bricksWrappers.begin(); it != bricksWrappers.end(); ++it) {
         delete it->second;
     }
     bricksWrappers.clear();
-    qDebug() << "END Backend::~Backend()";
+}
+
+
+BrickFinder *Backend::getBrickFinder()
+{
+    return &mBrickFinder;
 }
 
 
 K0002Controller *Backend::getK0002Controller(QString id){
-    qDebug() << "Backend::getK0002Controller id=" << id;
+    qCDebug(BackendClass) << __FUNCTION__ << " id=" << id;
     auto it = bricksWrappers.find(id.toStdString());
 
     if (it != bricksWrappers.end()) {
@@ -50,11 +53,34 @@ K0002Controller *Backend::getK0002Controller(QString id){
     return nullptr;
 }
 
-
-void Backend::onApplicationStateChanged(Qt::ApplicationState state)
+K0004Controller *Backend::getK0004Controller(QString id)
 {
-    qDebug() << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Backend::onApplicationStateChanged() state=" << state;
-    //throw std::runtime_error("Application state changed");
+    qCDebug(BackendClass) << __FUNCTION__ << " id=" << id;
+    auto it = bricksWrappers.find(id.toStdString());
+
+    if (it != bricksWrappers.end()) {
+        K0004Controller * k0004Controller = dynamic_cast<K0004Controller*>(it->second->get());
+        return k0004Controller;
+    }
+    return nullptr;
+}
+
+K0007Controller *Backend::getK0007Controller(QString id)
+{
+    qCDebug(BackendClass) << __FUNCTION__ << " id=" << id;
+    auto it = bricksWrappers.find(id.toStdString());
+
+    if (it != bricksWrappers.end()) {
+        K0007Controller * k0007Controller = dynamic_cast<K0007Controller*>(it->second->get());
+        return k0007Controller;
+    }
+    return nullptr;
+}
+
+
+void Backend::handleApplicationStateChanged(Qt::ApplicationState state)
+{
+    qCDebug(BackendClass) << __FUNCTION__ << " state=" << state;
     if(state == Qt::ApplicationActive){
         applicationActive();
     }else if(state == Qt::ApplicationSuspended){
@@ -62,17 +88,16 @@ void Backend::onApplicationStateChanged(Qt::ApplicationState state)
     }
 }
 
-
-void Backend::bricksList_onBrickAdded(const QString &id, const QString &type, const QString &name)
+void Backend::handleBricksList_onBrickAdded(const QString &id, const QString &type, const QString &name)
 {
-    qCDebug(BackendClass) << "Backend::bricksList_onBrickAdded() " << id << type << name;
+    qCDebug(BackendClass) << __FUNCTION__ << id << type << name;
     initBrick(id, type, name);
 }
 
 
-void Backend::bricksList_onBrickRemoved(const QString &id, const QString &type, const QString &name)
+void Backend::handleBricksList_onBrickRemoved(const QString &id, const QString &type, const QString &name)
 {
-    qCDebug(BackendClass) << "Backend::bricksList_onBrickRemoved()";
+    qCDebug(BackendClass) << __FUNCTION__;
     auto it = bricksWrappers.find(id.toStdString());
     if (it != bricksWrappers.end()) {
         delete it->second;
@@ -81,38 +106,25 @@ void Backend::bricksList_onBrickRemoved(const QString &id, const QString &type, 
 }
 
 
-void Backend::controller_onNameChanged(Controller * controller)
-{
-    qCDebug(BrickCommunicationWrapperClass) << __FUNCTION__;
-    QString id = controller->identifier();
-    QString name = controller->name();
-    myBricksList.renameBrick(id, name);
-}
-
-
 void Backend::initBricks()
 {
-    qCDebug(BackendClass) << "Backend::initBricks()";
+    qCDebug(BackendClass) << __FUNCTION__;
     for (int i = 0; i < myBricksList.rowCount(); ++i) {
         QString brickId = myBricksList.data(myBricksList.index(i), MyBricksList::IdRole).toString();
         QString brickType = myBricksList.data(myBricksList.index(i), MyBricksList::TypeRole).toString();
         QString brickName = myBricksList.data(myBricksList.index(i), MyBricksList::NameRole).toString();
 
-        Controller * controller = initBrick(brickId, brickType, brickName);
-        connect(controller, &Controller::nameChanged, this, [this, controller](){
-                this->controller_onNameChanged(controller);
-            }, Qt::AutoConnection);
+        Controller *controller = initBrick(brickId, brickType, brickName);
     }    
 }
 
 
 Controller * Backend::initBrick(const QString &brickId, const QString &brickType, const QString &brickName)
 {
-    qCDebug(BackendClass) << "Backend::initBrick() id=" << brickId;
-    BrickCommunicationWrapper * brick = new BrickCommunicationWrapper(&pseudoDNS, brickId, brickType, brickName, this);
+    qCDebug(BackendClass) << __FUNCTION__ << " id=" << brickId;
+    BrickCommunicationWrapper * brick = new BrickCommunicationWrapper(&myBricksList, &mBrickFinder, brickId, brickType, brickName, this);
     bricksWrappers[brickId.toStdString()] = brick;
     return brick->get();
-    qCDebug(BackendClass) << "END Backend::initBrick() id=" << brickId;
 }
 
 

@@ -7,6 +7,7 @@ import "../../controls"
 
 ScrollablePage {
     id: page
+    property bool active: false;
 
     Column {
         spacing: 10
@@ -18,6 +19,7 @@ ScrollablePage {
             width: parent.width < 300 ? parent.width : 300
             placeholderText: qsTr("Brick name")
             text: brickController.name
+            enabled: page.active
         }
 
         TextField {
@@ -83,6 +85,7 @@ ScrollablePage {
             width: parent.width < 300 ? parent.width : 300
             SButton {
                 id: buttonSave
+                enabled: page.active
                 text: qsTr("SAVE CONFIG")
                 Layout.alignment: Qt.AlignRight
                 onClicked: {

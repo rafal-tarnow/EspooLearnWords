@@ -52,9 +52,11 @@ public:
     static float getFloat(QByteArray &array);
     static QString getQString(QByteArray &array);
 #endif
-    static bool getBool(std::deque<uint8_t> &frame);
-    static uint8_t getUint8_t(std::vector<uint8_t> &frame);
-    static uint8_t getUint8_t(std::deque<uint8_t> &frame);
+    static uint8_t readUint8_t(std::deque<uint8_t> &frame);
+
+    static bool popBool(std::deque<uint8_t> &frame);
+    static uint8_t popUint8_t(std::vector<uint8_t> &frame);
+    static uint8_t popUint8_t(std::deque<uint8_t> &frame);
     static uint16_t getUint16_t(std::deque<uint8_t> &frame);
     static uint32_t getUint32_t(std::deque<uint8_t> &frame);
     static uint64_t getUint64_t(std::deque<uint8_t> &frame);

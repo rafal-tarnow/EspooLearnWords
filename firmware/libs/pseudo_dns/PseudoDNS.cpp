@@ -106,7 +106,7 @@ void PseudoDNS::onUdpDatagram(int packetSize)
   {
     // buffer[len] = 0;
     //  Serial.println("<----Received packet from: " + Udp.remoteIP().toString() + " port: " + String(Udp.remotePort()) + " size: " + String(len) + " with data: " + String((char*)buffer));
-    uint8_t functionCode = ProtocolStd::getUint8_t(dataDeque);
+    uint8_t functionCode = ProtocolStd::popUint8_t(dataDeque);
     if (functionCode == 0x01)
     // if (receivedData[0] == 0x01)
     {

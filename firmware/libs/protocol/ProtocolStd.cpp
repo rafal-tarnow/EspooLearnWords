@@ -264,9 +264,19 @@ QString ProtocolStd::getQString(QByteArray &array)
 
     return result;
 }
+
 #endif
 
-bool ProtocolStd::getBool(std::deque<uint8_t> &frame)
+uint8_t ProtocolStd::readUint8_t(std::deque<uint8_t> &frame)
+{
+    if (frame.empty())
+    {
+        return 0;
+    }
+    return frame.front();
+}
+
+bool ProtocolStd::popBool(std::deque<uint8_t> &frame)
 {
     if (frame.empty())
     {
@@ -277,7 +287,7 @@ bool ProtocolStd::getBool(std::deque<uint8_t> &frame)
     return static_cast<bool>(byte);
 }
 
-uint8_t ProtocolStd::getUint8_t(std::vector<uint8_t> &frame)
+uint8_t ProtocolStd::popUint8_t(std::vector<uint8_t> &frame)
 {
     if (frame.empty())
     {
@@ -288,7 +298,7 @@ uint8_t ProtocolStd::getUint8_t(std::vector<uint8_t> &frame)
     return byte;
 }
 
-uint8_t ProtocolStd::getUint8_t(std::deque<uint8_t> &frame)
+uint8_t ProtocolStd::popUint8_t(std::deque<uint8_t> &frame)
 {
     if (frame.empty())
     {

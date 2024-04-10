@@ -5,10 +5,12 @@
 #include <QObject>
 #include <QString>
 #include <qqml.h>
-#include "pseudo_dns.hpp"
+#include "BrickFinder.hpp"
 #include "MyBricksManager.hpp"
 #include "T0002Controller.hpp"
 #include "K0002Controller.hpp"
+#include "K0004Controller.hpp"
+#include "K0007Controller.hpp"
 #include "BrickCommunicationWrapper.hpp"
 #include "./src/ObjectCounter.hpp"
 
@@ -19,7 +21,7 @@ class Backend : public QObject
     Q_OBJECT
     QML_ELEMENT
 
-    Q_PROPERTY(PseudoDNSServer* dns READ getDNS CONSTANT)
+    Q_PROPERTY(BrickFinder* brickFinder READ getBrickFinder CONSTANT)
     Q_PROPERTY(MyBricksList* myBricks READ getMyBricks CONSTANT)
     Q_PROPERTY(T0002Controller* t0002Controller CONSTANT)
 
@@ -29,10 +31,7 @@ public:
     void applicationSuspended();
     ~Backend();
 
-    PseudoDNSServer *getDNS(){
-        return &pseudoDNS;
-    }
-
+    BrickFinder *getBrickFinder();
     MyBricksList *getMyBricks(){
         return &myBricksList;
         //return nullptr;
@@ -50,9 +49,12 @@ public:
     }
 
     Q_INVOKABLE K0002Controller *getK0002Controller(QString id);
+    Q_INVOKABLE K0004Controller *getK0004Controller(QString id);
+    Q_INVOKABLE K0007Controller *getK0007Controller(QString id);
+
 
 public slots:
-    void onApplicationStateChanged(Qt::ApplicationState state);
+    void handleApplicationStateChanged(Qt::ApplicationState state);
 
 private slots:
     void timerSlot()
@@ -60,9 +62,8 @@ private slots:
         //ObjectCounter::printQt();
     }
 
-    void bricksList_onBrickAdded(const QString &id, const QString &type, const QString &name);
-    void bricksList_onBrickRemoved(const QString &id, const QString &type, const QString &name);
-    void controller_onNameChanged(Controller * controller);
+    void handleBricksList_onBrickAdded(const QString &id, const QString &type, const QString &name);
+    void handleBricksList_onBrickRemoved(const QString &id, const QString &type, const QString &name);
 
 private:
     void initBricks();
@@ -72,7 +73,7 @@ private:
     std::map<std::string, BrickCommunicationWrapper *> bricksWrappers; //key = id
 
     QString m_userName;
-    PseudoDNSServer pseudoDNS;
+    BrickFinder mBrickFinder;
     MyBricksList myBricksList;
     QTimer testTimer;
 };

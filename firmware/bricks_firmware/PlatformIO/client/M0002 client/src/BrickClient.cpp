@@ -51,9 +51,8 @@ void BrickClient::handleTcpData(void *arg, AsyncClient *client, void *data, size
 
 void BrickClient::handleTcpError(void *arg, AsyncClient *asyncClient, int8_t error)
 {
-  Serial.printf("\n%lu BrickClient::handleTcpError() from client %s \n", dtime(), asyncClient->remoteIP().toString().c_str());
+  Serial.printf("\n%lu BrickClient::handleTcpError() error=%s from client %s \n", dtime(), asyncClient->errorToString(error), asyncClient->remoteIP().toString().c_str());
   errorsCount++;
-  // errors.push_back(std::string(asyncClient->errorToString(error)));
 }
 
 void BrickClient::handleTcpDisconnect(void *arg, AsyncClient *asyncClient)
@@ -123,7 +122,7 @@ size_t BrickClient::space()
 
 bool BrickClient::isAnyWaiting()
 {
-  //Serial.printf("\n waitingClients = %d", waitingClients.size());
+  // Serial.printf("\n waitingClients = %d", waitingClients.size());
   return waitingClients.size() > 0 ? true : false;
 }
 
@@ -154,10 +153,11 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
 
   if (!frame.empty())
   {
-    uint8_t functionCode = ProtocolStd::getUint8_t(frame);
-    // Serial.printf("\n%lu functionCode == %d", dtime(), functionCode);
+    uint8_t functionCode = ProtocolStd::readUint8_t(frame);
+    Serial.printf("\n%lu functionCode == %d", dtime(), functionCode);
     if (functionCode == 0x01) // ping command
     {
+      ProtocolStd::readUint8_t(frame); // pop function code
       // Serial.println("\nfunctionCode == 0x01");
       std::vector<uint8_t> frame;
       ProtocolStd::append(frame, uint8_t(0x01));
@@ -165,6 +165,7 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x02)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       Serial.printf("function code = 0x02 getInfo()");
       if (callbackGetInfo)
       {
@@ -173,6 +174,7 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x03)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       if (callbackGetId)
       {
         callbackGetId(this);
@@ -180,6 +182,7 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x04)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       if (callbackGetType)
       {
         callbackGetType(this);
@@ -187,6 +190,7 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x05)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       if (callbackGetBrickName)
       {
         callbackGetBrickName(this);
@@ -194,6 +198,7 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x06)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       if (callbackGetNetworkSettings)
       {
         callbackGetNetworkSettings(this);
@@ -201,6 +206,7 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x07)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       std::string brickName = ProtocolStd::getString(frame);
       if (callbackSaveBrickName)
       {
@@ -209,12 +215,23 @@ void BrickClient::handleProtocolStdFrame(std::deque<uint8_t> &frame)
     }
     else if (functionCode == 0x08)
     {
+      ProtocolStd::popUint8_t(frame); // pop function code
       std::string ssid = ProtocolStd::getString(frame);
       std::string pwd = ProtocolStd::getString(frame);
       if (callbackSaveNetworkSettings)
       {
+#ifdef __DBG_BRICK_CLIENT__
+        Serial.printf("%s\n", "BrickClient:: setNetworkSettings commad");
+#endif
         callbackSaveNetworkSettings(this, ssid, pwd);
       }
+    }
+    else if (functionCode >= 10)
+    {
+#ifdef __DBG_BRICK_CLIENT__
+      Serial.printf("%s\n", "processProtocolStdFrame()");
+#endif
+      processProtocolStdFrame(frame);
     }
   }
 }
@@ -243,7 +260,19 @@ bool BrickClient::tryFlushBuffer()
   return false;
 }
 
-void BrickClient::cmdSetInfo(const std::string& id, const std::string &brickType, const std::string &brickName, const std::string &ssid, const std::string &pswd)
+void BrickClient::close()
+{
+  if (asyncClient != nullptr)
+  {
+    asyncClient->close();
+  }
+  if (tcpSocket != nullptr)
+  {
+    tcpSocket->close();
+  }
+}
+
+void BrickClient::cmdSetInfo(const std::string &id, const std::string &brickType, const std::string &brickName, const std::string &ssid, const std::string &pswd)
 {
   std::vector<uint8_t> frame;
   ProtocolStd::append(frame, uint8_t(0x02));
@@ -256,7 +285,7 @@ void BrickClient::cmdSetInfo(const std::string& id, const std::string &brickType
   sendProtocolFrame(frame);
 }
 
-void BrickClient::cmdSetId(const std::string& id)
+void BrickClient::cmdSetId(const std::string &id)
 {
   std::vector<uint8_t> frame;
   ProtocolStd::append(frame, uint8_t(0x03));
@@ -314,13 +343,6 @@ void BrickClient::sendProtocolFrame(const std::vector<uint8_t> &frame)
 
       size_t addedSize = asyncClient->add(reinterpret_cast<const char *>(datagram.data()), datagram.size());
       asyncClient->send();
-
-      for (const uint8_t &value : datagram)
-      {
-        Serial.print(value);
-        Serial.print(" ");
-      }
-      Serial.println(); // Nowa linia na końcu
     }
     else
     {

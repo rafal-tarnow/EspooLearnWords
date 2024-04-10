@@ -40,11 +40,13 @@ public:
     static void append(std::vector<uint8_t> &array, const float &data);
     static void append(std::vector<uint8_t> &array, const std::string &data);
 #ifdef QT_CORE_LIB
+    static void append(QByteArray &array, const bool &data);
     static void append(QByteArray &array, const uint8_t &data);
     static void append(QByteArray &array, const uint16_t &data);
     static void append(QByteArray &array, const uint32_t &data);
     static void append(QByteArray &array, const float &data);
     static void append(QByteArray &array, const QString &text);
+    static bool getBool(QByteArray &array);
     static uint8_t getUint8_t(QByteArray &array);
     static uint16_t getUint16_t(QByteArray &array);
     static uint32_t getUint32_t(QByteArray &array);

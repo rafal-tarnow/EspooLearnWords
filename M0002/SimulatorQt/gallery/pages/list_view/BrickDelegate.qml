@@ -5,6 +5,8 @@ import QtQuick.Effects
 import Backend
 import "."
 import "./M0002"
+import "./K0004"
+import "./K0007"
 import "./common"
 
 ItemDelegate {
@@ -46,6 +48,10 @@ ItemDelegate {
                 return "T0002Delegate.qml"
             } else if (m_brickType === "K0002") {
                 return "K0002Delegate.qml"
+            } else if (m_brickType === "K0004") {
+                return "K0004Delegate.qml"
+            }else if (m_brickType === "K0007") {
+                return "K0007Delegate.qml"
             }
         }
 
@@ -53,6 +59,10 @@ ItemDelegate {
             if (m_brickType === "T0002") {
                 brickDelegate.height = 200
             } else if (m_brickType === "K0002") {
+                brickDelegate.height = 120
+            }else if (m_brickType === "K0004") {
+                brickDelegate.height = 120
+            }else if (m_brickType === "K0007") {
                 brickDelegate.height = 120
             }
         }

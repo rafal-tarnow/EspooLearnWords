@@ -28,7 +28,7 @@ void KiKoBrick::handleExitState(uint8_t state)
 
 void KiKoBrick::handleProtocolFrame(std::deque<uint8_t> &frame)
 {
-    uint8_t funciotnCode = ProtocolStd::getUint8_t(frame);
+    uint8_t funciotnCode = ProtocolStd::popUint8_t(frame);
     // Serial.printf("KiKoBrick recived frame, code=%d\n", funciotnCode);
     if (funciotnCode == 0x01)
     {

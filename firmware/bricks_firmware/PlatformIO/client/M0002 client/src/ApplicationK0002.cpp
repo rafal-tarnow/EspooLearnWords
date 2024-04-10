@@ -24,7 +24,7 @@ void ApplicationM0002::loop()
         Serial.print(temperatureCelsius);
         Serial.println(" °C");
 
-        for (auto it = clients.begin(); it != clients.end(); ++it)
+        for (auto it = kikoLib.clients.begin(); it != kikoLib.clients.end(); ++it)
         {
             K0002Client *ptr = *it;
             ptr->cmdSetMeasureTemp(temperatureCelsius);

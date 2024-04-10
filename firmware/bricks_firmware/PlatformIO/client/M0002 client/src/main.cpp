@@ -4,13 +4,15 @@
 #include <OneButton.h>
 #include "led.h"
 #include "ApplicationK0002.h"
-#include "ApplicationM0004.hpp"
+#include "ApplicationK0004.hpp"
+#include "ApplicationK0007.hpp"
 #include "ApplicationT0002.h"
 #include "T0002.hpp"
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include "config.h"
 #include "Debug.hpp"
+#include "Timer.hpp"
 
 #define BUTTON_PIN 0
 #define LED_PIN 2
@@ -23,8 +25,10 @@ OneButton button = OneButton(
 
 #ifdef __BRICK_K0002__
 ApplicationM0002 application;
-#elif defined(__BRICK_M0004__)
-ApplicationM0004 application;
+#elif defined(__BRICK_K0004__)
+ApplicationK0004 application;
+#elif defined(__BRICK_K0007__)
+ApplicationK0007 application;
 #elif defined(__BRICK_T0002__)
 ApplicationT0002 application;
 #endif
@@ -48,6 +52,31 @@ void handleDoubleClick()
 {
   application.handleButtonDoubleClick();
 }
+
+
+
+Timer timer_1;
+Timer timer_2;
+Timer timer_3;
+
+void timer_1_function()
+{
+  Serial.println("Timer 1 function");
+}
+
+void timer_2_function()
+{
+  Serial.println("timer 2 function");
+}
+
+void timer_3_function()
+{
+  Serial.println("timer 3 function");
+  timer_1.stop();
+  timer_2.stop();
+  timer_3.stop();
+}
+
 
 void setup()
 {
@@ -73,11 +102,20 @@ void setup()
   application.begin();
 
   setupOTA();
+
+  timer_1.onTimeout(timer_1_function);
+  timer_1.start(1000);
+
+  timer_2.onTimeout(timer_2_function);
+  timer_2.start(250);
+
+  timer_3.onTimeout(timer_3_function);
+  timer_3.start(15000);
 }
 
 void loop()
 {
-  Serial.printf("\n%lu --->>> main::loop()", dtime());
+  //Serial.printf("\n%lu --->>> main::loop()", dtime());
 
 
 
@@ -87,6 +125,8 @@ void loop()
   button.tick();
   LedTick();
   //ArduinoOTA.handle();
+
+  Timer::update();
 }
 
 void setupOTA()

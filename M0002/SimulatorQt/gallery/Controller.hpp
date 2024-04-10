@@ -4,11 +4,15 @@
 #include <QString>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QTimer>
+#include <QLoggingCategory>
 #include <qqml.h>
 #include <memory>
+#include <deque>
+#include "./src/emulators/ProtocolStd.h"
 #include "./src/ObjectCounter.hpp"
-#include "./src/emulators/tcp_connection.hpp"
 
+Q_DECLARE_LOGGING_CATEGORY(ControllerClass)
 
 class ConnectionMonitor: public QObject{
     Q_OBJECT
@@ -37,8 +41,8 @@ class Controller : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY brickTcpErrorOccurred)
-    Q_PROPERTY(bool connected READ isBrickConnected NOTIFY brickConnectedChanged)
+    Q_PROPERTY(QString lastTcpError READ lastTcpError NOTIFY tcpErrorOccurred)
+    Q_PROPERTY(bool tcpConnected READ isTcpConnected NOTIFY tcpConnectedChanged)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString identifier READ identifier)
     Q_PROPERTY(QString wifiSSID READ wifiSSID NOTIFY wifiSSIDChanged)
@@ -49,7 +53,7 @@ public:
     explicit Controller(QObject *parent = nullptr, QString id = "", QString name = "");
     ~Controller();
     Q_INVOKABLE void connectToBrick(const QString &ip);
-    Q_INVOKABLE bool isBrickConnected();
+    Q_INVOKABLE bool isTcpConnected();
     Q_INVOKABLE void disconnectFromBrick();
     Q_INVOKABLE QString lastTcpError() const;
     Q_INVOKABLE void cmdGetInfo();
@@ -66,13 +70,21 @@ public:
     Q_INVOKABLE QString ip() const;
     virtual QString type() = 0;
 
+    void tcpAbort();
+    QAbstractSocket::SocketState tcpState();
+
+protected:
+    void sendStdFrame(const QByteArray &frame);
+
 signals:
     void birckPingTimeoutErrorOccurred();
-    void brickTcpErrorOccurred(const QString & error);
     void brickError(QDateTime date, QString error);
-    void brickConnected();
-    void brickConnectedChanged();
-    void brickDisconnected();
+
+    void tcpConnected();
+    void tcpConnectedChanged();
+    void tcpDisconnected();
+    void tcpErrorOccurred(const QString & error);
+
     void brickInfo(const QString & id, const QString & type, const QString & name, const QString & ssid, const QString & psswd);
     void brickType(const QString & type);
     void brickNetworkSettings(const QString & ssid, const QString & psswd);
@@ -88,24 +100,26 @@ private slots:
     void handleConnectionMonitor_sendPingFrame();
     void handleConnectionMonitor_frameTimout();
 
-public slots:
+    void handleTcpReadyRead();
     void handleTcpConnected();
     void handleTcpDisconnected();
-    void handleTcpError(const QString & error);
+    void handleTcpError(QAbstractSocket::SocketError socketError);
+    void handleTcpStateChanged(QAbstractSocket::SocketState socketState);
+
+public slots:
     void handleTcpConnectingTimeout();
 
 private:
     void sendPingFrame();
     void checkConnectionStatus();
+    void onProtocolStdFrame(std::deque<uint8_t>& frame);
 
 private:
-    TcpConncetion* tcpConnection;
+    std::unique_ptr<QTimer> connectTimer;
+    QTcpSocket * tcpSocket;
+    ProtocolStd protocolStd;
     QString mLastTcpError;
-    QString mIp;
-    QString tcpConnectionIp;
-    bool mConnectionCheck = false;
-    bool mConnected = false;
-    bool mConnecting = false;
+    QString mServerIP;
     QString mName;
     QString mWifiName;
     QString mWifiPwd;

@@ -20,7 +20,7 @@ void ApplicationT0002::loop()
     pressure += 1.0f;
     temp += 0.125f;
     humidity += 0.011;
-    for (auto it = clients.begin(); it != clients.end(); ++it)
+    for (auto it = kikoLib.clients.begin(); it != kikoLib.clients.end(); ++it)
     {
       T0002 *ptr = *it;
       ptr->cmdSetMeasureTempPressHum(temp, pressure, humidity);

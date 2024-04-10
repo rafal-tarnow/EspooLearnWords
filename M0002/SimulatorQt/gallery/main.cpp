@@ -66,8 +66,13 @@ int main(int argc, char *argv[])
     //QLoggingCategory::setFilterRules("*.debug=false\n");
     QLoggingCategory::setFilterRules("*.debug=false\n"
                                      "*.warning=false\n"
-                                     "BrickCommunicationWrapperClass.debug=true\n"
-                                     "BackendClass.debug=true");
+                                     "BrickCommunicationWrapperClass.debug=false\n"
+                                     "BackendClass.debug=true\n"
+                                     "BrickFinderClass.debug=false\n"
+                                     "ControllerClass.debug=false\n"
+                                     "K0004ControllerClass.debug=false\n"
+                                     "K0007ControllerClass.debug=false\n"
+                                     "TcpConncetionClass.debug=false");
 
 #warning "First app run doesent load material style, it can be chacked by changing app and organization name"
     QGuiApplication::setApplicationName("KiKo Bricks");
@@ -82,7 +87,7 @@ int main(int argc, char *argv[])
 
     Backend backend(&app);
 
-    QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &backend, &Backend::onApplicationStateChanged);
+    QObject::connect(getQGuiApplication(), &QGuiApplication::applicationStateChanged, &backend, &Backend::handleApplicationStateChanged);
 
     QIcon::setThemeName("gallery");
     QQuickStyle::setStyle(QLatin1String("Material"));

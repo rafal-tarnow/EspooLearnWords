@@ -12,6 +12,7 @@
 #include "dtime.h"
 #include "ProtocolStd.h"
 #include "Debug.hpp"
+#include "config.h"
 
 class BrickClient
 {
@@ -81,6 +82,8 @@ public:
         };
     }
 
+    void close();
+
     void cmdSetInfo(const std::string &id, const std::string &brickType, const std::string &brickName, const std::string &ssid, const std::string &pswd);
     void cmdSetId(const std::string &id);
     void cmdSetType(const std::string &brickType);
@@ -91,6 +94,7 @@ public:
     size_t space();
     static bool isAnyWaiting();
     static void tryFlushBuffers();
+    virtual void processProtocolStdFrame(std::deque<uint8_t> &frame) = 0;
 
 protected:
     void sendProtocolFrame(const std::vector<uint8_t> &frame);

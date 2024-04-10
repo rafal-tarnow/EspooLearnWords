@@ -12,17 +12,10 @@ Page {
 
     property string pageName: "Dashboard"
     readonly property MyBricksList myBricks: backend.myBricks
-    readonly property PseudoDNSServer dnsServer: backend.dns
+    readonly property BrickFinder brickFinder: backend.brickFinder
 
     background: Rectangle{
         color: "#fafafa"
-    }
-
-    Connections {
-        target: dnsServer
-        function onHostFound(hostId, hostType, hostName, hostIp){
-            console.log("Qml : on host found: yeyeye");
-        }
     }
 
     Menu{
@@ -99,7 +92,7 @@ Page {
 
     AddBrickDialog{
         id: addBrickDialog
-        model: dnsServer
+        model: brickFinder
 
         onAddBrick: function(brickId, brickName, brickType){
             if(backend.myBricks.append(brickId, brickType, brickName) === false){
@@ -129,7 +122,7 @@ Page {
     //     anchors.right: plusButton.left
     //     anchors.bottom: parent.bottom
     //     onClicked: {
-    //         dnsServer.startQueriesForAllHosts()
+    //         brickFinder.startQueriesForAllHosts()
     //     }
     // }
 
@@ -141,7 +134,7 @@ Page {
     //     anchors.right: runButton.left
     //     anchors.bottom: parent.bottom
     //     onClicked: {
-    //         dnsServer.stopQueries()
+    //         brickFinder.stopQueries()
     //     }
     // }
 }
