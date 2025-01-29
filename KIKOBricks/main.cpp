@@ -64,16 +64,16 @@ int main(int argc, char *argv[])
     // QLoggingCategory::setFilterRules("PseudoDNSClass.debug=false");
     // QLoggingCategory::setFilterRules("BrickCommunicationWrapperLog=true");
     //QLoggingCategory::setFilterRules("*.debug=false\n");
-    QLoggingCategory::setFilterRules("*.debug=false\n"
-                                     "*.warning=false\n"
-                                     "BrickCommunicationWrapperClass.debug=false\n"
-                                     "BackendClass.debug=true\n"
-                                     "BrickFinderClass.debug=false\n"
-                                     "ControllerClass.debug=false\n"
-                                     "J0001ControllerClass.debug=true\n"
-                                     "K0004ControllerClass.debug=false\n"
-                                     "K0007ControllerClass.debug=false\n"
-                                     "TcpConncetionClass.debug=false");
+    // QLoggingCategory::setFilterRules("*.debug=false\n"
+    //                                  "*.warning=false\n"
+    //                                  "BrickCommunicationWrapperClass.debug=false\n"
+    //                                  "BackendClass.debug=true\n"
+    //                                  "BrickFinderClass.debug=false\n"
+    //                                  "ControllerClass.debug=false\n"
+    //                                  "J0001ControllerClass.debug=true\n"
+    //                                  "K0004ControllerClass.debug=false\n"
+    //                                  "K0007ControllerClass.debug=false\n"
+    //                                  "TcpConncetionClass.debug=false");
 
 #warning "First app run doesent load material style, it can be chacked by changing app and organization name"
     QGuiApplication::setApplicationName("KiKo Bricks");

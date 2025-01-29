@@ -14,7 +14,12 @@ Pane{
 
     Flickable{
         id: bricksFlickable
-        anchors.fill: parent
+
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width > 700 ? 700 : parent.width
+
         contentHeight: pane.height
         boundsBehavior: Flickable.StopAtBounds
         ScrollIndicator.vertical: ScrollIndicator { }

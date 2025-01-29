@@ -91,11 +91,9 @@ ApplicationWindow {
         RowLayout {
             spacing: 20
             anchors.fill: parent
-            anchors.leftMargin: !window.portraitMode ? drawer.width : undefined
 
             ToolButton {
                 action: navigateBackAction
-                visible: window.portraitMode
             }
 
             Item{
@@ -153,12 +151,10 @@ ApplicationWindow {
     Drawer {
         id: drawer
 
-        width: Math.min(window.width, window.height) / 3 * 2
+        width: 240
         height: window.height
         modal: window.portraitMode
-        interactive: window.portraitMode ? (stackView.depth === 1) : false
-        position: window.portraitMode ? 0 : 1
-        visible: !window.portraitMode
+        interactive: true
 
         background: Rectangle {
             color: "#ffffff"
@@ -217,7 +213,6 @@ ApplicationWindow {
 
         id: stackView
         anchors.fill: parent
-        anchors.leftMargin: !window.portraitMode ? drawer.width : undefined
 
         function pushPage(newPage, properties) {
             push(newPage, properties)
