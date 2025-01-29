@@ -13,14 +13,14 @@ Example2:
 */
 
 
-class Timer
+class TimerMicros
 {
     using Callback = std::function<void()>;
 
 public:
-    Timer();
-    ~Timer();
-    void start(uint64_t milis);
+    TimerMicros();
+    ~TimerMicros();
+    void startMicros(uint64_t micros);
     void setSingleShot(bool singleShot);
     void stop();
 
@@ -38,11 +38,11 @@ public:
     static void update();
 
 private:
-    static std::list<Timer *> timers;
+    static std::list<TimerMicros *> timers;
     Callback callbackMethod;
     Callback callbackFunction;
     bool mActive = false;
     bool mSingleShot = false;
-    uint64_t mPeriod = 0;
-    uint64_t mLastMillis = 0;
+    uint64_t mPeriodMicros = 0;
+    uint64_t mLastMicros = 0;
 };

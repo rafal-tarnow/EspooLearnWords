@@ -1,0 +1,17 @@
+{
+  "name": "KiKoBricks",
+  "keywords": "sensors, hardware, iot",
+  "description": "A simple library description",
+  "version": "1.00.0",
+  "authors": {
+    "name": "Rafal Kruszyna",
+    "url": "https://github.com/rafal-tarnow"
+  },
+  "frameworks": "arduino",
+  "platforms": "esp8266",
+  "dependencies": {
+  },
+  "build": {
+    "libArchive": false
+  }
+}
